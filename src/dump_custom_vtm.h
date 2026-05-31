@@ -64,10 +64,7 @@ DumpStyle(custom/vtm,DumpCustomVTM)
 #include <vector>
 #include <utility>
 
-#include <vtkSmartPointer.h>
-#include <vtkPoints.h>
-#include <vtkCellArray.h>
-#include <vtkPolyVertex.h>
+#include "vtk_packfall_internal.h"
 
 class vtkAbstractArray;
 class vtkRectilinearGrid;

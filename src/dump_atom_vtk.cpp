@@ -33,9 +33,13 @@
 -------------------------------------------------------------------------
     Contributing author and copyright for this file:
     Anton Gladky(TU Bergakademie Freiberg), gladky.anton@gmail.com
+-------------------------------------------------------------------------
+
+    Internal VTK prototype path:
+    This dump style intentionally writes VTK-compatible serial ASCII files
+    without depending on the external VTK library.
 ------------------------------------------------------------------------- */
 
-#ifdef LAMMPS_VTK
 #include <string.h>
 #include "dump_atom_vtk.h"
 #include "atom.h"
@@ -43,24 +47,10 @@
 #include "error.h"
 #include "memory.h"
 #include "comm.h"
+#include "update.h"
+#include <fstream>
+#include <iomanip>
 #include <sstream>
-#include <vtkVersion.h>
-#ifndef VTK_MAJOR_VERSION
-#include <vtkConfigure.h>
-#endif
-#include<vtkCellArray.h>
-#include<vtkDoubleArray.h>
-#include<vtkIntArray.h>
-#include<vtkPoints.h>
-#include<vtkPointData.h>
-#include<vtkCellData.h>
-#include<vtkSmartPointer.h>
-#include<vtkUnstructuredGrid.h>
-#include<vtkXMLUnstructuredGridWriter.h>
-
-#ifdef vtkGenericDataArray_h
-#define InsertNextTupleValue InsertNextTypedTuple
-#endif
 
 using namespace LAMMPS_NS;
 
@@ -72,6 +62,8 @@ DumpATOMVTK::DumpATOMVTK(LAMMPS *lmp, int narg, char **arg) :
 {
   if (narg != 5) error->all(FLERR,"Illegal dump command");
   if (multiproc) error->all(FLERR,"Invalid dump filename");
+
+  filecurrent = NULL;
 
   sortBuffer = new SortBuffer(lmp, true);
 
@@ -87,7 +79,6 @@ DumpATOMVTK::DumpATOMVTK(LAMMPS *lmp, int narg, char **arg) :
 
 void DumpATOMVTK::init_style()
 {
-
 }
 
 /* ---------------------------------------------------------------------- */
@@ -165,7 +156,6 @@ void DumpATOMVTK::pack(int *ids)
 
   setFileCurrent();
   tmpEXP.setFileName(filecurrent);
-  return;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -191,13 +181,15 @@ void DumpATOMVTK::write_data(int n, double *mybuf)
     tmpEXP.writeSER();
     tmpEXP.clear();
     delete [] filecurrent;
+    filecurrent = NULL;
   }
 }
 
 /* ---------------------------------------------------------------------- */
 
 DumpATOMVTK::DataVTK::DataVTK(V3 Pos, double Rad, double Mass, int Id, int Type,
-  V3 VelL, V3 VelA, V3 Force, int proc) {
+  V3 VelL, V3 VelA, V3 Force, int proc)
+{
   _Pos = Pos;
   _Rad = Rad;
   _Mass = Mass;
@@ -208,153 +200,253 @@ DumpATOMVTK::DataVTK::DataVTK(V3 Pos, double Rad, double Mass, int Id, int Type,
   _Force = Force;
   _proc = proc;
 }
+
 /* ---------------------------------------------------------------------- */
 
-std::string  DumpATOMVTK::DataVTK::serialize() {
+std::string DumpATOMVTK::DataVTK::serialize()
+{
   std::string tmp;
   std::ostringstream stringStream;
 
-  stringStream <<_Pos[0]<<' '<<_Pos[1]<<' '<<_Pos[2]<<' '<<_Rad<<' '<<_Mass<<' '<<_Id
-   <<' '<<_Type<<' '
-   <<_VelL[0]<<' '<<_VelL[1]<<' '<<_VelL[2]<<' '
-   <<_VelA[0]<<' '<<_VelA[1]<<' '<<_VelA[2]<<' '
-   <<_Force[0]<<' '<<_Force[1]<<' '<<_Force[2]<<' '<<_proc<<'\n';
+  stringStream << _Pos[0] << ' ' << _Pos[1] << ' ' << _Pos[2] << ' ' << _Rad << ' ' << _Mass << ' ' << _Id
+   << ' ' << _Type << ' '
+   << _VelL[0] << ' ' << _VelL[1] << ' ' << _VelL[2] << ' '
+   << _VelA[0] << ' ' << _VelA[1] << ' ' << _VelA[2] << ' '
+   << _Force[0] << ' ' << _Force[1] << ' ' << _Force[2] << ' ' << _proc << '\n';
 
-  tmp  = stringStream.str();
+  tmp = stringStream.str();
   return tmp;
 }
 
 /* ---------------------------------------------------------------------- */
 
-void DumpATOMVTK::vtkExportData::add(DumpATOMVTK::DataVTK & d) {
+void DumpATOMVTK::vtkExportData::add(DumpATOMVTK::DataVTK &d)
+{
   vtkData.push_back(d);
 }
 
 /* ---------------------------------------------------------------------- */
 
-void DumpATOMVTK::vtkExportData::setFileName(const char * fileName) {
-  _fileName = fileName;
-  _setFileName = true;
+void DumpATOMVTK::vtkExportData::setFileName(const char *fileName)
+{
+  file_name_ = fileName;
+
+  const std::size_t dot_pos = file_name_.rfind('.');
+  if (dot_pos == std::string::npos)
+    lmp_->error->all(FLERR, "dump atom/vtk requires a .vtk or .vtu filename");
+
+  const std::string extension = file_name_.substr(dot_pos);
+  if (extension == ".vtk")
+    format_ = FORMAT_VTK_LEGACY;
+  else if (extension == ".vtu")
+    format_ = FORMAT_VTU_XML;
+  else
+    lmp_->error->all(FLERR, "dump atom/vtk internal prototype supports only .vtk and .vtu output");
 }
 
 /* ---------------------------------------------------------------------- */
 
 DumpATOMVTK::vtkExportData::vtkExportData(LAMMPS *lmp) :
-    DumpVTK(lmp)
+    lmp_(lmp),
+    format_(FORMAT_VTU_XML)
 {
-  _setFileName=false;
-}
-/* ---------------------------------------------------------------------- */
-
-int DumpATOMVTK::vtkExportData::size() {
-  return vtkData.size();
 }
 
 /* ---------------------------------------------------------------------- */
 
-void DumpATOMVTK::vtkExportData::writeSER() {
-
-  vtkSmartPointer<vtkPoints>  spheresPos = vtkSmartPointer<vtkPoints>::New();
-  vtkSmartPointer<vtkCellArray> spheresCells = vtkSmartPointer<vtkCellArray>::New();
-
-  vtkSmartPointer<vtkDoubleArray> radii = vtkSmartPointer<vtkDoubleArray>::New();
-  radii->SetNumberOfComponents(1);
-  radii->SetName("radii");
-
-  vtkSmartPointer<vtkDoubleArray> spheresMass = vtkSmartPointer<vtkDoubleArray>::New();
-  spheresMass->SetNumberOfComponents(1);
-  spheresMass->SetName("mass");
-
-  vtkSmartPointer<vtkIntArray> spheresId = vtkSmartPointer<vtkIntArray>::New();
-  spheresId->SetNumberOfComponents(1);
-  spheresId->SetName("id");
-
-  vtkSmartPointer<vtkIntArray> spheresType = vtkSmartPointer<vtkIntArray>::New();
-  spheresType->SetNumberOfComponents(1);
-  spheresType->SetName("type");
-
-  vtkSmartPointer<vtkIntArray> spheresProc = vtkSmartPointer<vtkIntArray>::New();
-  spheresProc->SetNumberOfComponents(1);
-  spheresProc->SetName("proc");
-
-  vtkSmartPointer<vtkDoubleArray> spheresVelL = vtkSmartPointer<vtkDoubleArray>::New();
-  spheresVelL->SetNumberOfComponents(3);
-  spheresVelL->SetName("velocity_lin");
-
-  vtkSmartPointer<vtkDoubleArray> spheresVelA = vtkSmartPointer<vtkDoubleArray>::New();
-  spheresVelA->SetNumberOfComponents(3);
-  spheresVelA->SetName("velocity_ang");
-
-  vtkSmartPointer<vtkDoubleArray> spheresForce = vtkSmartPointer<vtkDoubleArray>::New();
-  spheresForce->SetNumberOfComponents(3);
-  spheresForce->SetName("force");
-
-  for (unsigned int i=0; i < vtkData.size(); i++) {
-    vtkIdType pid[1];
-    pid[0] = spheresPos->InsertNextPoint(vtkData[i]._Pos[0], vtkData[i]._Pos[1], vtkData[i]._Pos[2]);
-    radii->InsertNextValue(vtkData[i]._Rad);
-
-    double vv[3] = {vtkData[i]._VelL[0], vtkData[i]._VelL[1], vtkData[i]._VelL[2]};
-    spheresVelL->InsertNextTupleValue(vv);
-
-    double oo[3] = {vtkData[i]._VelA[0], vtkData[i]._VelA[1], vtkData[i]._VelA[2]};
-    spheresVelA->InsertNextTupleValue(oo);
-
-    double ff[3] = {vtkData[i]._Force[0], vtkData[i]._Force[1], vtkData[i]._Force[2]};
-    spheresForce->InsertNextTupleValue(ff);
-
-    spheresMass->InsertNextValue(vtkData[i]._Mass);
-
-    spheresId->InsertNextValue(vtkData[i]._Id);
-    spheresType->InsertNextValue(vtkData[i]._Type);
-    spheresProc->InsertNextValue(vtkData[i]._proc);
-
-    spheresCells->InsertNextCell(1,pid);
-  }
-
-  vtkSmartPointer<vtkUnstructuredGrid> spheresUg = vtkSmartPointer<vtkUnstructuredGrid>::New();
-
-  spheresUg->SetPoints(spheresPos);
-  spheresUg->SetCells(VTK_VERTEX, spheresCells);
-  spheresUg->GetPointData()->AddArray(radii);
-  spheresUg->GetPointData()->AddArray(spheresId);
-  spheresUg->GetPointData()->AddArray(spheresType);
-  spheresUg->GetPointData()->AddArray(spheresProc);
-  spheresUg->GetPointData()->AddArray(spheresMass);
-  spheresUg->GetPointData()->AddArray(spheresVelL);
-  spheresUg->GetPointData()->AddArray(spheresVelA);
-  spheresUg->GetPointData()->AddArray(spheresForce);
-
-  vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
-  setVtkWriterOptions(vtkXMLWriter::SafeDownCast(writer));
-#if VTK_MAJOR_VERSION < 6
-  writer->SetInput(spheresUg);
-#else
-  writer->SetInputData(spheresUg);
-#endif
-  writer->SetFileName(_fileName);
-  writer->Write();
+int DumpATOMVTK::vtkExportData::size()
+{
+  return static_cast<int>(vtkData.size());
 }
 
 /* ---------------------------------------------------------------------- */
 
-void DumpATOMVTK::vtkExportData::show() {
-  for (unsigned int i=0; i < vtkData.size(); i++) {
+void DumpATOMVTK::vtkExportData::writeSER()
+{
+  if (format_ == FORMAT_VTK_LEGACY)
+    write_legacy_vtk();
+  else
+    write_vtu();
+}
+
+/* ---------------------------------------------------------------------- */
+
+void DumpATOMVTK::vtkExportData::write_legacy_vtk() const
+{
+  std::ofstream file(file_name_.c_str());
+  if (!file.is_open())
+    lmp_->error->one(FLERR, "Cannot open dump atom/vtk file");
+
+  file << std::scientific << std::setprecision(16);
+  file << "# vtk DataFile Version 3.0\n";
+  file << "Generated by Packfall internal atom/vtk prototype\n";
+  file << "ASCII\n";
+  file << "DATASET UNSTRUCTURED_GRID\n";
+  file << "POINTS " << vtkData.size() << " double\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Pos[0] << ' ' << vtkData[i]._Pos[1] << ' ' << vtkData[i]._Pos[2] << '\n';
+
+  file << "CELLS " << vtkData.size() << ' ' << vtkData.size() * 2 << '\n';
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << "1 " << i << '\n';
+
+  file << "CELL_TYPES " << vtkData.size() << '\n';
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << "1\n";
+
+  file << "POINT_DATA " << vtkData.size() << '\n';
+
+  file << "SCALARS radii double 1\n";
+  file << "LOOKUP_TABLE default\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Rad << '\n';
+
+  file << "SCALARS mass double 1\n";
+  file << "LOOKUP_TABLE default\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Mass << '\n';
+
+  file << "SCALARS id int 1\n";
+  file << "LOOKUP_TABLE default\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Id << '\n';
+
+  file << "SCALARS type int 1\n";
+  file << "LOOKUP_TABLE default\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Type << '\n';
+
+  file << "SCALARS proc int 1\n";
+  file << "LOOKUP_TABLE default\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._proc << '\n';
+
+  file << "VECTORS velocity_lin double\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._VelL[0] << ' ' << vtkData[i]._VelL[1] << ' ' << vtkData[i]._VelL[2] << '\n';
+
+  file << "VECTORS velocity_ang double\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._VelA[0] << ' ' << vtkData[i]._VelA[1] << ' ' << vtkData[i]._VelA[2] << '\n';
+
+  file << "VECTORS force double\n";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Force[0] << ' ' << vtkData[i]._Force[1] << ' ' << vtkData[i]._Force[2] << '\n';
+}
+
+/* ---------------------------------------------------------------------- */
+
+void DumpATOMVTK::vtkExportData::write_vtu() const
+{
+  std::ofstream file(file_name_.c_str());
+  if (!file.is_open())
+    lmp_->error->one(FLERR, "Cannot open dump atom/vtk file");
+
+  file << std::scientific << std::setprecision(16);
+  file << "<?xml version=\"1.0\"?>\n";
+  file << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
+  file << "  <UnstructuredGrid>\n";
+  file << "    <Piece NumberOfPoints=\"" << vtkData.size() << "\" NumberOfCells=\"" << vtkData.size() << "\">\n";
+  file << "      <PointData>\n";
+
+  file << "        <DataArray type=\"Float64\" Name=\"radii\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Rad << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Float64\" Name=\"mass\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Mass << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Int32\" Name=\"id\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Id << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Int32\" Name=\"type\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Type << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Int32\" Name=\"proc\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._proc << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Float64\" Name=\"velocity_lin\" NumberOfComponents=\"3\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._VelL[0] << ' ' << vtkData[i]._VelL[1] << ' ' << vtkData[i]._VelL[2] << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Float64\" Name=\"velocity_ang\" NumberOfComponents=\"3\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._VelA[0] << ' ' << vtkData[i]._VelA[1] << ' ' << vtkData[i]._VelA[2] << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Float64\" Name=\"force\" NumberOfComponents=\"3\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Force[0] << ' ' << vtkData[i]._Force[1] << ' ' << vtkData[i]._Force[2] << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "      </PointData>\n";
+  file << "      <CellData/>\n";
+  file << "      <Points>\n";
+  file << "        <DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << vtkData[i]._Pos[0] << ' ' << vtkData[i]._Pos[1] << ' ' << vtkData[i]._Pos[2] << ' ';
+  file << "\n        </DataArray>\n";
+  file << "      </Points>\n";
+  file << "      <Cells>\n";
+
+  file << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << i << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << (i + 1) << ' ';
+  file << "\n        </DataArray>\n";
+
+  file << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">\n          ";
+  for (std::size_t i = 0; i < vtkData.size(); ++i)
+    file << "1 ";
+  file << "\n        </DataArray>\n";
+
+  file << "      </Cells>\n";
+  file << "    </Piece>\n";
+  file << "  </UnstructuredGrid>\n";
+  file << "</VTKFile>\n";
+}
+
+/* ---------------------------------------------------------------------- */
+
+void DumpATOMVTK::vtkExportData::show()
+{
+  for (std::size_t i = 0; i < vtkData.size(); i++) {
     std::cerr << vtkData[i].serialize();
   }
 }
 
 /* ---------------------------------------------------------------------- */
 
-void DumpATOMVTK::vtkExportData::clear() {
+void DumpATOMVTK::vtkExportData::clear()
+{
   vtkData.clear();
 }
 
 /* ---------------------------------------------------------------------- */
 
-void DumpATOMVTK::setFileCurrent() {
-  if (multifile == 0) filecurrent = filename;
-  else {
+void DumpATOMVTK::setFileCurrent()
+{
+  delete [] filecurrent;
+  filecurrent = NULL;
+
+  if (multifile == 0) {
+    filecurrent = new char[strlen(filename) + 1];
+    strcpy(filecurrent, filename);
+  } else {
     filecurrent = new char[strlen(filename) + 16];
     char *ptr = strchr(filename,'*');
     *ptr = '\0';
@@ -375,18 +467,32 @@ void DumpATOMVTK::setFileCurrent() {
 
 int DumpATOMVTK::vtkExportData::modify_param(int narg, char **arg)
 {
-    const int mvtk = DumpVTK::modify_param(narg, arg);
-    if (mvtk > 0)
-        return mvtk;
+  if (strcmp(arg[0],"binary") == 0) {
+    if (narg < 2)
+      lmp_->error->all(FLERR,"Illegal dump_modify command [binary]");
+    if (strcmp(arg[1],"no") == 0)
+      return 2;
+    if (strcmp(arg[1],"yes") == 0)
+      lmp_->error->all(FLERR, "dump atom/vtk internal prototype only supports ASCII output");
+    lmp_->error->all(FLERR,"Illegal dump_modify command [binary]");
+  }
 
-    return 0;
+  if (strcmp(arg[0],"compressor") == 0) {
+    if (narg < 2)
+      lmp_->error->all(FLERR,"Illegal dump_modify command [compressor]");
+    if (strcmp(arg[1],"none") == 0)
+      return 2;
+    if (strcmp(arg[1],"zlib") == 0 || strcmp(arg[1],"lz4") == 0)
+      lmp_->error->all(FLERR, "dump atom/vtk internal prototype does not support compression");
+    lmp_->error->all(FLERR,"Illegal dump_modify command [compressor]");
+  }
+
+  return 0;
 }
 
 /* ---------------------------------------------------------------------- */
 
 int DumpATOMVTK::modify_param(int narg, char **arg)
 {
-    return tmpEXP.modify_param(narg, arg);
+  return tmpEXP.modify_param(narg, arg);
 }
-
-#endif

@@ -54,16 +54,7 @@
 #include "comm.h"
 #include "dump_vtk.h"
 #include <stdint.h>
-#include <vtkPointData.h>
-#include <vtkCellData.h>
-#include <vtkDoubleArray.h>
-#include <vtkIntArray.h>
-#include <vtkStringArray.h>
-#include <vtkPolyData.h>
-#include <vtkInformation.h>
-#include <vtkCellArray.h>
-#include <vtkMPIController.h>
-#include <vtkAppendPolyData.h>
+#include "vtk_packfall_internal.h"
 
 // For compatibility with new VTK generic data arrays (VTK >= 7.0)
 #ifdef vtkGenericDataArray_h

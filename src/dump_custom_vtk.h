@@ -62,8 +62,7 @@ DumpStyle(custom/vtk,DumpCustomVTK)
 #include <set>
 #include <string>
 
-#include <vtkSmartPointer.h>
-#include <vtkMultiBlockDataSet.h>
+#include "vtk_packfall_internal.h"
 
 class vtkAbstractArray;
 class vtkRectilinearGrid;

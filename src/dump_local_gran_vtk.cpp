@@ -61,21 +61,7 @@
 #include "sort_buffer.h"
 #include <vector>
 #include <sstream>
-#include <vtkVersion.h>
-#ifndef VTK_MAJOR_VERSION
-#include <vtkConfigure.h>
-#endif
-#include <vtkPolyData.h>
-#include <vtkPolyDataWriter.h>
-#include <vtkXMLPolyDataWriter.h>
-#include <vtkXMLPPolyDataWriter.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkUnstructuredGridWriter.h>
-#include <vtkXMLUnstructuredGridWriter.h>
-#include <vtkXMLPUnstructuredGridWriter.h>
-#include <vtkMPIController.h>
-#include <vtkMPI.h>
-#include <vtkMPICommunicator.h>
+#include "vtk_packfall_internal.h"
 
 using namespace LAMMPS_NS;
 

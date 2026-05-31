@@ -62,21 +62,7 @@
 #include "error.h"
 #include <vector>
 #include <sstream>
-#include <vtkVersion.h>
-#ifndef VTK_MAJOR_VERSION
-#include <vtkConfigure.h>
-#endif
-#include <vtkPointData.h>
-#include <vtkCellData.h>
-#include <vtkLine.h>
-#include <vtkDoubleArray.h>
-#include <vtkIntArray.h>
-#include <vtkStringArray.h>
-#include <vtkPolyData.h>
-#include <vtkRectilinearGrid.h>
-#include <vtkHexahedron.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkInformation.h>
+#include "vtk_packfall_internal.h"
 
 #ifdef vtkGenericDataArray_h
 #define InsertNextTupleValue InsertNextTypedTuple

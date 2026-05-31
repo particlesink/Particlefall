@@ -45,16 +45,9 @@
 #define LMP_DUMP_VTK_H
 
 #include "lammps.h"
-#include <vtkSmartPointer.h>
-#include <vtkXMLWriter.h>
-#include <vtkDataWriter.h>
-#include <vtkDataObject.h>
-#include <vtkAlgorithmOutput.h>
-#include <vtkMPIController.h>
+#include "vtk_packfall_internal.h"
 #include <list>
 #include <string>
-
-#include <vtkVersionMacros.h>
 
 namespace LAMMPS_NS
 {
@@ -96,6 +89,7 @@ public:
     void write_vtu(vtkSmartPointer<vtkDataObject> data, const int vtk_file_format, const char * const filename);
     void write_vti(vtkSmartPointer<vtkAlgorithmOutput> data, const int vtk_file_format, const char * const filename);
     void write_vtr(vtkSmartPointer<vtkDataObject> data, const int vtk_file_format, const char * const filename);
+    void write_vtm(vtkSmartPointer<vtkMultiBlockDataSet> data, const char * const filename, const bool parallel);
 
     void write_vtk_poly(vtkSmartPointer<vtkDataObject> data, const int vtk_file_format, const char * const filename, char * const label = NULL);
     void write_vtk_unstructured_grid(vtkSmartPointer<vtkDataObject> data, const int vtk_file_format, const char * const filename, char * const label = NULL);

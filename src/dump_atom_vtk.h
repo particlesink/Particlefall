@@ -35,7 +35,6 @@
     Anton Gladky(TU Bergakademie Freiberg), gladky.anton@gmail.com
 ------------------------------------------------------------------------- */
 
-#if defined(LAMMPS_VTK) 
 #ifdef DUMP_CLASS
 
 DumpStyle(atom/vtk,DumpATOMVTK)
@@ -46,10 +45,9 @@ DumpStyle(atom/vtk,DumpATOMVTK)
 #define LMP_DUMP_ATOM_VTK_H
 
 #include "dump.h"
-#include "dump_vtk.h"
 #include <iostream>
+#include <string>
 #include <vector>
-#include <fstream>
 #include "update.h"
 
 namespace LAMMPS_NS {
@@ -97,13 +95,21 @@ class DumpATOMVTK : public Dump
       std::string serialize();
   };
 
-  class vtkExportData : public DumpVTK
+  class vtkExportData
   {
     private:
+      enum OutputFormat {
+        FORMAT_VTK_LEGACY,
+        FORMAT_VTU_XML
+      };
+
       std::vector<DumpATOMVTK::DataVTK> vtkData;
-      std::ofstream fileVTK;
-      const char * _fileName;
-      bool _setFileName;
+      class LAMMPS *lmp_;
+      std::string file_name_;
+      OutputFormat format_;
+
+      void write_legacy_vtk() const;
+      void write_vtu() const;
     public:
       vtkExportData(LAMMPS *lmp);
       void add(DumpATOMVTK::DataVTK &);
@@ -121,6 +127,5 @@ class DumpATOMVTK : public Dump
 
 }
 
-#endif
 #endif
 #endif

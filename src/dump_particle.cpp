@@ -67,22 +67,7 @@
 #include "error.h"
 #include <vector>
 #include <sstream>
-#include <vtkVersion.h>
-#ifndef VTK_MAJOR_VERSION
-#include <vtkConfigure.h>
-#endif
-#include <vtkPointData.h>
-#include <vtkCellData.h>
-#include <vtkDoubleArray.h>
-#include <vtkIntArray.h>
-#include <vtkStringArray.h>
-#include <vtkPolyData.h>
-#include <vtkTriangle.h>
-#include <vtkRectilinearGrid.h>
-#include <vtkRectilinearGridWriter.h>
-#include <vtkHexahedron.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkInformation.h>
+#include "vtk_packfall_internal.h"
 
 // For compatibility with new VTK generic data arrays (VTK >= 7.0)
 #ifdef vtkGenericDataArray_h

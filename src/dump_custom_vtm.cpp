@@ -70,17 +70,9 @@
 #include <algorithm>
 #include <vector>
 #include <sstream>
-#include <vtkVersion.h>
-#ifndef VTK_MAJOR_VERSION
-#include <vtkConfigure.h>
-#endif
-#include <vtkMultiBlockDataSet.h>
-#include <vtkXMLMultiBlockDataWriter.h>
-#include <vtkXMLPMultiBlockDataWriter.h>
-#include <vtkInformation.h>
-#include <vtkMPIController.h>
-#include <vtkMPI.h>
-#include <vtkMPICommunicator.h>
+#include "vtk_packfall_internal.h"
+
+using std::endl;
 
 #ifdef _WIN32
     #include "dirent.h"
@@ -277,7 +269,7 @@ DumpCustomVTM::DumpCustomVTM(LAMMPS *lmp, int narg, char **arg) :
             // open pvd file
             std::fstream pvdFile;
             std::string pvdFname = dirname;
-            pvdFname.append("liggghts_simulation.pvd");
+            pvdFname.append("packfall_simulation.pvd");
             pvdFile.open(pvdFname.c_str(), std::fstream::out);
             // write header
             pvdFile << "<VTKFile type=\"Collection\" version=\"1.0\" byte_order=\"LittleEndian\" header_type=\"UInt64\">" << endl;
@@ -477,31 +469,9 @@ void DumpCustomVTM::write()
         return;
 
     if (multiproc)
-    {
-        vtkSmartPointer<vtkXMLPMultiBlockDataWriter> pwriter = vtkSmartPointer<vtkXMLPMultiBlockDataWriter>::New();
-        setVtkWriterOptions(vtkXMLWriter::SafeDownCast(pwriter));
-        pwriter->SetFileName(parallelfilecurrent);
-
-#if VTK_MAJOR_VERSION < 6
-        pwriter->SetInput(mbSet);
-#else
-        pwriter->SetInputData(mbSet);
-#endif
-
-        pwriter->Write();
-    }
+        write_vtm(mbSet, parallelfilecurrent, true);
     else if (comm->me == 0 || comm->nprocs == 1)
-    {
-        vtkSmartPointer<vtkXMLMultiBlockDataWriter> mbWriter = vtkXMLMultiBlockDataWriter::New();
-        setVtkWriterOptions(vtkXMLWriter::SafeDownCast(mbWriter));
-        mbWriter->SetFileName(filecurrent);
-#if VTK_MAJOR_VERSION < 6
-        mbWriter->SetInput(mbSet);
-#else
-        mbWriter->SetInputData(mbSet);
-#endif
-        mbWriter->Write();
-    }
+        write_vtm(mbSet, filecurrent, false);
 
     // write out paraview configuration file for python script (paraview_generic_display.py)
     if (write_pv_config && comm->me == 0)
@@ -559,7 +529,7 @@ void DumpCustomVTM::write()
         // open pvd file
         std::fstream pvdFile;
         std::string pvdFname = dirname;
-        pvdFname.append("liggghts_simulation.pvd");
+        pvdFname.append("packfall_simulation.pvd");
         pvdFile.open(pvdFname.c_str(), std::fstream::out);
         // write header
         pvdFile << "<VTKFile type=\"Collection\" version=\"1.0\" byte_order=\"LittleEndian\" header_type=\"UInt64\">" << endl;

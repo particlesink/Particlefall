@@ -51,9 +51,7 @@
 #include <list>
 #include <utility>
 #include <string>
-#include <vtkSmartPointer.h>
-#include <vtkMultiBlockDataSet.h>
-#include <vtkMPIController.h>
+#include "vtk_packfall_internal.h"
 
 namespace LAMMPS_NS
 {

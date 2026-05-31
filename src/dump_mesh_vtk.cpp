@@ -57,22 +57,7 @@
 #include "modify.h"
 #include "comm.h"
 #include <stdint.h>
-#include <vtkDataSet.h>
-#include <vtkDataSetAttributes.h>
-#include <vtkAbstractArray.h>
-#include <vtkPolyData.h>
-#include <vtkPoints.h>
-#include <vtkCellArray.h>
-#include <vtkType.h>
-#include <vtkDoubleArray.h>
-#include <vtkIntArray.h>
-#include <vtkPointData.h>
-#include <vtkCellData.h>
-#include <vtkCellDataToPointData.h>
-#include <vtkPointDataToCellData.h>
-#include <vtkMPIController.h>
-#include <vtkMPI.h>
-#include <vtkMPICommunicator.h>
+#include "vtk_packfall_internal.h"
 
 // For compatibility with new VTK generic data arrays (VTK >= 7.0)
 #ifdef vtkGenericDataArray_h
@@ -293,7 +278,7 @@ void DumpMeshVTK::write_data(int n, double *mybuf)
         for (unsigned int i = 0; i < nblocks; i++)
         {
             // this is allowed because we checked above
-            vtkSmartPointer<vtkDataSet> mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i));
+            vtkDataSet *mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i).GetPointer());
             int niPoints = mesh->GetNumberOfPoints();
             for (int j = 0; j < niPoints; j++)
             {
@@ -328,7 +313,7 @@ void DumpMeshVTK::write_data(int n, double *mybuf)
                 for (unsigned int i = 0; i < nblocks; i++)
                 {
                     // this is allowed because we checked above
-                    vtkSmartPointer<vtkDataSet> mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i));
+                    vtkDataSet *mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i).GetPointer());
                     vtkSmartPointer<vtkDataSetAttributes> pointData = mesh->GetAttributes(vtkDataSet::POINT);
                     int arrayId = -1;
                     for (int j = 0; j < pointData->GetNumberOfArrays(); j++)
@@ -363,7 +348,7 @@ void DumpMeshVTK::write_data(int n, double *mybuf)
                 for (unsigned int i = 0; i < nblocks; i++)
                 {
                     // this is allowed because we checked above
-                    vtkSmartPointer<vtkDataSet> mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i));
+                    vtkDataSet *mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i).GetPointer());
                     vtkSmartPointer<vtkDataSetAttributes> pointData = mesh->GetAttributes(vtkDataSet::POINT);
                     int arrayId = -1;
                     for (int j = 0; j < pointData->GetNumberOfArrays(); j++)
@@ -412,7 +397,7 @@ void DumpMeshVTK::write_data(int n, double *mybuf)
                 for (unsigned int i = 0; i < nblocks; i++)
                 {
                     // this is allowed because we checked above
-                    vtkSmartPointer<vtkDataSet> mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i));
+                    vtkDataSet *mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i).GetPointer());
                     vtkSmartPointer<vtkDataSetAttributes> cellData = mesh->GetAttributes(vtkDataSet::CELL);
                     int arrayId = -1;
                     for (int j = 0; j < cellData->GetNumberOfArrays(); j++)
@@ -447,7 +432,7 @@ void DumpMeshVTK::write_data(int n, double *mybuf)
                 for (unsigned int i = 0; i < nblocks; i++)
                 {
                     // this is allowed because we checked above
-                    vtkSmartPointer<vtkDataSet> mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i));
+                    vtkDataSet *mesh = static_cast<vtkDataSet*>(mbSet_->GetBlock(i).GetPointer());
                     vtkSmartPointer<vtkDataSetAttributes> cellData = mesh->GetAttributes(vtkDataSet::CELL);
                     int arrayId = -1;
                     for (int j = 0; j < cellData->GetNumberOfArrays(); j++)
@@ -508,7 +493,7 @@ void DumpMeshVTK::write_data(int n, double *mybuf)
         #endif
 
         converter->Update();
-        polyData = vtkPolyData::SafeDownCast(converter->GetOutput());
+        polyData = converter->GetPolyDataOutput();
     }
     // interpolate everything from cells to points
     else if (dataMode_ == 1)
@@ -523,7 +508,7 @@ void DumpMeshVTK::write_data(int n, double *mybuf)
         #endif
 
         converter->Update();
-        polyData = vtkPolyData::SafeDownCast(converter->GetOutput());
+        polyData = converter->GetPolyDataOutput();
     }
 
     if (vtk_file_format_ == VTK_FILE_FORMATS::PVTP || vtk_file_format_ == VTK_FILE_FORMATS::VTP)

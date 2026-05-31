@@ -52,10 +52,7 @@
 #include <string>
 #include <list>
 
-#include <vtkSmartPointer.h>
-#include <vtkPoints.h>
-#include <vtkCellArray.h>
-#include <vtkMultiBlockDataSet.h>
+#include "vtk_packfall_internal.h"
 
 class vtkAbstractArray;
 class vtkRectilinearGrid;

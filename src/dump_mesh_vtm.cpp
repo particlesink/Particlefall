@@ -55,12 +55,7 @@
 #include "modify.h"
 #include "comm.h"
 #include <stdint.h>
-#include <vtkXMLMultiBlockDataWriter.h>
-#include <vtkMPIController.h>
-#include <vtkMPI.h>
-#include <vtkMPICommunicator.h>
-
-#include <vtkVersionMacros.h>
+#include "vtk_packfall_internal.h"
 
 using namespace LAMMPS_NS;
 
@@ -217,15 +212,7 @@ void DumpMeshVTM::write_data(int n, double *mybuf)
     if (!filewriter)
         return;
 
-    vtkSmartPointer<vtkXMLMultiBlockDataWriter> mbWriter = vtkXMLMultiBlockDataWriter::New();
-    mbWriter->SetFileName(filecurrent);
-    setVtkWriterOptions(vtkXMLWriter::SafeDownCast(mbWriter));
-#if VTK_MAJOR_VERSION < 6
-    mbWriter->SetInput(mbSet);
-#else
-    mbWriter->SetInputData(mbSet);
-#endif
-    mbWriter->Write();
+    write_vtm(mbSet, filecurrent, multiproc != 0);
 }
 
 /* ---------------------------------------------------------------------- */

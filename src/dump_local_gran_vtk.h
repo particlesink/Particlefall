@@ -55,8 +55,7 @@ DumpStyle(local/gran/vtk,DumpLocalGranVTK)
 #include <set>
 #include <string>
 
-#include <vtkSmartPointer.h>
-#include <vtkMultiBlockDataSet.h>
+#include "vtk_packfall_internal.h"
 
 namespace LAMMPS_NS {
 
@@ -125,4 +124,3 @@ class DumpLocalGranVTK : public Dump, public DumpVTK
 #endif
 #endif
 #endif
-
