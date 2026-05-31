@@ -1,6 +1,6 @@
 ## Packfall
 
-Packfall is a Discrete Particle Simulation code based on LIGGGHTS-PUBLIC.
+Packfall is a Discrete Particle Simulation code derived from LIGGGHTS-PUBLIC.
 
 ## Building
 
