@@ -54,6 +54,7 @@
 #include "error.h"
 #include "region.h"
 #include "domain.h"
+#include <cstdint>
 #include <cmath>
 #include "vector_liggghts.h"
 #include "input_mesh_tri.h"
@@ -119,7 +120,24 @@ void InputMeshTri::meshtrifile(const char *filename, class TriMesh *mesh,bool ve
   if(is_stl)
   {
       if (comm->me == 0) fprintf(screen,"\nReading STL file '%s' (mesh processing step 1/3) \n",filename);
-      meshtrifile_stl(mesh,region,filename);
+      if (is_binary_stl(filename))
+      {
+          if (me == 0)
+          {
+              if (nonlammps_file)
+              {
+                  fclose(nonlammps_file);
+                  nonlammps_file = NULL;
+              }
+              if (verbose_)
+                  fprintf(screen,"Detected binary STL format\n");
+          }
+          meshtrifile_stl_binary(mesh,region,filename);
+      }
+      else
+      {
+          meshtrifile_stl(mesh,region,filename);
+      }
       
   }
   else if(is_vtk)
@@ -130,6 +148,43 @@ void InputMeshTri::meshtrifile(const char *filename, class TriMesh *mesh,bool ve
   else error->all(FLERR,"Illegal command, need either an STL file or a VTK file as input for triangular mesh.");
 
   if(nonlammps_file) fclose(nonlammps_file);
+}
+
+bool InputMeshTri::is_binary_stl(const std::string &filename) const
+{
+  int binary = 0;
+
+  if (me == 0)
+  {
+    std::ifstream stl_file(filename.c_str(), std::ifstream::in | std::ifstream::binary);
+    if (!stl_file)
+    {
+      char str[512];
+      sprintf(str,"Cannot open mesh file %s",filename.c_str());
+      error->one(FLERR,str);
+    }
+
+    stl_file.seekg(0, std::ifstream::end);
+    const std::ifstream::pos_type file_size = stl_file.tellg();
+
+    if (file_size >= static_cast<std::ifstream::pos_type>(84))
+    {
+      stl_file.seekg(80, std::ifstream::beg);
+
+      std::uint32_t facet_count = 0;
+      stl_file.read(reinterpret_cast<char *>(&facet_count), sizeof(facet_count));
+
+      if (stl_file)
+      {
+        const std::uint64_t expected_size =
+          84ULL + static_cast<std::uint64_t>(facet_count) * 50ULL;
+        binary = expected_size == static_cast<std::uint64_t>(file_size) ? 1 : 0;
+      }
+    }
+  }
+
+  MPI_Bcast(&binary,1,MPI_INT,0,world);
+  return binary != 0;
 }
 
 /* ----------------------------------------------------------------------
@@ -386,19 +441,6 @@ void InputMeshTri::meshtrifile_stl(class TriMesh *mesh,class Region *region, con
       continue;
     }
 
-    if (strcmp(arg[0],"solid") != 0 && nLines == 1)
-    {
-        if (me == 0)
-        {
-            fclose(nonlammps_file);
-            if (verbose_)
-                fprintf(screen,"Note: solid keyword not found, assuming binary stl file\n");
-        }
-        nonlammps_file = NULL;
-        meshtrifile_stl_binary(mesh, region, filename);
-        break;
-    }
-
     // detect begin and end of a solid object, facet and vertices
     if (strcmp(arg[0],"solid") == 0)
     {
@@ -519,25 +561,32 @@ void InputMeshTri::meshtrifile_stl(class TriMesh *mesh,class Region *region, con
 
 void InputMeshTri::meshtrifile_stl_binary(class TriMesh *mesh, class Region *region, const char *filename)
 {
-    unsigned int num_of_facets;
+    std::uint32_t num_of_facets = 0;
     std::ifstream stl_file;
 
     if (me == 0) {
         // open file for reading
         stl_file.open(filename, std::ifstream::in | std::ifstream::binary);
-
-        // read 80 byte header into nirvana
-        for (int i=0; i<20; i++){
-          float dum;
-          stl_file.read((char *)&dum, sizeof(float));
+        if (!stl_file)
+        {
+            char str[512];
+            sprintf(str,"Cannot open mesh file %s",filename);
+            error->one(FLERR,str);
         }
 
+        char header[80];
+        stl_file.read(header, sizeof(header));
+        if (!stl_file)
+            error->one(FLERR,"Corrupt STL file: Could not read binary STL header.");
+
         // read number of triangles
-        stl_file.read((char *)&num_of_facets, sizeof(int));
+        stl_file.read(reinterpret_cast<char *>(&num_of_facets), sizeof(num_of_facets));
+        if (!stl_file)
+            error->one(FLERR,"Corrupt STL file: Could not read binary STL triangle count.");
     }
 
     // communicate number of triangles
-    MPI_Bcast(&num_of_facets,1,MPI_INT,0,world);
+    MPI_Bcast(&num_of_facets,1,MPI_UNSIGNED,0,world);
 
     unsigned int count = 0;
     int nElems = 0;

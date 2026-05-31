@@ -47,6 +47,7 @@
 #include <stdio.h>
 #include "input.h"
 #include <fstream>
+#include <string>
 
 namespace LAMMPS_NS {
 
@@ -130,6 +131,7 @@ class InputMeshTri : protected Input
     void meshtrifile_vtk(class TriMesh *mesh,class Region *region);
     void meshtrifile_stl(class TriMesh *mesh,class Region *region, const char * filename);
     void meshtrifile_stl_binary(class TriMesh *, class Region *region, const char * filename);
+    bool is_binary_stl(const std::string &filename) const;
     inline void addTriangle(class TriMesh *mesh, double *a, double *b, double *c,int lineNumber);
 
 };
