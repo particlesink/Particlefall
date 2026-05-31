@@ -1,0 +1,130 @@
+SHELL := /bin/bash
+
+.PHONY: all headers stubs clean print-config help
+
+TARGET ?= packfall
+BUILD_DIR ?= ../build/linux
+OBJ_DIR := $(BUILD_DIR)/obj
+DEP_DIR := $(BUILD_DIR)/dep
+EXE := $(BUILD_DIR)/$(TARGET)
+HEADER_STAMP := $(BUILD_DIR)/.headers.stamp
+
+AR ?= ar
+OPT ?= -O2
+STD ?= -std=gnu++17
+WARN ?= -Wall -Wextra -Wno-unused-result
+
+# Build mode:
+#   USE_MPI=0 -> default single-process build against the MPI shim in src/STUBS
+#   USE_MPI=1 -> opt in to the Linux MPI wrapper compiler
+USE_MPI ?= 0
+MPICXX ?= mpic++
+SERIAL_CXX ?= g++
+
+ENABLE_VTK ?= 1
+ENABLE_XDR ?= 1
+ENABLE_GZIP ?= 0
+ENABLE_SUPERQUADRICS ?= 0
+
+FEATURE_DEFS :=
+ifeq ($(ENABLE_VTK),1)
+FEATURE_DEFS += -DLAMMPS_VTK
+endif
+ifeq ($(ENABLE_XDR),1)
+FEATURE_DEFS += -DLAMMPS_XDR
+endif
+ifeq ($(ENABLE_GZIP),1)
+FEATURE_DEFS += -DLAMMPS_GZIP
+endif
+ifeq ($(ENABLE_SUPERQUADRICS),1)
+FEATURE_DEFS += -DSUPERQUADRIC_ACTIVE_FLAG -DNONSPHERICAL_ACTIVE_FLAG
+endif
+
+MPI_CPPFLAGS :=
+MPI_LDFLAGS :=
+MPI_LDLIBS :=
+STUB_TARGET :=
+
+ifeq ($(USE_MPI),1)
+CXX := $(MPICXX)
+LINK := $(MPICXX)
+MPI_MODE := wrapper
+else
+CXX := $(SERIAL_CXX)
+LINK := $(SERIAL_CXX)
+MPI_MODE := stubs
+MPI_CPPFLAGS += -ISTUBS
+MPI_LDFLAGS += -LSTUBS
+MPI_LDLIBS += -lmpi_stubs
+STUB_TARGET := STUBS/libmpi_stubs.a
+endif
+
+CPPFLAGS += -I. $(FEATURE_DEFS) $(MPI_CPPFLAGS) $(EXTRA_CPPFLAGS)
+CXXFLAGS += $(STD) $(OPT) $(WARN) $(EXTRA_CXXFLAGS)
+LDFLAGS += $(MPI_LDFLAGS) $(EXTRA_LDFLAGS)
+LDLIBS += $(MPI_LDLIBS) $(EXTRA_LDLIBS)
+
+SRC := $(wildcard *.cpp)
+OBJ := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRC))
+DEP := $(patsubst %.cpp,$(DEP_DIR)/%.d,$(SRC))
+
+all: $(EXE)
+
+help:
+	@echo "Linux build targets:"
+	@echo "  make -f Makefile.linux                  build single-process with the MPI shim"
+	@echo "  make -f Makefile.linux USE_MPI=1        opt in to a real MPI toolchain"
+	@echo "  make -f Makefile.linux print-config     show resolved toolchain settings"
+
+print-config:
+	@echo "TARGET=$(TARGET)"
+	@echo "EXE=$(EXE)"
+	@echo "USE_MPI=$(USE_MPI)"
+	@echo "MPI_MODE=$(MPI_MODE)"
+	@echo "CXX=$(CXX)"
+	@echo "LINK=$(LINK)"
+	@echo "CPPFLAGS=$(CPPFLAGS)"
+	@echo "CXXFLAGS=$(CXXFLAGS)"
+	@echo "LDFLAGS=$(LDFLAGS)"
+	@echo "LDLIBS=$(LDLIBS)"
+	@echo "ENABLE_VTK=$(ENABLE_VTK)"
+	@echo "ENABLE_XDR=$(ENABLE_XDR)"
+	@echo "ENABLE_GZIP=$(ENABLE_GZIP)"
+	@echo "ENABLE_SUPERQUADRICS=$(ENABLE_SUPERQUADRICS)"
+
+headers: $(HEADER_STAMP)
+
+stubs: $(STUB_TARGET)
+
+$(STUB_TARGET):
+	@cd STUBS && rm -f libmpi_stubs.a mpi.o
+	@cd STUBS && $(SERIAL_CXX) -O -c mpi.c -o mpi.o
+	@cd STUBS && $(AR) rs libmpi_stubs.a mpi.o
+
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
+
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+
+$(DEP_DIR):
+	@mkdir -p $(DEP_DIR)
+
+$(HEADER_STAMP): | $(BUILD_DIR)
+	@bash Make.sh style
+	@if [ ! -f style_contact_model.h ]; then \
+		bash Make.sh models; \
+	fi
+	@touch $@
+
+$(EXE): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
+$(EXE): $(OBJ)
+	$(LINK) $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS) -o $@
+
+$(OBJ_DIR)/%.o: %.cpp $(HEADER_STAMP) $(STUB_TARGET) | $(OBJ_DIR) $(DEP_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MMD -MF $(DEP_DIR)/$*.d -c $< -o $@
+
+clean:
+	rm -rf $(BUILD_DIR)
+
+-include $(DEP)

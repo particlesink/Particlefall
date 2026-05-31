@@ -106,7 +106,9 @@ help:
 	@test -f MAKE/Makefile.$@
 	@if [ ! -d Obj_${SUBTARGET} ]; then mkdir Obj_${SUBTARGET}; fi
 	@$(SHELL) Make.sh style
-	@$(SHELL) Make.sh models
+	@if [ ! -f style_contact_model.h ]; then \
+		$(SHELL) Make.sh models; \
+	fi
 	@cp MAKE/Makefile.$@ Obj_${SUBTARGET}/Makefile
 	@if [ ! -e Makefile.package ]; \
 	  then cp Makefile.package.empty Makefile.package; fi
