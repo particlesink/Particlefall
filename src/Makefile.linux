@@ -112,9 +112,7 @@ $(DEP_DIR):
 
 $(HEADER_STAMP): | $(BUILD_DIR)
 	@bash Make.sh style
-	@if [ ! -f style_contact_model.h ]; then \
-		bash Make.sh models; \
-	fi
+	@bash Make.sh models
 	@touch $@
 
 $(EXE): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
