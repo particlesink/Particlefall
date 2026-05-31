@@ -47,8 +47,45 @@
 #include <stdlib.h>
 #include <string>
 #include <climits>
+#include <cstring>
 
 using namespace LAMMPS_NS;
+
+namespace
+{
+
+int next_auto_seed()
+{
+    static const int default_auto_seeds[] = {
+        15485863, 15485867, 32452843, 32452867, 49979687,
+        49979693, 67867967, 67867979, 86028121, 86028157
+    };
+    static int auto_seed_counter = 0;
+
+    if (auto_seed_counter < static_cast<int>(sizeof(default_auto_seeds) / sizeof(default_auto_seeds[0])))
+        return default_auto_seeds[auto_seed_counter++];
+
+    int candidate = default_auto_seeds[sizeof(default_auto_seeds) / sizeof(default_auto_seeds[0]) - 1];
+    int remaining = auto_seed_counter - static_cast<int>(sizeof(default_auto_seeds) / sizeof(default_auto_seeds[0])) + 1;
+
+    while (remaining > 0)
+    {
+        if (candidate >= INT_MAX - 2)
+            candidate = 10001;
+        else
+            candidate += 2;
+
+        while (candidate < INT_MAX && !MathExtraLiggghts::isPrime(candidate))
+            candidate += 2;
+
+        remaining--;
+    }
+
+    auto_seed_counter++;
+    return candidate;
+}
+
+}
 
 /* ---------------------------------------------------------------------- */
 
@@ -56,8 +93,26 @@ Random::Random(LAMMPS *lmp, const char * seed_char, bool proc_shift, int multipl
 {
     if (!seed_char)
         error->all(FLERR, "Internal error: NULL seed_char");
-    long seedl = atol(seed_char);
-    seed = atoi(seed_char);
+
+    long seedl = 0;
+    if (strcmp(seed_char, "auto") == 0)
+    {
+        seed = next_auto_seed();
+        seedl = static_cast<long>(seed);
+
+        if (comm->me == 0)
+        {
+            char msg[256];
+            sprintf(msg, "Random number generation: resolved seed auto to %d", seed);
+            error->message(FLERR, msg);
+        }
+    }
+    else
+    {
+        seedl = atol(seed_char);
+        seed = atoi(seed_char);
+    }
+
     if ((long)seed != seedl)
     {
         char errstr[1024];
@@ -84,6 +139,7 @@ Random::Random(LAMMPS *lmp, const char * seed_char, bool proc_shift, int multipl
 
             sprintf(errstr,"Random number generation: It is required that the random seed value is > 10000 and a prime number.\n"
                            "The random seed used was %d\n"
+                           "  Hint 0: use 'auto' to let Packfall choose a deterministic prime seed for you\n"
                            "  Hint 1: start with 'liggghts -echo both < in.script' to find out which command caused this\n"
                            "  Hint 2: possible valid seeds would be the following numbers:\n"
                            "          15485863, 15485867, 32452843, 32452867, 49979687, 49979693, 67867967, 67867979, 86028121, 86028157",
