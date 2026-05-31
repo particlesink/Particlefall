@@ -386,10 +386,17 @@ FixRigid::FixRigid(LAMMPS *lmp, int narg, char **arg) :
       t_start = force->numeric(FLERR,arg[iarg+1]);
       t_stop = force->numeric(FLERR,arg[iarg+2]);
       t_period = force->numeric(FLERR,arg[iarg+3]);
-      random = new RanMars(lmp, arg[iarg+4], true);
+      int seed_arg = iarg + 4;
+      if (seed_arg < narg && strcmp(arg[seed_arg],"seed") == 0) {
+        if (iarg+6 > narg) error->all(FLERR,"Illegal fix rigid command");
+        seed_arg = iarg + 5;
+        iarg += 6;
+      } else {
+        iarg += 5;
+      }
+      random = new RanMars(lmp, arg[seed_arg], true);
       if (t_period <= 0.0)
         error->all(FLERR,"Fix rigid langevin period must be > 0.0");
-      iarg += 5;
 
     } else if (strcmp(arg[iarg],"temp") == 0) {
       if (iarg+4 > narg) error->all(FLERR,"Illegal fix rigid command");

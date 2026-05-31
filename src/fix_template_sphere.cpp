@@ -94,13 +94,19 @@ FixTemplateSphere::FixTemplateSphere(LAMMPS *lmp, int narg, char **arg) :
 
   // random number generator, same for all procs
   if (narg < 4) error->fix_error(FLERR,this,"not enough arguments");
-  random_insertion = new RanPark(lmp, arg[3], true);
-  random_mc = new RanPark(lmp, arg[3], false);
+  int seed_arg = 3;
+  iarg = 4;
+  if (strcmp(arg[3],"seed") == 0)
+  {
+      if (narg < 5) error->fix_error(FLERR,this,"not enough arguments");
+      seed_arg = 4;
+      iarg = 5;
+  }
+  random_insertion = new RanPark(lmp, arg[seed_arg], true);
+  random_mc = new RanPark(lmp, arg[seed_arg], false);
   seed_insertion = random_insertion->getSeed();
   seed_mc = random_mc->getSeed();
   seed_orig = seed_insertion;
-
-  iarg = 4;
 
   // set default values
   atom_type = 1;

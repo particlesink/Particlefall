@@ -124,18 +124,25 @@ void CreateAtoms::command(int narg, char **arg)
     style = RANDOM;
     if (narg < 5) error->all(FLERR,"Illegal create_atoms command");
     nrandom = force->inumeric(FLERR,arg[2]);
+    int seed_arg = 3;
+    int region_arg = 4;
+    if (strcmp(arg[3],"seed") == 0) {
+      if (narg < 6) error->all(FLERR,"Illegal create_atoms command");
+      seed_arg = 4;
+      region_arg = 5;
+    }
     if (seed_char)
         delete [] seed_char;
-    seed_char = new char [strlen(arg[3])+1];
-    strcpy(seed_char, arg[3]);
-    if (strcmp(arg[4],"NULL") == 0) nregion = -1;
+    seed_char = new char [strlen(arg[seed_arg])+1];
+    strcpy(seed_char, arg[seed_arg]);
+    if (strcmp(arg[region_arg],"NULL") == 0) nregion = -1;
     else {
-      nregion = domain->find_region(arg[4]);
+      nregion = domain->find_region(arg[region_arg]);
       if (nregion == -1) error->all(FLERR,
                                     "Create_atoms region ID does not exist");
       domain->regions[nregion]->init();
     }
-    iarg = 5;
+    iarg = region_arg + 1;
   } else error->all(FLERR,"Illegal create_atoms command");
 
   // process optional keywords

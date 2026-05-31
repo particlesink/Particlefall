@@ -422,8 +422,15 @@ void DeleteAtoms::delete_porosity(int narg, char **arg)
   if (iregion == -1) error->all(FLERR,"Could not find delete_atoms region ID");
 
   double porosity_fraction = force->numeric(FLERR,arg[2]);
-  RanMars *random = new RanMars(lmp, arg[3], true);
-  options(narg-4,&arg[4]);
+  int seed_arg = 3;
+  int options_arg = 4;
+  if (strcmp(arg[3],"seed") == 0) {
+    if (narg < 5) error->all(FLERR,"Illegal delete_atoms command");
+    seed_arg = 4;
+    options_arg = 5;
+  }
+  RanMars *random = new RanMars(lmp, arg[seed_arg], true);
+  options(narg-options_arg,&arg[options_arg]);
 
   // allocate and initialize deletion list
 

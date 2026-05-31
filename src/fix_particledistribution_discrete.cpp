@@ -81,9 +81,18 @@ FixParticledistributionDiscrete::FixParticledistributionDiscrete(LAMMPS *lmp, in
 
   if (narg < 7)
     error->fix_error(FLERR,this,"not enough arguments");
-  random = new RanPark(lmp, arg[3], true);
+  int seed_arg = 3;
+  int ntemplates_arg = 4;
+  if (strcmp(arg[3],"seed") == 0)
+  {
+    if (narg < 8)
+      error->fix_error(FLERR,this,"not enough arguments");
+    seed_arg = 4;
+    ntemplates_arg = 5;
+  }
+  random = new RanPark(lmp, arg[seed_arg], true);
   seed = random->getSeed();
-  ntemplates = atoi(arg[4]);
+  ntemplates = atoi(arg[ntemplates_arg]);
   if(ntemplates < 1)
     error->fix_error(FLERR,this,"illegal number of templates");
 
@@ -93,7 +102,7 @@ FixParticledistributionDiscrete::FixParticledistributionDiscrete(LAMMPS *lmp, in
   parttogen = new int[ntemplates];
   distorder = new int[ntemplates];
 
-  iarg = 5;
+  iarg = ntemplates_arg + 1;
 
   int itemp=0;
 

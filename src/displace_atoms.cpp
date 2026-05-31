@@ -105,7 +105,10 @@ void DisplaceAtoms::command(int narg, char **arg)
 
   if (style == MOVE) options(narg-5,&arg[5]);
   else if (style == RAMP) options(narg-8,&arg[8]);
-  else if (style == RANDOM) options(narg-6,&arg[6]);
+  else if (style == RANDOM) {
+    if (narg > 5 && strcmp(arg[5],"seed") == 0) options(narg-7,&arg[7]);
+    else options(narg-6,&arg[6]);
+  }
   else if (style == ROTATE) options(narg-9,&arg[9]);
 
   // setup scaling
@@ -201,7 +204,12 @@ void DisplaceAtoms::command(int narg, char **arg)
     double dx = xscale*force->numeric(FLERR,arg[2]);
     double dy = yscale*force->numeric(FLERR,arg[3]);
     double dz = zscale*force->numeric(FLERR,arg[4]);
-    RanPark *random = new RanPark(lmp, arg[5]);
+    int seed_arg = 5;
+    if (narg > 5 && strcmp(arg[5],"seed") == 0) {
+      if (narg < 7) error->all(FLERR,"Illegal displace_atoms random command");
+      seed_arg = 6;
+    }
+    RanPark *random = new RanPark(lmp, arg[seed_arg]);
     int seed = random->getSeed();
     if (seed <= 0) error->all(FLERR,"Illegal displace_atoms random command");
 
