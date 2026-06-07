@@ -56,6 +56,8 @@ class Output : protected Pointers {
 
   bigint next_thermo;          // next timestep for thermo output
   int thermo_every;            // output freq for thermo, 0 if first/last only
+  double thermo_every_time;    // thermo output period in physical time, 0 if timestep-based
+  double next_thermo_time;     // next simulation time to output thermo
   bigint last_thermo;          // last timestep thermo was output
   char *var_thermo;            // variable name for thermo freq, NULL if every
   int ivar_thermo;             // variable index for thermo frequency
@@ -65,7 +67,9 @@ class Output : protected Pointers {
   int max_dump;                // max size of Dump list
   bigint next_dump_any;        // next timestep for any Dump
   int *every_dump;             // write freq for each Dump, 0 if var
+  double *every_dump_time;     // write period for each Dump in physical time, 0 if timestep-based
   bigint *next_dump;           // next timestep to do each Dump
+  double *next_dump_time;      // next simulation time to do each Dump
   bigint *last_dump;           // last timestep each snapshot was output
   char **var_dump;             // variable name for dump frequency
   int *ivar_dump;              // variable index for dump frequency
@@ -75,6 +79,7 @@ class Output : protected Pointers {
   ~Output();
   void init();
   void setup(int memflag = 1);          // initial output before run/min
+  void continue_run_setup();            // refresh scheduling for an internally chunked run
   void write(bigint);                   // output for current timestep
   void write_dump(bigint);              // force output of dump snapshots
   void write_restart(bigint);           // force output of a restart file
@@ -103,6 +108,10 @@ class Output : protected Pointers {
   bigint next_restart_double;  // next timestep to write a double restart file
   int restart_every_single;    // single restart file write freq, 0 if var
   int restart_every_double;    // double restart file write freq, 0 if var
+  double restart_every_time_single;    // single restart period in physical time, 0 if timestep-based
+  double restart_every_time_double;    // double restart period in physical time, 0 if timestep-based
+  double next_restart_time_single;     // next simulation time to write a single restart file
+  double next_restart_time_double;     // next simulation time to write a double restart file
   bigint last_restart;         // last timestep any restart file was output
   int restart_toggle;          // 0 if use restart2a as prefix, 1 if restart2b
   char *var_restart_single;    // variable name for single restart freq

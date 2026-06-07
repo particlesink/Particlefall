@@ -1,0 +1,54 @@
+atom_style      granular
+atom_modify     map array
+boundary        m m m
+newton          off
+
+communicate     single vel yes
+
+units           si
+
+region          domain block -0.06 0.06 -0.06 0.06 -0.01 0.16 units box
+create_box      1 domain
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 5.e6
+fix             m2 all property/global poissonsRatio peratomtype 0.45
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.3
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+
+pair_style      gran model hertz tangential history
+pair_coeff      * *
+
+timestep        0.00001
+
+fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
+
+fix             hopper_mesh all mesh/surface file meshes/cylinder_closed.stl type 1 scale 1.0
+fix             hopper_wall all wall/gran model hertz tangential history mesh n_meshes 1 meshes hopper_mesh
+
+fix             pts1 all particletemplate/sphere 15485863 atom_type 1 density constant 2500 radius constant 0.004
+fix             pts2 all particletemplate/sphere 15485867 atom_type 1 density constant 2500 radius constant 0.006
+fix             pdd1 all particledistribution/discrete 32452843 2 pts1 0.5 pts2 0.5
+
+region          insreg block -0.035 0.035 -0.035 0.035 0.01 0.13 units box
+group           nve_group region domain
+
+fix             ins nve_group insert/pack seed 32452867 distributiontemplate pdd1 &
+                start_time 0.0 insert_every once overlapcheck yes all_in yes maxattempt 100 &
+                region insreg volumefraction_region 0.05 &
+                inside hopper_mesh 1 1 0 &
+                vel constant 0.0 0.0 -0.2
+
+fix             integr nve_group nve/sphere
+
+compute         erot all erotate/sphere
+thermo_style    custom step time atoms ke c_erot vol
+thermo          0.005 sec
+thermo_modify   lost ignore norm no
+
+dump            dmp all custom/vtk 0.01 sec post/time_input_*.vtk id type x y z vx vy vz radius
+restart         0.012 sec post/time_input_restart
+
+run             0.03 sec

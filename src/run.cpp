@@ -64,11 +64,22 @@
 #include "timer.h"
 #include "error.h"
 #include "force.h"
+#include "time_input.h"
 #include "signal_handling.h"
 
 using namespace LAMMPS_NS;
 
 #define MAXLINE 2048
+#define RUN_TIME_CHUNK_MAX 1000
+
+namespace {
+
+bool run_time_reached(const LAMMPS_NS::Update *update, const double target_time)
+{
+  return update->get_cur_time() + 1e-12 >= target_time;
+}
+
+}
 
 /* ---------------------------------------------------------------------- */
 
@@ -83,7 +94,30 @@ void Run::command(int narg, char **arg, bigint nsteps_input_ext)
   if (domain->box_exist == 0)
     error->all(FLERR,"Run command before simulation box is defined");
 
-  bigint nsteps_input = nsteps_input_ext > 0 ? nsteps_input_ext : ATOBIGINT(arg[0]);
+  bigint nsteps_input = nsteps_input_ext > 0 ? nsteps_input_ext : -1;
+  bool time_based = false;
+  double target_time = 0.;
+  int first_optional_arg = 1;
+
+  if(nsteps_input_ext > 0)
+  {
+    nsteps_input = nsteps_input_ext;
+  }
+  else
+  {
+    TimeInputValue run_value;
+    if(!parse_time_input(lmp,narg,arg,0,TIMEINPUT_UNIT_STEP,run_value))
+      error->all(FLERR,"Illegal run command");
+
+    first_optional_arg = run_value.consumed;
+    if(run_value.unit == TIMEINPUT_UNIT_SECOND)
+    {
+      time_based = true;
+      target_time = run_value.value;
+    }
+    else
+      nsteps_input = static_cast<bigint>(run_value.value);
+  }
 
   // parse optional args
 
@@ -97,7 +131,7 @@ void Run::command(int narg, char **arg, bigint nsteps_input_ext)
   int ncommands = 0;
   int first=0,last=0;
 
-  int iarg = 1;
+  int iarg = first_optional_arg;
   while (iarg < narg) {
     if (strcmp(arg[iarg],"upto") == 0) {
       if (iarg+1 > narg) error->all(FLERR,"Illegal run command");
@@ -142,29 +176,40 @@ void Run::command(int narg, char **arg, bigint nsteps_input_ext)
     } else error->all(FLERR,"Illegal run command");
   }
 
+  if(time_based && (startflag || stopflag || nevery))
+    error->all(FLERR,"Time-based run currently supports only the upto, pre, and post keywords");
+
   // set nsteps as integer, using upto value if specified
 
   int nsteps;
-  if (!uptoflag) {
-    if (nsteps_input < 0 || nsteps_input > MAXSMALLINT)
-      error->all(FLERR,"Invalid run command N value");
-    nsteps = static_cast<int> (nsteps_input);
+  if (!time_based) {
+    if (!uptoflag) {
+      if (nsteps_input < 0 || nsteps_input > MAXSMALLINT)
+        error->all(FLERR,"Invalid run command N value");
+      nsteps = static_cast<int> (nsteps_input);
+    } else {
+      bigint delta = nsteps_input - update->ntimestep;
+      if (delta < 0 || delta > MAXSMALLINT)
+        error->all(FLERR,"Invalid run command upto value");
+      nsteps = static_cast<int> (delta);
+    }
   } else {
-    bigint delta = nsteps_input - update->ntimestep;
-    if (delta < 0 || delta > MAXSMALLINT)
-      error->all(FLERR,"Invalid run command upto value");
-    nsteps = static_cast<int> (delta);
+    if(target_time < 0.)
+      error->all(FLERR,"Invalid run command N value");
+    if(!uptoflag)
+      target_time += update->get_cur_time();
+    nsteps = 0;
   }
 
   // error check
 
-  if (startflag) {
+  if (!time_based && startflag) {
     if (start < 0 || start > MAXBIGINT)
       error->all(FLERR,"Invalid run command start/stop value");
     if (start > update->ntimestep)
       error->all(FLERR,"Run command start value is after start of run");
   }
-  if (stopflag) {
+  if (!time_based && stopflag) {
     if (stop < 0 || stop > MAXBIGINT)
       error->all(FLERR,"Invalid run command start/stop value");
     if (stop < update->ntimestep + nsteps)
@@ -194,7 +239,61 @@ void Run::command(int narg, char **arg, bigint nsteps_input_ext)
 
   update->whichflag = 1;
 
-  if (nevery == 0) {
+  if (time_based) {
+    bool initialized = false;
+    const bigint firststep_time_run = update->ntimestep;
+
+    while (!run_time_reached(update,target_time)) {
+      const double remaining = target_time - update->get_cur_time();
+      bigint nsteps_estimate = static_cast<bigint>(ceil((remaining - 1e-12)/update->dt));
+      if (nsteps_estimate < 1) nsteps_estimate = 1;
+      if (nsteps_estimate > RUN_TIME_CHUNK_MAX) nsteps_estimate = RUN_TIME_CHUNK_MAX;
+      if (nsteps_estimate > MAXSMALLINT) nsteps_estimate = MAXSMALLINT;
+      nsteps = static_cast<int>(nsteps_estimate);
+
+      update->nsteps = nsteps;
+      update->firststep = update->ntimestep;
+      update->laststep = update->ntimestep + nsteps;
+      if (update->laststep < 0 || update->laststep > MAXBIGINT)
+        error->all(FLERR,"Too many timesteps");
+
+      update->beginstep = update->firststep;
+      update->endstep = update->laststep;
+
+      if (!initialized) {
+        if (preflag || update->first_update == 0)
+        {
+          lmp->init();
+          update->integrate->setup();
+        }
+        else
+        {
+          output->init();
+          output->setup(0);
+        }
+        initialized = true;
+      } else {
+        output->init();
+        output->continue_run_setup();
+      }
+
+      timer->init();
+      timer->barrier_start(TIME_LOOP);
+      update->integrate->run(nsteps);
+      timer->barrier_stop(TIME_LOOP);
+
+      update->integrate->cleanup();
+    }
+
+    bigint total_steps = update->ntimestep - firststep_time_run;
+    if (total_steps < 0) total_steps = 0;
+    if (total_steps > MAXSMALLINT) update->nsteps = MAXSMALLINT;
+    else update->nsteps = static_cast<int>(total_steps);
+
+    Finish finish(lmp);
+    finish.end(postflag);
+
+  } else if (nevery == 0) {
     update->nsteps = nsteps;
     update->firststep = update->ntimestep;
     update->laststep = update->ntimestep + nsteps;
