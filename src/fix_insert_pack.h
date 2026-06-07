@@ -66,8 +66,12 @@ class FixInsertPack : public FixInsert {
 
   virtual void calc_insertion_properties();
   void init_defaults();
+  virtual void sanity_check();
+  virtual bool warn_on_zero_insertion() const;
 
   void calc_region_volume_local();
+  bool refill_allows_insertion();
+  double refill_level() const;
 
   virtual int calc_ninsert_this();
   virtual int calc_maxtry(int);
@@ -97,6 +101,12 @@ class FixInsertPack : public FixInsert {
 
   // warn if region extends outside box
   bool warn_region;
+
+  bool refill_enabled_;
+  bool refill_paused_;
+  double refill_stop_above_;
+  double refill_resume_below_;
+  int refill_axis_;
 
 };
 

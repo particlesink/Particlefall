@@ -203,6 +203,7 @@ class FixInsert : public Fix {
   virtual void calc_insertion_properties() = 0;
 
   virtual bool pre_insert() { return true; }
+  virtual bool warn_on_zero_insertion() const { return true; }
   virtual int calc_ninsert_this();
   virtual int load_xnear(int);
   virtual int is_nearby(int) = 0;
@@ -221,6 +222,9 @@ class FixInsert : public Fix {
   bool mesh_filter_matches(const double *pos, double extent) const;
   bool has_mesh_filter() const
   { return mesh_filter_enabled_; }
+  bool mesh_filter_inside_mode() const
+  { return mesh_filter_inside_; }
+  bool mesh_point_is_inside(const double *pos) const;
 
   bool has_set_property() const
   { return property_name != NULL && fix_property != NULL; }

@@ -136,6 +136,9 @@ void FixInsertRateRegion::calc_insertion_properties()
 
 int FixInsertRateRegion::calc_ninsert_this()
 {
+  if(!refill_allows_insertion())
+    return 0;
+
   // check if region extends outside simulation box
   // if so, throw error if boundary setting is "f f f"
 

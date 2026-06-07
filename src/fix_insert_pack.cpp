@@ -41,6 +41,7 @@
 ------------------------------------------------------------------------- */
 
 #include <cmath>
+#include <limits>
 #include <stdlib.h>
 #include <string.h>
 #include "fix_insert_pack.h"
@@ -140,6 +141,28 @@ FixInsertPack::FixInsertPack(LAMMPS *lmp, int narg, char **arg) :
         error->fix_error(FLERR,this,"expecting 'yes' or 'no' after 'check_dist_from_subdomain_border'");
       iarg += 2;
       hasargs = true;
+    } else if (strcmp(arg[iarg],"fill_stop_above") == 0 || strcmp(arg[iarg],"high") == 0) {
+      if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+      refill_enabled_ = true;
+      refill_stop_above_ = atof(arg[iarg+1]);
+      if(strcmp(arg[iarg],"high") == 0)
+        refill_resume_below_ = refill_stop_above_;
+      iarg += 2;
+      hasargs = true;
+    } else if (strcmp(arg[iarg],"fill_resume_below") == 0 || strcmp(arg[iarg],"resume_below") == 0) {
+      if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+      refill_enabled_ = true;
+      refill_resume_below_ = atof(arg[iarg+1]);
+      iarg += 2;
+      hasargs = true;
+    } else if (strcmp(arg[iarg],"fill_axis") == 0) {
+      if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+      if(strcmp(arg[iarg+1],"x") == 0) refill_axis_ = 0;
+      else if(strcmp(arg[iarg+1],"y") == 0) refill_axis_ = 1;
+      else if(strcmp(arg[iarg+1],"z") == 0) refill_axis_ = 2;
+      else error->fix_error(FLERR,this,"expecting 'x', 'y' or 'z' after 'fill_axis'");
+      iarg += 2;
+      hasargs = true;
     } else if (parse_base_keyword(narg,arg)) {
       hasargs = true;
     } else if(strcmp(style,"insert/pack") == 0)
@@ -179,6 +202,12 @@ void FixInsertPack::init_defaults()
       check_dist_from_subdomain_border_ = true;
 
       warn_region = true;
+
+      refill_enabled_ = false;
+      refill_paused_ = false;
+      refill_stop_above_ = std::numeric_limits<double>::max();
+      refill_resume_below_ = std::numeric_limits<double>::max();
+      refill_axis_ = 2;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -237,6 +266,31 @@ void FixInsertPack::calc_insertion_properties()
 
 }
 
+/* ---------------------------------------------------------------------- */
+
+void FixInsertPack::sanity_check()
+{
+    FixInsert::sanity_check();
+
+    if(!refill_enabled_)
+        return;
+
+    if(refill_stop_above_ == std::numeric_limits<double>::max())
+        error->fix_error(FLERR,this,"fill_stop_above or high is required when using the hopper refill controller");
+
+    if(refill_resume_below_ == std::numeric_limits<double>::max())
+        refill_resume_below_ = refill_stop_above_;
+
+    if(refill_resume_below_ > refill_stop_above_)
+        error->fix_error(FLERR,this,"fill_resume_below must be <= fill_stop_above");
+
+    if(!has_mesh_filter())
+        error->fix_error(FLERR,this,"hopper refill controller requires inside mesh classification");
+
+    if(!mesh_filter_inside_mode())
+        error->fix_error(FLERR,this,"hopper refill controller requires an inside mesh classifier, not outside");
+}
+
 /* ----------------------------------------------------------------------
    calculate volume of region on my subbox
    has to be called at initialization and before every insertion in case
@@ -263,6 +317,12 @@ int FixInsertPack::calc_ninsert_this()
   double *radius = atom->radius;
 
   int ninsert_this = 0;
+
+  if(!refill_allows_insertion())
+  {
+      insertion_ratio = 1.;
+      return 0;
+  }
 
   // check if region extends outside simulation box
   // if so, throw error if boundary setting is "f f f"
@@ -357,6 +417,61 @@ int FixInsertPack::calc_ninsert_this()
 
 /* ---------------------------------------------------------------------- */
 
+bool FixInsertPack::refill_allows_insertion()
+{
+    if(!refill_enabled_)
+        return true;
+
+    const double level = refill_level();
+
+    if(refill_paused_)
+    {
+        if(level < refill_resume_below_)
+            refill_paused_ = false;
+    }
+    else if(level > refill_stop_above_)
+        refill_paused_ = true;
+
+    return !refill_paused_;
+}
+
+/* ---------------------------------------------------------------------- */
+
+double FixInsertPack::refill_level() const
+{
+    double level_local = -std::numeric_limits<double>::max();
+    double **x = atom->x;
+    double *radius = atom->radius;
+
+    for(int i = 0; i < atom->nlocal; i++)
+    {
+        if(fix_multisphere && fix_multisphere->belongs_to(i) >= 0)
+            continue;
+
+        if(mesh_point_is_inside(x[i]))
+            level_local = std::max(level_local, x[i][refill_axis_] + radius[i]);
+    }
+
+    if(multisphere)
+    {
+        const int nbody = multisphere->n_body();
+        double x_bound_body[3];
+
+        for(int ibody = 0; ibody < nbody; ibody++)
+        {
+            multisphere->x_bound(x_bound_body,ibody);
+            if(mesh_point_is_inside(x_bound_body))
+                level_local = std::max(level_local, x_bound_body[refill_axis_] + multisphere->r_bound(ibody));
+        }
+    }
+
+    double level_global = level_local;
+    MPI_Allreduce(&level_local,&level_global,1,MPI_DOUBLE,MPI_MAX,world);
+    return level_global;
+}
+
+/* ---------------------------------------------------------------------- */
+
 double FixInsertPack::insertion_fraction()
 {
     // have to re-calculate region_volume_local in case simulation box is changing
@@ -364,6 +479,13 @@ double FixInsertPack::insertion_fraction()
         calc_region_volume_local();
 
     return region_volume_local/region_volume;
+}
+
+/* ---------------------------------------------------------------------- */
+
+bool FixInsertPack::warn_on_zero_insertion() const
+{
+    return !(refill_enabled_ && refill_paused_);
 }
 
 /* ---------------------------------------------------------------------- */

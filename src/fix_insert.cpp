@@ -788,7 +788,7 @@ void FixInsert::pre_exchange()
   if(ninsert_this == 0)
   {
       // warn if flowrate should be fulfilled
-      if((nflowrate > 0. || massflowrate > 0.) && comm->me == 0)
+      if((nflowrate > 0. || massflowrate > 0.) && warn_on_zero_insertion() && comm->me == 0)
         error->warning(FLERR,"Particle insertion: Inserting no particle - check particle insertion settings");
 
       // schedule next insertion
@@ -1192,6 +1192,25 @@ int FixInsert::count_mesh_crossings(const double *pos, int axis) const
 bool FixInsert::mesh_filter_matches(const double *pos) const
 {
   return mesh_filter_matches(pos,0.);
+}
+
+/* ---------------------------------------------------------------------- */
+
+bool FixInsert::mesh_point_is_inside(const double *pos) const
+{
+  if(!mesh_filter_enabled_)
+    return true;
+
+  for(int axis = 0; axis < 3; ++axis)
+  {
+    if(!mesh_filter_axis_[axis])
+      continue;
+
+    if((count_mesh_crossings(pos,axis) % 2) != 1)
+      return false;
+  }
+
+  return true;
 }
 
 /* ---------------------------------------------------------------------- */
