@@ -41,6 +41,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <limits>
 #include <stdlib.h>
 #include <string.h>
 #include "atom.h"
@@ -59,6 +60,8 @@
 #include "fix_property_atom.h"
 #include "irregular.h"
 #include "fix_insert.h"
+#include "fix_mesh_surface.h"
+#include "tri_mesh.h"
 #include "math_extra_liggghts.h"
 #include "mpi_liggghts.h"
 #include "vector_liggghts.h"
@@ -73,6 +76,36 @@ using namespace FixConst;
 
 #define LMP_DEBUGMODE_FIXINSERT false //(667 == update->ntimestep)//  true
 #define LMP_DEBUG_OUT_FIXINSERT screen
+
+namespace {
+
+bool ray_intersects_triangle(const double *origin, const double *direction,
+                             const double *v0, const double *v1, const double *v2,
+                             const double eps, double &t)
+{
+  double edge1[3], edge2[3], pvec[3], tvec[3], qvec[3];
+  vectorSubtract3D(v1, v0, edge1);
+  vectorSubtract3D(v2, v0, edge2);
+  vectorCross3D(direction, edge2, pvec);
+
+  const double det = vectorDot3D(edge1, pvec);
+  if(fabs(det) <= eps) return false;
+
+  const double inv_det = 1.0 / det;
+
+  vectorSubtract3D(origin, v0, tvec);
+  const double u = vectorDot3D(tvec, pvec) * inv_det;
+  if(u < -eps || u > 1.0 + eps) return false;
+
+  vectorCross3D(tvec, edge1, qvec);
+  const double v = vectorDot3D(direction, qvec) * inv_det;
+  if(v < -eps || u + v > 1.0 + eps) return false;
+
+  t = vectorDot3D(edge2, qvec) * inv_det;
+  return t > eps;
+}
+
+}
 
 /* ---------------------------------------------------------------------- */
 
@@ -89,6 +122,10 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
   fix_distribution = NULL;
   fix_multisphere = NULL;
   multisphere = NULL;
+  recvcounts = NULL;
+  displs = NULL;
+  irregular = NULL;
+  constructor_finalized_ = false;
 
   compress_flag = false ;
 
@@ -103,90 +140,118 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
 
   // set defaults
   init_defaults();
+}
 
-  // parse args
-  
+/* ---------------------------------------------------------------------- */
+
+bool FixInsert::parse_base_keyword(int narg, char **arg)
+{
+  if(parse_shared_keyword(narg,arg))
+    return true;
+
 #ifdef SUPERQUADRIC_ACTIVE_FLAG
-  check_obb_flag = 1;
+  if (strcmp(arg[iarg],"check_obb") == 0) {
+    if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+    if(strcmp(arg[iarg+1],"yes")==0) check_obb_flag = 1;
+    else if(strcmp(arg[iarg+1],"no")==0) check_obb_flag = 0;
+    else error->fix_error(FLERR,this,"");
+    if(check_ol_flag==0) check_obb_flag = 0;
+    iarg += 2;
+    return true;
+  }
 #endif
-  
-  bool hasargs = true;
-  while(iarg < narg && hasargs)
-  {
-    hasargs = false;
-    
-    if(strcmp(arg[iarg],"distributiontemplate") == 0) {
+
+  return false;
+}
+
+/* ---------------------------------------------------------------------- */
+
+bool FixInsert::parse_shared_keyword(int narg, char **arg)
+{
+  if(strcmp(arg[iarg],"distributiontemplate") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       int ifix = modify->find_fix(arg[iarg+1]);
       if(ifix < 0 || strncmp(modify->fix[ifix]->style,"particledistribution/discrete",29))
         error->fix_error(FLERR,this,"Fix insert requires you to define a valid ID for a fix of type particledistribution/discrete");
       fix_distribution = static_cast<FixParticledistributionDiscrete*>(modify->fix[ifix]);
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"maxattempt") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       maxattempt = atoi(arg[iarg+1]);
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"nparticles") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       if(strcmp(arg[iarg+1],"INF") == 0)
         ninsert_exists = 0;
       else ninsert = atof(arg[iarg+1]);
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"mass") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       if(strcmp(arg[iarg+1],"INF") == 0)
         ninsert_exists = 0;
       else massinsert = atof(arg[iarg+1]);
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"massrate") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       massflowrate = atof(arg[iarg+1]);
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"particlerate") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       nflowrate = atof(arg[iarg+1]);
       iarg += 2;
-      hasargs = true;
-    } else if (strcmp(arg[iarg],"insert_every_time") == 0 || strcmp(arg[iarg],"insert_every") == 0 || strcmp(arg[iarg],"every") == 0) {
+      return true;
+    } else if (strcmp(arg[iarg],"insert_every_time") == 0 || strcmp(arg[iarg],"insert_every") == 0 || strcmp(arg[iarg],"every") == 0 || strcmp(arg[iarg],"interval") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       if(strcmp(arg[iarg+1],"once") == 0) insert_every = 0;
-      else if(strcmp(arg[iarg],"insert_every_time") == 0)
+      else if(strcmp(arg[iarg],"insert_every_time") == 0 || strcmp(arg[iarg],"interval") == 0)
       {
-          if(!update->timestep_set)
-            error->fix_error(FLERR,this,"need so set 'timestep' before");
-          insert_every = static_cast<int>(atof(arg[iarg+1])/update->dt);
+          insert_every = time_to_step(atof(arg[iarg+1]),true);
       }
       else
           insert_every = atoi(arg[iarg+1]);
       if(insert_every < 0) error->fix_error(FLERR,this,"insert_every must be >= 0");
       iarg += 2;
-      hasargs = true;
-    } else if (strcmp(arg[iarg],"start") == 0) {
+      return true;
+    } else if (strcmp(arg[iarg],"start") == 0 || strcmp(arg[iarg],"start_time") == 0 || strcmp(arg[iarg],"t_zero") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
-      first_ins_step = atoi(arg[iarg+1]);
+      if(strcmp(arg[iarg],"start") == 0)
+        first_ins_step = atoi(arg[iarg+1]);
+      else
+      {
+        first_ins_step = time_to_step(atof(arg[iarg+1]),false);
+        const int min_start = modify->fix_restart_in_progress() ? update->ntimestep : update->ntimestep + 1;
+        if(first_ins_step < min_start)
+          first_ins_step = min_start;
+      }
       if(first_ins_step < update->ntimestep + 1 && !modify->fix_restart_in_progress())
         error->fix_error(FLERR,this,"'start' step can not be before current step");
       iarg += 2;
-      hasargs = true;
+      return true;
+    } else if (strcmp(arg[iarg],"stop_time") == 0 || strcmp(arg[iarg],"t_last") == 0) {
+      if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+      last_ins_step_ = time_to_step(atof(arg[iarg+1]),false);
+      last_ins_step_set_ = true;
+      iarg += 2;
+      return true;
     } else if (strcmp(arg[iarg],"overlapcheck") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       if(strcmp(arg[iarg+1],"yes")==0) check_ol_flag = 1;
       else if(strcmp(arg[iarg+1],"no")==0) check_ol_flag = 0;
       else error->fix_error(FLERR,this,"");
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"all_in") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       if(strcmp(arg[iarg+1],"yes")==0) all_in_flag = 1;
       else if(strcmp(arg[iarg+1],"no")==0) all_in_flag = 0;
       else error->fix_error(FLERR,this,"");
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"set_property") == 0) {
       if (iarg+3 > narg) error->fix_error(FLERR,this,"");
       int n = strlen(arg[iarg+1]) + 1;
@@ -194,21 +259,21 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
       strcpy(property_name,arg[iarg+1]);
       fix_property_value = force->numeric(FLERR,arg[iarg+2]);
       iarg += 3;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"random_distribute") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       if(strcmp(arg[iarg+1],"uncorrelated")==0) exact_number = 0;
       else if(strcmp(arg[iarg+1],"exact")==0) exact_number = 1;
       else error->fix_error(FLERR,this,"");
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"verbose") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"");
       if(strcmp(arg[iarg+1],"no")==0) print_stats_during_flag = 0;
       else if(strcmp(arg[iarg+1],"yes")==0) print_stats_during_flag = 1;
       else error->fix_error(FLERR,this,"");
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"compress_tags") == 0) {
       if (iarg+2 > narg) error->fix_error(FLERR,this,"not enough arguments for compress_tags");
       if(0 == strcmp(arg[iarg+1],"yes"))
@@ -218,7 +283,7 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
       else
         error->fix_error(FLERR,this,"expecting 'yes' or 'no' after 'compress_tags'");
       iarg += 2;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"vel") == 0) {
       if (iarg+5 > narg) error->fix_error(FLERR,this,"not enough keyword for 'vel'");
       if (strcmp(arg[iarg+1],"constant") == 0)  {
@@ -248,7 +313,7 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
           iarg += 8;
       } else
           error->fix_error(FLERR,this,"expecting keyword 'constant' or 'uniform' or 'gaussian' after keyword 'vel'");
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"omega") == 0) {
       if (iarg+5 > narg) error->fix_error(FLERR,this,"");
       if (strcmp(arg[iarg+1],"constant") == 0)
@@ -258,7 +323,7 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
           omega_insert[2] = atof(arg[iarg+4]);
       } else error->fix_error(FLERR,this,"expecting keyword 'constant' after keyword 'omega'");
       iarg += 5;
-      hasargs = true;
+      return true;
     } else if (strcmp(arg[iarg],"orientation") == 0) {
       if (iarg+2 > narg)
         error->fix_error(FLERR,this,"not enough arguments for 'orientation'");
@@ -282,22 +347,20 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
           quat_insert[2] = atof(arg[iarg++]);
           quat_insert[3] = atof(arg[iarg++]);
       } else error->fix_error(FLERR,this,"expecting 'random', template' or 'constant' after keyword 'quat'");
-      hasargs = true;
+      return true;
+    } else if (parse_inclusion_keyword(narg,arg)) {
+      return true;
     }
-    
-#ifdef SUPERQUADRIC_ACTIVE_FLAG
-    else if (strcmp(arg[iarg],"check_obb") == 0) {
-      if (iarg+2 > narg) error->fix_error(FLERR,this,"");
-      if(strcmp(arg[iarg+1],"yes")==0) check_obb_flag = 1;
-      else if(strcmp(arg[iarg+1],"no")==0) check_obb_flag = 0;
-      else error->fix_error(FLERR,this,"");
-      if(check_ol_flag==0) check_obb_flag = 0;
-      iarg += 2;
-      hasargs = true;
-    }
-#endif
-    else if(strcmp(style,"insert") == 0) error->fix_error(FLERR,this,"unknown keyword");
-  }
+
+  return false;
+}
+
+/* ---------------------------------------------------------------------- */
+
+void FixInsert::finalize_constructor_setup()
+{
+  if(constructor_finalized_)
+    return;
 
   // memory not allocated initially
   ninsert_this_max_local = 0;
@@ -337,6 +400,8 @@ FixInsert::FixInsert(LAMMPS *lmp, int narg, char **arg) :
      maxrad = std::max(maxrad,max_rad(i));
      minrad = std::min(minrad,min_rad(i));
   }
+
+  constructor_finalized_ = true;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -348,6 +413,7 @@ FixInsert::~FixInsert()
   delete [] displs;
   delete &neighList;
   if(property_name) delete []property_name;
+  if(mesh_filter_id_) delete []mesh_filter_id_;
 
   if(irregular) delete irregular;
   irregular = 0;
@@ -410,6 +476,9 @@ void FixInsert::init_defaults()
 
   check_ol_flag = 1;
   all_in_flag = 0;
+#ifdef SUPERQUADRIC_ACTIVE_FLAG
+  check_obb_flag = 1;
+#endif
 
   exact_number = 1;
 
@@ -427,6 +496,17 @@ void FixInsert::init_defaults()
   property_name = 0;
   fix_property = 0;
   fix_property_value = 0.;
+
+  mesh_filter_id_ = 0;
+  mesh_filter_fix_ = 0;
+  mesh_filter_mesh_ = 0;
+  mesh_filter_enabled_ = false;
+  mesh_filter_inside_ = true;
+  mesh_filter_axis_[0] = 1;
+  mesh_filter_axis_[1] = 1;
+  mesh_filter_axis_[2] = 1;
+  last_ins_step_set_ = false;
+  last_ins_step_ = std::numeric_limits<int>::max();
 }
 
 /* ---------------------------------------------------------------------- */
@@ -446,6 +526,8 @@ void FixInsert::sanity_check()
 
     if(insert_every == 0 && (massflowrate > 0. || nflowrate > 0.))
         error->fix_error(FLERR,this,"must not define 'particlerate' or 'massrate' for 'insert_every' = 0");
+    if(last_ins_step_set_ && last_ins_step_ < first_ins_step)
+        error->fix_error(FLERR,this,"'stop_time' / 't_last' must not be before the insertion start time");
 
     if(0 == comm->me)
     {
@@ -575,6 +657,8 @@ void FixInsert::init()
     {
          fix_property = static_cast<FixPropertyAtom*>(modify->find_fix_property(property_name,"property/atom","scalar",1,1,this->style,true));
     }
+
+    resolve_mesh_filter();
 }
 
 /* ---------------------------------------------------------------------- */
@@ -657,6 +741,11 @@ void FixInsert::pre_exchange()
   // just return if should not be called on this timestep
   
   if (next_reneighbor != update->ntimestep || most_recent_ins_step == update->ntimestep) return;
+  if (last_ins_step_set_ && update->ntimestep > last_ins_step_)
+  {
+    next_reneighbor = 0;
+    return;
+  }
   most_recent_ins_step = update->ntimestep;
 
   // things to be done before inserting new particles
@@ -708,6 +797,9 @@ void FixInsert::pre_exchange()
       
       else if(0 == insert_every)
         next_reneighbor = -1;
+
+      if(last_ins_step_set_ && next_reneighbor > last_ins_step_)
+        next_reneighbor = 0;
 
       return;
   }
@@ -819,6 +911,9 @@ void FixInsert::pre_exchange()
   // next timestep to insert
   if (insert_every && (!ninsert_exists || ninserted < ninsert)) next_reneighbor += insert_every;
   else next_reneighbor = 0;
+
+  if(last_ins_step_set_ && next_reneighbor > last_ins_step_)
+    next_reneighbor = 0;
 
 }
 
@@ -966,6 +1061,183 @@ void FixInsert::generate_random_velocity(double * velocity) {
       velocity[1] = v_insert[1] + v_insertFluct[1] * random->gaussian();
       velocity[2] = v_insert[2] + v_insertFluct[2] * random->gaussian();
   }
+}
+
+/* ---------------------------------------------------------------------- */
+
+int FixInsert::time_to_step(double time_value, bool round_up) const
+{
+  if(!update->timestep_set)
+    error->fix_error(FLERR,const_cast<FixInsert*>(this),"need so set 'timestep' before");
+  if(time_value < 0.)
+    error->fix_error(FLERR,const_cast<FixInsert*>(this),"time value must be >= 0");
+
+  const double scaled = time_value/update->dt;
+  const double eps = 1e-12;
+  return round_up ? static_cast<int>(ceil(scaled - eps)) : static_cast<int>(floor(scaled + eps));
+}
+
+/* ---------------------------------------------------------------------- */
+
+bool FixInsert::parse_inclusion_keyword(int narg, char **arg)
+{
+  if (strcmp(arg[iarg],"inclusion_mesh") == 0) {
+    if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+    if(mesh_filter_id_) delete []mesh_filter_id_;
+    const int n = strlen(arg[iarg+1]) + 1;
+    mesh_filter_id_ = new char[n];
+    strcpy(mesh_filter_id_,arg[iarg+1]);
+    mesh_filter_enabled_ = true;
+    iarg += 2;
+    return true;
+  } else if (strcmp(arg[iarg],"inclusion_side") == 0) {
+    if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+    if(strcmp(arg[iarg+1],"inside") == 0) mesh_filter_inside_ = true;
+    else if(strcmp(arg[iarg+1],"outside") == 0) mesh_filter_inside_ = false;
+    else error->fix_error(FLERR,this,"expecting 'inside' or 'outside' after 'inclusion_side'");
+    iarg += 2;
+    return true;
+  } else if (strcmp(arg[iarg],"inclusion_direction") == 0) {
+    if (iarg+2 > narg) error->fix_error(FLERR,this,"");
+    mesh_filter_axis_[0] = 0;
+    mesh_filter_axis_[1] = 0;
+    mesh_filter_axis_[2] = 0;
+    if(strchr(arg[iarg+1],'x')) mesh_filter_axis_[0] = 1;
+    if(strchr(arg[iarg+1],'y')) mesh_filter_axis_[1] = 1;
+    if(strchr(arg[iarg+1],'z')) mesh_filter_axis_[2] = 1;
+    if(!mesh_filter_axis_[0] && !mesh_filter_axis_[1] && !mesh_filter_axis_[2])
+      error->fix_error(FLERR,this,"expecting a combination of x, y and z after 'inclusion_direction'");
+    iarg += 2;
+    return true;
+  } else if (strcmp(arg[iarg],"inside") == 0 || strcmp(arg[iarg],"outside") == 0) {
+    if (iarg+5 > narg) error->fix_error(FLERR,this,"");
+    if(mesh_filter_id_) delete []mesh_filter_id_;
+    const int n = strlen(arg[iarg+1]) + 1;
+    mesh_filter_id_ = new char[n];
+    strcpy(mesh_filter_id_,arg[iarg+1]);
+    mesh_filter_enabled_ = true;
+    mesh_filter_inside_ = (strcmp(arg[iarg],"inside") == 0);
+    mesh_filter_axis_[0] = atoi(arg[iarg+2]) != 0 ? 1 : 0;
+    mesh_filter_axis_[1] = atoi(arg[iarg+3]) != 0 ? 1 : 0;
+    mesh_filter_axis_[2] = atoi(arg[iarg+4]) != 0 ? 1 : 0;
+    if(!mesh_filter_axis_[0] && !mesh_filter_axis_[1] && !mesh_filter_axis_[2])
+      error->fix_error(FLERR,this,"inside/outside requires at least one active axis flag");
+    iarg += 5;
+    return true;
+  }
+
+  return false;
+}
+
+/* ---------------------------------------------------------------------- */
+
+void FixInsert::resolve_mesh_filter()
+{
+  if(!mesh_filter_enabled_)
+    return;
+
+  int ifix = modify->find_fix(mesh_filter_id_);
+  if(ifix < 0)
+    error->fix_error(FLERR,this,"could not find inclusion mesh fix id");
+
+  if(strncmp(modify->fix[ifix]->style,"mesh/surface",12) != 0)
+    error->fix_error(FLERR,this,"inclusion_mesh must reference a fix mesh/surface or fix mesh/surface/planar");
+
+  mesh_filter_fix_ = static_cast<FixMeshSurface*>(modify->fix[ifix]);
+  mesh_filter_mesh_ = mesh_filter_fix_->triMesh();
+  if(!mesh_filter_mesh_)
+    error->fix_error(FLERR,this,"could not access mesh referenced by inclusion_mesh");
+}
+
+/* ---------------------------------------------------------------------- */
+
+int FixInsert::count_mesh_crossings(const double *pos, int axis) const
+{
+  if(!mesh_filter_mesh_)
+    return 0;
+
+  double origin[3], direction[3], node0[3], node1[3], node2[3];
+  vectorCopy3D(pos, origin);
+  vectorZeroize3D(direction);
+  direction[axis] = 1.0;
+
+  // Use a small geometric tolerance for parity testing without relying on
+  // protected mesh internals.
+  const double eps = 1e-10;
+  origin[(axis + 1) % 3] += 0.341 * eps;
+  origin[(axis + 2) % 3] += 0.587 * eps;
+
+  int crossings_local = 0;
+  const int nlocal = mesh_filter_mesh_->sizeLocal();
+  for(int iTri = 0; iTri < nlocal; ++iTri)
+  {
+    mesh_filter_mesh_->node(iTri,0,node0);
+    mesh_filter_mesh_->node(iTri,1,node1);
+    mesh_filter_mesh_->node(iTri,2,node2);
+
+    double t = 0.0;
+    if(ray_intersects_triangle(origin,direction,node0,node1,node2,eps,t))
+      ++crossings_local;
+  }
+
+  int crossings = crossings_local;
+  if(comm->nprocs > 1)
+    MPI_Allreduce(&crossings_local,&crossings,1,MPI_INT,MPI_SUM,world);
+
+  return crossings;
+}
+
+/* ---------------------------------------------------------------------- */
+
+bool FixInsert::mesh_filter_matches(const double *pos) const
+{
+  return mesh_filter_matches(pos,0.);
+}
+
+/* ---------------------------------------------------------------------- */
+
+bool FixInsert::mesh_filter_matches(const double *pos, double extent) const
+{
+  if(!mesh_filter_enabled_)
+    return true;
+
+  for(int axis = 0; axis < 3; ++axis)
+  {
+    if(!mesh_filter_axis_[axis])
+      continue;
+
+    const bool inside = (count_mesh_crossings(pos,axis) % 2) == 1;
+    if(inside != mesh_filter_inside_)
+      return false;
+  }
+
+  if(extent <= 0.)
+    return true;
+
+  for(int ix = (mesh_filter_axis_[0] ? -1 : 0); ix <= (mesh_filter_axis_[0] ? 1 : 0); ++ix)
+    for(int iy = (mesh_filter_axis_[1] ? -1 : 0); iy <= (mesh_filter_axis_[1] ? 1 : 0); ++iy)
+      for(int iz = (mesh_filter_axis_[2] ? -1 : 0); iz <= (mesh_filter_axis_[2] ? 1 : 0); ++iz)
+      {
+        if(ix == 0 && iy == 0 && iz == 0)
+          continue;
+
+        double probe[3];
+        probe[0] = pos[0] + static_cast<double>(ix) * extent;
+        probe[1] = pos[1] + static_cast<double>(iy) * extent;
+        probe[2] = pos[2] + static_cast<double>(iz) * extent;
+
+        for(int axis = 0; axis < 3; ++axis)
+        {
+          if(!mesh_filter_axis_[axis])
+            continue;
+
+          const bool inside = (count_mesh_crossings(probe,axis) % 2) == 1;
+          if(inside != mesh_filter_inside_)
+            return false;
+        }
+      }
+
+  return true;
 }
 
 /* ----------------------------------------------------------------------

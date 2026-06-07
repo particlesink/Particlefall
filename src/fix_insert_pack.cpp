@@ -140,9 +140,13 @@ FixInsertPack::FixInsertPack(LAMMPS *lmp, int narg, char **arg) :
         error->fix_error(FLERR,this,"expecting 'yes' or 'no' after 'check_dist_from_subdomain_border'");
       iarg += 2;
       hasargs = true;
+    } else if (parse_base_keyword(narg,arg)) {
+      hasargs = true;
     } else if(strcmp(style,"insert/pack") == 0)
         error->fix_error(FLERR,this,"unknown keyword");
   }
+
+  finalize_constructor_setup();
 
   // no fixed total number of particles inserted by this fix exists
   if(strcmp(style,"insert/pack") == 0)
@@ -437,8 +441,16 @@ void FixInsertPack::x_v_omega(int ninsert_this_local,int &ninserted_this_local, 
             if(screen && print_stats_during_flag && (ninsert_this_local >= 10) && (0 == itotal % (ninsert_this_local/10)))
                 fprintf(screen,"insertion: proc %d at %d %%\n",comm->me,10*itotal/(ninsert_this_local/10));
 
-            if(all_in_flag) ins_region->generate_random_shrinkby_cut(pos,rbound,true);
-            else ins_region->generate_random(pos,true);
+            do
+            {
+                if(all_in_flag) ins_region->generate_random_shrinkby_cut(pos,rbound,true);
+                else ins_region->generate_random(pos,true);
+                ntry++;
+            }
+            while(ntry < maxtry && !mesh_filter_matches(pos,rbound));
+
+            if(ntry >= maxtry)
+                break;
 
             // randomize vel, omega, quat here
             vectorCopy3D(v_insert,v_toInsert);
@@ -483,7 +495,9 @@ void FixInsertPack::x_v_omega(int ninsert_this_local,int &ninserted_this_local, 
 
                 }
                 
-                while((check_dist_from_subdomain_border_) && (ntry < maxtry && domain->dist_subbox_borders(pos) < rbound));
+                while(ntry < maxtry &&
+                      (((check_dist_from_subdomain_border_) && domain->dist_subbox_borders(pos) < rbound) ||
+                       !mesh_filter_matches(pos,rbound)));
 
                 if(ntry == maxtry) break;
 

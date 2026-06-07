@@ -69,14 +69,8 @@ using namespace FixConst;
 FixInsertRateRegion::FixInsertRateRegion(LAMMPS *lmp, int narg, char **arg) :
   FixInsertPack(lmp, narg, arg)
 {
-  bool hasargs = true;
-  while(iarg < narg && hasargs)
-  {
-    hasargs = false;
-    if (strcmp(arg[iarg],"some_arg") == 0) {
-    } else if(strcmp(style,"insert/rate/region") == 0)
+  if(iarg < narg && strcmp(style,"insert/rate/region") == 0)
     error->fix_error(FLERR,this,"unknown keyword or wrong keyword order");
-  }
 }
 
 /* ---------------------------------------------------------------------- */

@@ -54,6 +54,9 @@
 
 namespace LAMMPS_NS {
 
+class FixMeshSurface;
+class TriMesh;
+
 class FixInsert : public Fix {
  public:
   FixInsert(class LAMMPS *, int, char **);
@@ -214,19 +217,41 @@ class FixInsert : public Fix {
 
   virtual void finalize_insertion(int){};
 
+  bool mesh_filter_matches(const double *pos) const;
+  bool mesh_filter_matches(const double *pos, double extent) const;
+  bool has_mesh_filter() const
+  { return mesh_filter_enabled_; }
+
   bool has_set_property() const
   { return property_name != NULL && fix_property != NULL; }
 
  protected:
   void generate_random_velocity(double * velocity);
+  bool parse_base_keyword(int narg, char **arg);
+  int time_to_step(double time_value, bool round_up) const;
+  bool parse_shared_keyword(int narg, char **arg);
+  bool parse_inclusion_keyword(int narg, char **arg);
+  void resolve_mesh_filter();
+  void finalize_constructor_setup();
 
  private:
+  int count_mesh_crossings(const double *pos, int axis) const;
 
   char *property_name;
   class FixPropertyAtom *fix_property;
   double fix_property_value;
 
+  char *mesh_filter_id_;
+  class FixMeshSurface *mesh_filter_fix_;
+  class TriMesh *mesh_filter_mesh_;
+  bool mesh_filter_enabled_;
+  bool mesh_filter_inside_;
+  int mesh_filter_axis_[3];
+  bool last_ins_step_set_;
+  int last_ins_step_;
+
   bool setup_flag;
+  bool constructor_finalized_;
 
   class Irregular *irregular;
 

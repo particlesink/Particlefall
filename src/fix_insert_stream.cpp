@@ -146,10 +146,13 @@ FixInsertStream::FixInsertStream(LAMMPS *lmp, int narg, char **arg) :
             error->fix_error(FLERR,this,"expecting 'yes' or 'no' for 'save_template'");
         iarg += 2;
         hasargs = true;
-    }
-    else if (0 == strcmp(style,"insert/stream")) 
+    } else if (parse_base_keyword(narg,arg)) {
+        hasargs = true;
+    } else if (0 == strcmp(style,"insert/stream")) 
       error->fix_error(FLERR,this,"unknown keyword or wrong keyword order");
   }
+
+  finalize_constructor_setup();
 
   fix_release = NULL;
   i_am_integrator = false;
@@ -287,6 +290,9 @@ void FixInsertStream::register_tracer_callback(FixPropertyAtomTracerStream* tr)
 void FixInsertStream::calc_insertion_properties()
 {
     double dt,dot,extrude_vec[3],t1[3],t2[3];
+
+    if(has_mesh_filter())
+        error->fix_error(FLERR,this,"inside/outside mesh classification is not supported for fix insert/stream");
 
     // error check on insertion face
     if(face_style == FACE_NONE)
@@ -731,7 +737,9 @@ void FixInsertStream::x_v_omega(int ninsert_this_local,int &ninserted_this_local
                     ntry++;
 
                 }
-                while(ntry < maxtry && ((!domain->is_in_subdomain(pos)) || (domain->dist_subbox_borders(pos) < rad_to_insert)));
+                while(ntry < maxtry &&
+                      ((!domain->is_in_subdomain(pos)) ||
+                       (domain->dist_subbox_borders(pos) < rad_to_insert)));
 
                 if(ntry < maxtry)
                 {
