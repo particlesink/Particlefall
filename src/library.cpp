@@ -43,8 +43,8 @@
     the GNU General Public License.
 ------------------------------------------------------------------------- */
 
-// C or Fortran style library interface to LAMMPS
-// customize by adding new LAMMPS-specific functions
+// C or Fortran style library interface to Packfall
+// customize by adding new Packfall-specific functions
 
 #include "lmptype.h"
 #include <mpi.h>
@@ -73,7 +73,7 @@ using namespace LAMMPS_NS;
    pass in command-line args and MPI communicator to run on
 ------------------------------------------------------------------------- */
 
-void lammps_open(int argc, char **argv, MPI_Comm communicator, void **ptr)
+void packfall_open(int argc, char **argv, MPI_Comm communicator, void **ptr)
 {
   LAMMPS *lmp = new LAMMPS(argc,argv,communicator);
   *ptr = (void *) lmp;
@@ -85,7 +85,7 @@ void lammps_open(int argc, char **argv, MPI_Comm communicator, void **ptr)
    intialize MPI if needed
 ------------------------------------------------------------------------- */
 
-void lammps_open_no_mpi(int argc, char **argv, void **ptr)
+void packfall_open_no_mpi(int argc, char **argv, void **ptr)
 {
   int flag;
   MPI_Initialized(&flag);
@@ -106,7 +106,7 @@ void lammps_open_no_mpi(int argc, char **argv, void **ptr)
    destruct an instance of LAMMPS
 ------------------------------------------------------------------------- */
 
-void lammps_close(void *ptr)
+void packfall_close(void *ptr)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
   delete lmp;
@@ -116,7 +116,7 @@ void lammps_close(void *ptr)
    process an input script in filename str
 ------------------------------------------------------------------------- */
 
-void lammps_file(void *ptr, const char *str)
+void packfall_file(void *ptr, const char *str)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
   lmp->input->file(str);
@@ -126,7 +126,7 @@ void lammps_file(void *ptr, const char *str)
    process a single input command in str
 ------------------------------------------------------------------------- */
 
-char *lammps_command(void *ptr, const char *str)
+char *packfall_command(void *ptr, const char *str)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
   return lmp->input->one(str);
@@ -136,13 +136,13 @@ char *lammps_command(void *ptr, const char *str)
    clean-up function to free memory allocated by lib and returned to caller
 ------------------------------------------------------------------------- */
 
-void lammps_free(void *ptr)
+void packfall_free(void *ptr)
 {
   free(ptr);
 }
 
 /* ----------------------------------------------------------------------
-   add LAMMPS-specific library functions
+   add Packfall-specific library functions
    all must receive LAMMPS pointer as argument
    customize by adding a function here and in library.h header file
 ------------------------------------------------------------------------- */
@@ -156,7 +156,7 @@ void lammps_free(void *ptr)
    customize by adding names
 ------------------------------------------------------------------------- */
 
-void *lammps_extract_global(void *ptr, const char *name)
+void *packfall_extract_global(void *ptr, const char *name)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
 
@@ -204,7 +204,7 @@ void *lammps_extract_global(void *ptr, const char *name)
    customize by adding names to Atom::extract()
 ------------------------------------------------------------------------- */
 
-void *lammps_extract_atom(void *ptr, const char *name)
+void *packfall_extract_atom(void *ptr, const char *name)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
   return lmp->atom->extract(name);
@@ -231,7 +231,7 @@ void *lammps_extract_atom(void *ptr, const char *name)
      so caller must insure that it is OK
 ------------------------------------------------------------------------- */
 
-void *lammps_extract_compute(void *ptr, const char *id, int style, int type)
+void *packfall_extract_compute(void *ptr, const char *id, int style, int type)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
 
@@ -308,14 +308,14 @@ void *lammps_extract_compute(void *ptr, const char *id, int style, int type)
    IMPORTANT: for global data,
      this function allocates a double to store the value in,
      so the caller must free this memory to avoid a leak, e.g.
-       double *dptr = (double *) lammps_extract_fix();
+       double *dptr = (double *) packfall_extract_fix();
        double value = *dptr;
        free(dptr);
    IMPORTANT: LAMMPS cannot easily check here when info extracted from
      the fix is valid, so caller must insure that it is OK
 ------------------------------------------------------------------------- */
 
-void *lammps_extract_fix(void *ptr, const char *id, int style, int type,
+void *packfall_extract_fix(void *ptr, const char *id, int style, int type,
                          int i, int j)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
@@ -373,11 +373,11 @@ void *lammps_extract_fix(void *ptr, const char *id, int style, int type,
      this function allocates memory to store the variable data in
      so the caller must free this memory to avoid a leak
      e.g. for equal-style variables
-       double *dptr = (double *) lammps_extract_variable();
+       double *dptr = (double *) packfall_extract_variable();
        double value = *dptr;
        free(dptr);
      e.g. for atom-style variables
-       double *vector = (double *) lammps_extract_variable();
+       double *vector = (double *) packfall_extract_variable();
        use the vector values
        free(vector);
    IMPORTANT: LAMMPS cannot easily check here when it is valid to evaluate
@@ -385,7 +385,7 @@ void *lammps_extract_fix(void *ptr, const char *id, int style, int type,
      so caller must insure that it is OK
 ------------------------------------------------------------------------- */
 
-void *lammps_extract_variable(void *ptr, char *name, char *group)
+void *packfall_extract_variable(void *ptr, char *name, char *group)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
 
@@ -412,10 +412,10 @@ void *lammps_extract_variable(void *ptr, char *name, char *group)
 
 /* ----------------------------------------------------------------------
    return the total number of atoms in the system
-   useful before call to lammps_get_atoms() so can pre-allocate vector
+   useful before call to packfall_get_atoms() so can pre-allocate vector
 ------------------------------------------------------------------------- */
 
-int lammps_get_natoms(void *ptr)
+int packfall_get_natoms(void *ptr)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
   if (lmp->atom->natoms > MAXSMALLINT) return 0;
@@ -433,7 +433,7 @@ int lammps_get_natoms(void *ptr)
    data must be pre-allocated by caller to correct length
 ------------------------------------------------------------------------- */
 
-void lammps_gather_atoms(void *ptr, const char *name,
+void packfall_gather_atoms(void *ptr, const char *name,
                          int type, int count, void *data)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
@@ -444,7 +444,7 @@ void lammps_gather_atoms(void *ptr, const char *name,
   if (lmp->atom->tag_enable == 0 || lmp->atom->tag_consecutive() == 0) flag = 1;
   if (lmp->atom->natoms > MAXSMALLINT) flag = 1;
   if (flag && lmp->comm->me == 0) {
-    lmp->error->warning(FLERR,"Library error in lammps_gather_atoms");
+    lmp->error->warning(FLERR,"Library error in packfall_gather_atoms");
     return;
   }
 
@@ -521,7 +521,7 @@ void lammps_gather_atoms(void *ptr, const char *name,
      e.g. x[0][0],x[0][1],x[0][2],x[1][0],x[1][1],x[1][2],x[2][0],...
 ------------------------------------------------------------------------- */
 
-void lammps_scatter_atoms(void *ptr, const char *name,
+void packfall_scatter_atoms(void *ptr, const char *name,
                           int type, int count, void *data)
 {
   LAMMPS *lmp = (LAMMPS *) ptr;
@@ -533,7 +533,7 @@ void lammps_scatter_atoms(void *ptr, const char *name,
   if (lmp->atom->natoms > MAXSMALLINT) flag = 1;
   if (lmp->atom->map_style == 0) flag = 1;
   if (flag && lmp->comm->me == 0) {
-    lmp->error->warning(FLERR,"Library error in lammps_scatter_atoms");
+    lmp->error->warning(FLERR,"Library error in packfall_scatter_atoms");
     return;
   }
 

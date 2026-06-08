@@ -44,8 +44,8 @@
 ------------------------------------------------------------------------- */
 
 /*
-   C or Fortran style library interface to LAMMPS
-   new LAMMPS-specific functions can be added
+   C or Fortran style library interface to Packfall
+   new Packfall-specific functions can be added
 */
 
 #include <mpi.h>
@@ -56,22 +56,22 @@
 extern "C" {
 #endif
 
-void lammps_open(int, char **, MPI_Comm, void **);
-void lammps_open_no_mpi(int, char **, void **);
-void lammps_close(void *);
-void lammps_file(void *, const char *);
-char *lammps_command(void *, const char *);
-void lammps_free(void *);
+void packfall_open(int, char **, MPI_Comm, void **);
+void packfall_open_no_mpi(int, char **, void **);
+void packfall_close(void *);
+void packfall_file(void *, const char *);
+char *packfall_command(void *, const char *);
+void packfall_free(void *);
 
-void *lammps_extract_global(void *, const char *);
-void *lammps_extract_atom(void *, const char *);
-void *lammps_extract_compute(void *, const char *, int, int);
-void *lammps_extract_fix(void *, const char *, int, int, int, int);
-void *lammps_extract_variable(void *, char *, char *);
+void *packfall_extract_global(void *, const char *);
+void *packfall_extract_atom(void *, const char *);
+void *packfall_extract_compute(void *, const char *, int, int);
+void *packfall_extract_fix(void *, const char *, int, int, int, int);
+void *packfall_extract_variable(void *, char *, char *);
 
-int lammps_get_natoms(void *);
-void lammps_gather_atoms(void *, const char *, int, int, void *);
-void lammps_scatter_atoms(void *, const char *, int, int, void *);
+int packfall_get_natoms(void *);
+void packfall_gather_atoms(void *, const char *, int, int, void *);
+void packfall_scatter_atoms(void *, const char *, int, int, void *);
 
 #ifdef __cplusplus
 }
@@ -79,12 +79,12 @@ void lammps_scatter_atoms(void *, const char *, int, int, void *);
 
 /* ERROR/WARNING messages:
 
-W: Library error in lammps_gather_atoms
+W: Library error in packfall_gather_atoms
 
 This library function cannot be used if atom IDs are not defined
 or are not consecutively numbered.
 
-W: Library error in lammps_scatter_atoms
+W: Library error in packfall_scatter_atoms
 
 This library function cannot be used if atom IDs are not defined or
 are not consecutively numbered, or if no atom map is defined.  See the
