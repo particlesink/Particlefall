@@ -1,0 +1,179 @@
+.. index:: compute voronoi/atom
+
+compute voronoi/atom command
+============================
+
+Syntax
+""""""
+
+
+.. parsed-literal::
+
+   compute ID group-ID voronoi/atom general_keyword general_values keyword arg ...
+
+* ID, group-ID are documented in :doc:`compute <compute>` command
+* voronoi/atom = style name of this compute command
+* general\_keywords general\_values are documented in `compute <compute.html">`_
+* zero or more keyword/value pairs may be appended
+* keyword = *only\_group* or *surface* or *radius* or *edge\_histo* or *edge\_threshold* or *face\_threshold*
+  
+  .. parsed-literal::
+  
+       *only_group* = no arg
+       *surface* arg = sgroup-ID
+         sgroup-ID = compute the dividing surface between group-ID and sgroup-ID
+           this keyword adds a third column to the compute output
+       *radius* arg = v_r
+         v_r = radius atom style variable for a poly-disperse voronoi tessellation
+       *edge_histo* arg = maxedge
+         maxedge = maximum number of voronoi cell edges to be accounted in the histogram
+       *edge_threshold* arg = minlength
+         minlength = minimum length for an edge to be counted
+       *face_threshold* arg = minarea
+         minarea = minimum area for a face to be counted
+
+
+
+Examples
+""""""""
+
+
+.. parsed-literal::
+
+   compute 1 all voronoi/atom
+   compute 2 precipitate voronoi/atom surface matrix
+   compute 3b precipitate voronoi/atom radius v_r
+   compute 4 solute voronoi/atom only_group
+
+Description
+"""""""""""
+
+Define a computation that calculates the Voronoi tessellation of the
+atoms in the simulation box.  The tessellation is calculated using all
+atoms in the simulation, but non-zero values are only stored for atoms
+in the group.
+
+By default two quantities per atom are calculated by this compute.
+The first is the volume of the Voronoi cell around each atom.  Any
+point in an atom's Voronoi cell is closer to that atom than any other.
+The second is the number of faces of the Voronoi cell, which is also
+the number of nearest neighbors of the atom in the middle of the cell.
+
+
+----------
+
+
+If the *only\_group* keyword is specified the tessellation is performed
+only with respect to the atoms contained in the compute group. This is
+equivalent to deleting all atoms not contained in the group prior to
+evaluating the tessellation.
+
+If the *surface* keyword is specified a third quantity per atom is
+computed: the voronoi cell surface of the given atom. *surface* takes
+a group ID as an argument. If a group other than *all* is specified,
+only the voronoi cell facets facing a neighbor atom from the specified
+group are counted towards the surface area.
+
+In the example above, a precipitate embedded in a matrix, only atoms
+at the surface of the precipitate will have non-zero surface area, and
+only the outward facing facets of the voronoi cells are counted (the
+hull of the precipitate). The total surface area of the precipitate
+can be obtained by running a "reduce sum" compute on c\_2[3]
+
+If the *radius* keyword is specified with an atom style variable as
+the argument, a poly-disperse voronoi tessellation is
+performed. Examples for radius variables are
+
+
+.. parsed-literal::
+
+   variable r1 atom (type==1)\*0.1+(type==2)\*0.4
+   compute radius all property/atom radius
+   variable r2 atom c_radius
+
+Here v\_r1 specifies a per-type radius of 0.1 units for type 1 atoms
+and 0.4 units for type 2 atoms, and v\_r2 accesses the radius property
+present in atom\_style sphere for granular models.
+
+The *edge\_histo* keyword activates the compilation of a histogram of
+number of edges on the faces of the voronoi cells in the compute
+group. The argument maxedge of the this keyword is the largest number
+of edges on a single voronoi cell face expected to occur in the
+sample. This keyword adds the generation of a global vector with
+maxedge+1 entries. The last entry in the vector contains the number of
+faces with with more than maxedge edges. Since the polygon with the
+smallest amount of edges is a triangle, entries 1 and 2 of the vector
+will always be zero.
+
+The *edge\_threshold* and *face\_threshold* keywords allow the
+suppression of edges below a given minimum length and faces below a
+given minimum area. Ultra short edges and ultra small faces can occur
+as artifacts of the voronoi tessellation. These keywords will affect
+the neighbor count and edge histogram outputs.
+
+
+----------
+
+
+The Voronoi calculation is performed by the freely available `Voro++ package <voronoi_>`_, written by Chris Rycroft at UC Berkeley and LBL,
+which must be installed on your system when building LIGGGHTS(R)-PUBLIC for use
+with this compute.  See instructions on obtaining and installing the
+Voro++ software in the src/VORONOI/README file.
+
+.. _voronoi: http://math.lbl.gov/voro++
+
+
+
+.. warning::
+
+   The calculation of Voronoi volumes is performed by
+   each processor for the atoms it owns, and includes the effect of ghost
+   atoms stored by the processor.  This assumes that the Voronoi cells of
+   owned atoms are not affected by atoms beyond the ghost atom cut-off
+   distance.  This is usually a good assumption for liquid and solid
+   systems, but may lead to underestimation of Voronoi volumes in low
+   density systems.  By default, the set of ghost atoms stored by each
+   processor is determined by the cutoff used for
+   :doc:`pair\_style <pair_style>` interactions.  The cutoff can be set
+   explicitly via the :doc:`communicate cutoff <communicate>` command.
+
+.. warning::
+
+   The Voro++ package performs its calculation in 3d.
+   This should still work for a 2d LIGGGHTS(R)-PUBLIC simulation, to effectively
+   compute Voronoi "areas", so long as the z-dimension of the box is
+   roughly the same (or smaller) compared to the separation of the atoms.
+   Typical values for the z box dimensions in a 2d LIGGGHTS(R)-PUBLIC model are -0.5
+   to 0.5, which satisfies the criterion for most :doc:`units <units>`
+   systems.  Note that you define the z extent of the simulation box for
+   2d simulations when using the :doc:`create\_box <create_box>` or
+   :doc:`read\_data <read_data>` commands.
+
+**Output info:**
+
+This compute calculates a per-atom array with 2 columns.  The first
+column is the Voronoi volume, the second is the neighbor count, as
+described above.  These values can be accessed by any command that
+uses per-atom values from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+options.
+
+The Voronoi cell volume will be in distance :doc:`units <units>` cubed.
+
+Restrictions
+""""""""""""
+
+
+This compute is part of the VORONOI package.  It is only enabled if
+LIGGGHTS(R)-PUBLIC was built with that package.  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info.
+
+Related commands
+""""""""""""""""
+
+:doc:`dump custom <dump>`
+
+**Default:** none
+
+
+.. _lws: http://lammps.sandia.gov
+.. _ld: Manual.html
+.. _lc: Section_commands.html#comm
