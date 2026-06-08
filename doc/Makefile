@@ -2,105 +2,28 @@
 #
 
 # You can set these variables from the command line.
-SPHINXOPTS     ?=
-SPHINXBUILD    ?= sphinx-build
-PAPER          ?=
-GIT            ?= git
-TXT2RST        ?= txt2rst
-BUILDDIR       ?= _build
-TMPDIR         ?= _tmp
-SPHINXTHEMEDIR ?= $(PWD)/$(TMPDIR)/sphinx_rtd_theme
-# Downloads for external utilities
-TXT2RST_URL     = https://github.com/CFDEMproject/lammps-doc-utils.git
-SPHINXTHEME_URL = https://github.com/CFDEMproject/sphinx_rtd_theme.git
-
-# User-friendly check for sphinx-build
-ifneq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 0)
-$(error The '$(SPHINXBUILD)' command was not found. Make sure you have Sphinx installed, then set the SPHINXBUILD environment variable to point to the full path of the '$(SPHINXBUILD)' executable. Alternatively you can add the directory with the executable to your PATH. If you don`t have Sphinx installed, grab it from http://sphinx-doc.org/. If you use Ubuntu or Debian you might be able to install it using 'sudo apt-get install python-sphinx')
-endif
-
-# Check for installed git
-GITINSTALLED = 1
-ifneq ($(shell which $(GIT) >/dev/null 2>&1; echo $$?), 0)
-GITINSTALLED = 0
-endif
+SPHINXOPTS        ?=
+SPHINXBUILD       ?= sphinx-build
+PAPER             ?=
+BUILDDIR          ?= _build
+TMPDIR            ?= _tmp
 
 UTILITY_CHECK = 1
-ifeq ($(MAKECMDGOALS), )
+ifeq ($(MAKECMDGOALS),)
 UTILITY_CHECK = 0
 else
-ifneq (,$(filter $(MAKECMDGOALS), help clean clean-all))
+ifneq (,$(filter $(MAKECMDGOALS),help clean clean-all show-tools))
 UTILITY_CHECK = 0
 endif
 endif
 
-ifeq ($(UTILITY_CHECK), 1)
-# Find txt2rst or install it if possible
-ifneq ($(shell which $(TXT2RST) >/dev/null 2>&1; echo $$?), 0)
-# Check if it exists in default temporary directory
-ifneq ("$(wildcard $(TMPDIR)/lammps-doc-utils/bin/txt2rst)", "")
-TXT2RST=$(TMPDIR)/lammps-doc-utils/bin/txt2rst
-$(warning Found txt2rst in '$(TMPDIR)/lammps-doc-utils/bin/txt2rst' and using this version. Use 'make clean-all' to remove it)
-else
-# If git is not available we can't do anything
-ifeq ($(GITINSTALLED), 0)
-$(error Could not find '$(TXT2RST)' and '$(GIT)' is not present either. Please install either the txt2rst utility from $(TXT2RST_URL), change the TXT2RST environment variable or add the directory containing your txt2rst to the PATH variable. Alternatively, you can install '$(GIT)' and run this makefile again to install txt2rst automatically. If '$(GIT)' is already installed ensure that it points to the correct path or add the directory containing your git executable to the PATH variable.)
-# else we can download it
-else
-# create temporary folder
-ifneq ($(shell mkdir -p $(TMPDIR) >/dev/null 2>&1; echo $$?), 0)
-$(error Could not create $(TMPDIR))
+ifeq ($(UTILITY_CHECK),1)
+# User-friendly check for sphinx-build.
+ifneq ($(shell command -v $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 0)
+$(error Could not find '$(SPHINXBUILD)'. Install Sphinx and ensure 'sphinx-build' is on PATH, or invoke make with SPHINXBUILD=/full/path/to/sphinx-build)
 endif
-# download git repository
-ifneq ($(shell git clone $(TXT2RST_URL) $(TMPDIR)/lammps-doc-utils >/dev/null 2>&1; echo $$?), 0)
-$(error Could not download lammps-doc-utils that provides txt2rst. Please install the utility manually)
-endif
-# check if file is available now
-TXT2RST=$(TMPDIR)/lammps-doc-utils/bin/txt2rst
-ifneq ($(shell which $(TXT2RST) >/dev/null 2>&1; echo $$?), 0)
-$(error Unknown error in txt2rst installation. Please install the utility manually)
-endif
-$(warning Successfully downloaded txt2rst and installed it in the $(TMPDIR) directory)
-endif
-# end of download (git available)
-endif
-# end of not in default dir
-endif
-# end of not in specified dir
 
-# Check if the sphinx theme is available
-ifeq ("$(wildcard $(SPHINXTHEMEDIR)/sphinx_rtd_theme/__init__.py)", "")
-# Set to default directory
-SPHINXTHEMEDIR=$(PWD)/$(TMPDIR)/sphinx_rtd_theme
-ifneq ("$(wildcard $(SPHINXTHEMEDIR)/sphinx_rtd_theme/__init__.py)", "")
-$(warning Found sphinx_rtd_theme in default $(TMPDIR) directory and using this version. Use 'make clean-all' to remove it)
-else
-# If git is not available we can't do anything
-ifeq ($(GITINSTALLED), 0)
-$(error Could not find sphinx_rtd_theme and '$(GIT)' is not present either. Please install either sphinx_rtd_theme from $(SPHINXTHEME_URL) or change the SPHINXRTDTHEMEDIR environment variable. Alternatively, you can install '$(GIT)' and run this makefile again to install sphinx_rtd_theme automatically. If '$(GIT)' is already installed ensure that it points to the correct path or add the directory containing your git executable to the PATH variable.)
-# else we can download it
-else
-# create temporary folder
-ifneq ($(shell mkdir -p $(TMPDIR) >/dev/null 2>&1; echo $$?), 0)
-$(error Could not create $(TMPDIR))
 endif
-# download git repository
-ifneq ($(shell git clone $(SPHINXTHEME_URL) $(TMPDIR)/sphinx_rtd_theme >/dev/null 2>&1; echo $$?), 0)
-$(error Could not download sphinx_rtd_theme. Please install the theme manually from $(SPHINXTHEME_URL))
-endif
-# check if file is available now
-#ifeq ("$(wildcard $(SPHINXTHEMEDIR)/sphinx_rtd_theme/__init__.py)", "")
-#$(error Unknown error in the sphinx_rtd_theme installation. Please install the theme manually from $(SPHINXTHEME_URL))
-#endif
-$(warning Successfully downloaded the sphinx_rtd_theme and installed it in the $(TMPDIR) directory)
-endif
-# end of download (git available)
-endif
-# end of not in default dir
-endif
-# end of not in specified dir
-endif
-# end of UTILITY_CHECK
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -109,10 +32,12 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
-.PHONY: help clean clean-all html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext generate-rst
+.PHONY: help clean clean-all show-tools html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
+	@echo "  help       to show this help text"
+	@echo "  show-tools to show the resolved Sphinx executable"
 	@echo "  clean      to remove all generated files"
 	@echo "  clean-all  to remove all generated and temporary files"
 	@echo "  html       to make standalone HTML files"
@@ -137,51 +62,53 @@ help:
 	@echo "  pseudoxml  to make pseudoxml-XML files for display purposes"
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
+	@echo
+	@echo "Examples:"
+	@echo "  make show-tools"
+	@echo "  make html"
+	@echo "  make SPHINXBUILD=/path/to/sphinx-build html"
+
+show-tools:
+	@echo "SPHINXBUILD=$(SPHINXBUILD)"
 
 clean:
-	rm -rf $(BUILDDIR)/* *.rst
+	rm -rf $(BUILDDIR)/*
 
 clean-all: clean
-	rm -rf $(TMPDIR)/lammps-doc-utils $(TMPDIR)/sphinx_rtd_theme _themes/sphinx_rtd_theme
+	rm -rf $(TMPDIR)/*
 
-generate-rst:
-	@mkdir -p _themes
-	@rm -rf _themes/sphinx_rtd_theme
-	@ln -s $(SPHINXTHEMEDIR)/sphinx_rtd_theme _themes/
-	$(TXT2RST) *txt
-
-html: generate-rst
+html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
-dirhtml: generate-rst
+dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
 
-singlehtml: generate-rst
+singlehtml:
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
 
-pickle: generate-rst
+pickle:
 	$(SPHINXBUILD) -b pickle $(ALLSPHINXOPTS) $(BUILDDIR)/pickle
 	@echo
 	@echo "Build finished; now you can process the pickle files."
 
-json: generate-rst
+json:
 	$(SPHINXBUILD) -b json $(ALLSPHINXOPTS) $(BUILDDIR)/json
 	@echo
 	@echo "Build finished; now you can process the JSON files."
 
-htmlhelp: generate-rst
+htmlhelp:
 	$(SPHINXBUILD) -b htmlhelp $(ALLSPHINXOPTS) $(BUILDDIR)/htmlhelp
 	@echo
 	@echo "Build finished; now you can run HTML Help Workshop with the" \
 	      ".hhp project file in $(BUILDDIR)/htmlhelp."
 
-qthelp: generate-rst
+qthelp:
 	$(SPHINXBUILD) -b qthelp $(ALLSPHINXOPTS) $(BUILDDIR)/qthelp
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
@@ -190,7 +117,7 @@ qthelp: generate-rst
 	@echo "To view the help file:"
 	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/LIGGGHTS.qhc"
 
-devhelp: generate-rst
+devhelp:
 	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
 	@echo
 	@echo "Build finished."
@@ -199,80 +126,80 @@ devhelp: generate-rst
 	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/LIGGGHTS"
 	@echo "# devhelp"
 
-epub: generate-rst
+epub:
 	$(SPHINXBUILD) -b epub $(ALLSPHINXOPTS) $(BUILDDIR)/epub
 	@echo
 	@echo "Build finished. The epub file is in $(BUILDDIR)/epub."
 
-latex: generate-rst
+latex:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo
 	@echo "Build finished; the LaTeX files are in $(BUILDDIR)/latex."
 	@echo "Run \`make' in that directory to run these through (pdf)latex" \
 	      "(use \`make latexpdf' here to do that automatically)."
 
-latexpdf: generate-rst
+latexpdf:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through pdflatex..."
 	$(MAKE) -C $(BUILDDIR)/latex all-pdf
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
-latexpdfja: generate-rst
+latexpdfja:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through platex and dvipdfmx..."
 	$(MAKE) -C $(BUILDDIR)/latex all-pdf-ja
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
-text: generate-rst
+text:
 	$(SPHINXBUILD) -b text $(ALLSPHINXOPTS) $(BUILDDIR)/text
 	@echo
 	@echo "Build finished. The text files are in $(BUILDDIR)/text."
 
-man: generate-rst
+man:
 	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) $(BUILDDIR)/man
 	@echo
 	@echo "Build finished. The manual pages are in $(BUILDDIR)/man."
 
-texinfo: generate-rst
+texinfo:
 	$(SPHINXBUILD) -b texinfo $(ALLSPHINXOPTS) $(BUILDDIR)/texinfo
 	@echo
 	@echo "Build finished. The Texinfo files are in $(BUILDDIR)/texinfo."
 	@echo "Run \`make' in that directory to run these through makeinfo" \
 	      "(use \`make info' here to do that automatically)."
 
-info: generate-rst
+info:
 	$(SPHINXBUILD) -b texinfo $(ALLSPHINXOPTS) $(BUILDDIR)/texinfo
 	@echo "Running Texinfo files through makeinfo..."
 	make -C $(BUILDDIR)/texinfo info
 	@echo "makeinfo finished; the Info files are in $(BUILDDIR)/texinfo."
 
-gettext: generate-rst
+gettext:
 	$(SPHINXBUILD) -b gettext $(I18NSPHINXOPTS) $(BUILDDIR)/locale
 	@echo
 	@echo "Build finished. The message catalogs are in $(BUILDDIR)/locale."
 
-changes: generate-rst
+changes:
 	$(SPHINXBUILD) -b changes $(ALLSPHINXOPTS) $(BUILDDIR)/changes
 	@echo
 	@echo "The overview file is in $(BUILDDIR)/changes."
 
-linkcheck: generate-rst
+linkcheck:
 	$(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 	      "or in $(BUILDDIR)/linkcheck/output.txt."
 
-doctest: generate-rst
+doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-xml: generate-rst
+xml:
 	$(SPHINXBUILD) -b xml $(ALLSPHINXOPTS) $(BUILDDIR)/xml
 	@echo
 	@echo "Build finished. The XML files are in $(BUILDDIR)/xml."
 
-pseudoxml: generate-rst
+pseudoxml:
 	$(SPHINXBUILD) -b pseudoxml $(ALLSPHINXOPTS) $(BUILDDIR)/pseudoxml
 	@echo
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."

@@ -1,5 +1,12 @@
-*.rst
 _build/
+*.html
+*.txt
+genindex.html
+search.html
+searchindex.js
+objects.inv
+_downloads/
+_images/
+_static/
 _themes/
 _tmp/
-
