@@ -237,25 +237,6 @@ void DumpCustomVTK::setFileCurrent()
 {
     DumpVTK::setFileCurrent(filecurrent, filename, multifile, padflag);
 
-    // filename of domain box data file
-    delete [] domainfilecurrent;
-    domainfilecurrent = NULL;
-    domainfilecurrent = new char[strlen(filecurrent) + 14];
-    char *tmp = new char[strlen(filecurrent)+1];
-    strcpy(tmp, filecurrent);
-    char * bbInsert;
-    if (multifile == 0)
-        bbInsert = strrchr(filecurrent, '.');
-    else
-        bbInsert = filecurrent + (strchr(filename, '*') - filename);
-    char *ptr = tmp + (bbInsert - filecurrent);
-    *ptr = '\0';
-    if (multifile == 0)
-        sprintf(domainfilecurrent,"%s_boundingBox%s",tmp,bbInsert);
-    else
-        sprintf(domainfilecurrent,"%sboundingBox_%s",tmp,bbInsert);
-    *ptr = '.';
-    delete [] tmp;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -304,10 +285,6 @@ void DumpCustomVTK::write_vtk(int n, double *mybuf)
     DumpVTK::write_vtk_poly(polyData, vtk_file_format, filecurrent, label);
 #endif
 
-    if (domain->triclinic == 0)
-        write_domain_vtk();
-    else
-        write_domain_vtk_triclinic();
 }
 
 /* ---------------------------------------------------------------------- */
@@ -320,19 +297,6 @@ void DumpCustomVTK::write_vtp(int n, double *mybuf)
 
     DumpVTK::write_vtp(polyData, vtk_file_format, filecurrent);
 
-    if (me == 0)
-    {
-        if (domain->triclinic == 0)
-        {
-            domainfilecurrent[strlen(domainfilecurrent)-1] = 'r'; // adjust filename extension
-            write_domain_vtr();
-        }
-        else
-        {
-            domainfilecurrent[strlen(domainfilecurrent)-1] = 'u'; // adjust filename extension
-            write_domain_vtu_triclinic();
-        }
-    }
 }
 
 /* ---------------------------------------------------------------------- */
@@ -345,16 +309,6 @@ void DumpCustomVTK::write_vtu(int n, double *mybuf)
 
     DumpVTK::write_vtu(unstructuredGrid, vtk_file_format, filecurrent);
 
-    if (me == 0)
-    {
-        if (domain->triclinic == 0)
-        {
-            domainfilecurrent[strlen(domainfilecurrent)-1] = 'r'; // adjust filename extension
-            write_domain_vtr();
-        }
-        else
-            write_domain_vtu_triclinic();
-    }
 }
 
 /* ---------------------------------------------------------------------- */
