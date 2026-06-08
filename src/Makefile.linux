@@ -1,18 +1,22 @@
 SHELL := /bin/bash
 
-.PHONY: all headers stubs clean print-config help
+.PHONY: all headers stubs clean print-config help lib shlib
 
 TARGET ?= packfall
 BUILD_DIR ?= ../build/linux
 OBJ_DIR := $(BUILD_DIR)/obj
 DEP_DIR := $(BUILD_DIR)/dep
 EXE := $(BUILD_DIR)/$(TARGET)
+STATIC_LIB := $(BUILD_DIR)/lib$(TARGET).a
+SHARED_LIB := $(BUILD_DIR)/lib$(TARGET).so
 HEADER_STAMP := $(BUILD_DIR)/.headers.stamp
 
 AR ?= ar
 OPT ?= -O2
 STD ?= -std=gnu++17
 WARN ?= -Wall -Wextra -Wno-unused-result
+PICFLAGS ?= -fPIC
+SHLIBFLAGS ?= -shared
 
 # Build mode:
 #   USE_MPI=0 -> default single-process build against the MPI shim in src/STUBS
@@ -66,19 +70,27 @@ LDLIBS += $(MPI_LDLIBS) $(EXTRA_LDLIBS)
 
 SRC := $(wildcard *.cpp)
 OBJ := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRC))
+LIB_SRC := $(filter-out main.cpp,$(SRC))
+LIB_OBJ := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(LIB_SRC))
 DEP := $(patsubst %.cpp,$(DEP_DIR)/%.d,$(SRC))
 
 all: $(EXE)
+lib: $(STATIC_LIB)
+shlib: $(SHARED_LIB)
 
 help:
 	@echo "Linux build targets:"
 	@echo "  make -f Makefile.linux                  build single-process with the MPI shim"
 	@echo "  make -f Makefile.linux USE_MPI=1        opt in to a real MPI toolchain"
+	@echo "  make -f Makefile.linux lib             build a static library"
+	@echo "  make -f Makefile.linux shlib           build a shared library for Python/C callers"
 	@echo "  make -f Makefile.linux print-config     show resolved toolchain settings"
 
 print-config:
 	@echo "TARGET=$(TARGET)"
 	@echo "EXE=$(EXE)"
+	@echo "STATIC_LIB=$(STATIC_LIB)"
+	@echo "SHARED_LIB=$(SHARED_LIB)"
 	@echo "USE_MPI=$(USE_MPI)"
 	@echo "MPI_MODE=$(MPI_MODE)"
 	@echo "CXX=$(CXX)"
@@ -118,6 +130,15 @@ $(HEADER_STAMP): | $(BUILD_DIR)
 $(EXE): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
 $(EXE): $(OBJ)
 	$(LINK) $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS) -o $@
+
+$(STATIC_LIB): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
+$(STATIC_LIB): $(LIB_OBJ)
+	$(AR) rs $@ $(LIB_OBJ)
+
+$(SHARED_LIB): CXXFLAGS += $(PICFLAGS)
+$(SHARED_LIB): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
+$(SHARED_LIB): $(LIB_OBJ)
+	$(LINK) $(CXXFLAGS) $(SHLIBFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LDLIBS) -o $@
 
 $(OBJ_DIR)/%.o: %.cpp $(HEADER_STAMP) $(STUB_TARGET) | $(OBJ_DIR) $(DEP_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MMD -MF $(DEP_DIR)/$*.d -c $< -o $@
