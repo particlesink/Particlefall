@@ -219,8 +219,6 @@ namespace LMP_PROBABILITY_NS {
 
   template<> inline void PDF::set_params<RANDOM_LOGNORMAL>(double mu, double sigma)
   {
-      error->all(FLERR,"lognormal distribution currently deactivated");
-
       rand_style_ = RANDOM_LOGNORMAL;
       mu_ = mu;
       sigma_ = sigma;

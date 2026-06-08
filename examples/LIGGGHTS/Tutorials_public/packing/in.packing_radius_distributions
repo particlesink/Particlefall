@@ -1,0 +1,61 @@
+#Particle packing by insertion using distributed sphere radii
+
+atom_style	granular
+atom_modify	map array
+boundary	m m m
+newton		off
+
+communicate	single vel yes
+
+units		si
+
+region		reg block -0.05 0.05 -0.05 0.05 0. 0.12 units box
+create_box	1 reg
+
+neighbor	0.002 bin
+neigh_modify	delay 0
+
+
+#Material properties required for new pair styles
+
+fix 		m1 all property/global youngsModulus peratomtype 5.e6
+fix 		m2 all property/global poissonsRatio peratomtype 0.45
+fix 		m3 all property/global coefficientRestitution peratomtypepair 1 0.3
+fix 		m4 all property/global coefficientFriction peratomtypepair 1 0.5
+
+#New pair style
+pair_style gran model hertz tangential history
+pair_coeff	* *
+
+timestep	0.00001
+
+fix xwalls1 all wall/gran model hertz tangential history primitive type 1 xplane -0.05
+fix xwalls2 all wall/gran model hertz tangential history primitive type 1 xplane +0.05
+fix ywalls1 all wall/gran model hertz tangential history primitive type 1 yplane -0.05
+fix ywalls2 all wall/gran model hertz tangential history primitive type 1 yplane +0.05
+fix zwalls1 all wall/gran model hertz tangential history primitive type 1 zplane  0.00
+fix zwalls2 all wall/gran model hertz tangential history primitive type 1 zplane  0.12
+
+
+#Distributions for insertion
+fix		pts_uniform all particletemplate/sphere 15485863 atom_type 1 density constant 2500 radius uniform 0.004 0.006
+fix		pts_normal all particletemplate/sphere 15485867 atom_type 1 density constant 2500 radius normal 0.005 0.0005 0.0035 0.0065
+fix		pts_lognormal all particletemplate/sphere 49979687 atom_type 1 density constant 2500 radius lognormal -5.30 0.08 0.004 0.0065
+fix		pdd1 all particledistribution/discrete 32452843 3 pts_uniform 0.34 pts_normal 0.33 pts_lognormal 0.33
+
+group		nve_group region reg
+
+fix		ins nve_group insert/pack seed 32452867 distributiontemplate pdd1 &
+			maxattempt 200 insert_every once overlapcheck yes all_in yes vel constant 0. 0. 0. &
+			region reg volumefraction_region 0.12
+
+fix		integr nve_group nve/sphere
+
+compute		er all erotate/sphere
+thermo_style	custom step atoms ke c_er vol
+thermo		200
+thermo_modify	lost ignore norm no
+
+run		1
+unfix		ins
+run		1000

@@ -58,9 +58,9 @@ region 		PIR1 cylinder y 0.1 0.1 0.092 0.00   0.20 units box
 
 #particle distributions and insertion
 fix			pts1 all particletemplate/sphere 15485863 atom_type 1 density constant 1000 &
-            radius gaussian number 0.008 2.5e-3
+            radius normal 0.008 2.5e-3 0.001 0.015
 fix			pts2 all particletemplate/sphere 15485867 atom_type 1 density constant 1000 &
-            radius gaussian number 0.002 0.1e-3
+            radius normal 0.002 0.1e-3 0.0015 0.0025
 fix			pdd1 all particledistribution/discrete  32452843 2 pts1 0.98 pts2 0.02
 
 fix			ins all insert/pack seed 32452867 distributiontemplate pdd1 &
@@ -110,4 +110,3 @@ label       loopStart
     next    a
 
 jump SELF loopStart
-

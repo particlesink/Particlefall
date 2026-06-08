@@ -201,6 +201,65 @@ FixTemplateSphere::FixTemplateSphere(LAMMPS *lmp, int narg, char **arg) :
             pdf_radius->set_params<RANDOM_CONSTANT>(value);
             iarg += 3;
         }
+        else if (strcmp(arg[iarg+1],"uniform") == 0)
+        {
+            if (iarg+4 > narg)
+                error->all(FLERR,"Illegal fix particletemplate/sphere command, not enough arguments");
+            const double min = atof(arg[iarg+2])*force->cg(atom_type);
+            const double max = atof(arg[iarg+3])*force->cg(atom_type);
+            if (min <= 0. || max <= 0.)
+                error->fix_error(FLERR,this,"uniform radius bounds must be > 0");
+            if (max <= min)
+                error->fix_error(FLERR,this,"uniform radius requires max > min");
+            pdf_radius->set_params<RANDOM_UNIFORM>(min,max);
+            iarg += 4;
+        }
+        else if (strcmp(arg[iarg+1],"normal") == 0 || strcmp(arg[iarg+1],"gaussian") == 0)
+        {
+            int offset = 2;
+            if (iarg+6 > narg)
+                error->all(FLERR,"Illegal fix particletemplate/sphere command, not enough arguments");
+            if (strcmp(arg[iarg+2],"number") == 0)
+            {
+                offset = 3;
+                if (iarg+7 > narg)
+                    error->all(FLERR,"Illegal fix particletemplate/sphere command, not enough arguments");
+            }
+
+            const double mu = atof(arg[iarg+offset])*force->cg(atom_type);
+            const double sigma = atof(arg[iarg+offset+1])*force->cg(atom_type);
+            const double min = atof(arg[iarg+offset+2])*force->cg(atom_type);
+            const double max = atof(arg[iarg+offset+3])*force->cg(atom_type);
+            if (mu <= 0.)
+                error->fix_error(FLERR,this,"normal radius mean must be > 0");
+            if (sigma <= 0.)
+                error->fix_error(FLERR,this,"normal radius sigma must be > 0");
+            if (min <= 0. || max <= 0.)
+                error->fix_error(FLERR,this,"normal radius bounds must be > 0");
+            if (max <= min)
+                error->fix_error(FLERR,this,"normal radius requires max > min");
+            pdf_radius->set_params<RANDOM_GAUSSIAN>(mu,sigma);
+            pdf_radius->set_min_max(min,max);
+            iarg += offset + 4;
+        }
+        else if (strcmp(arg[iarg+1],"lognormal") == 0)
+        {
+            if (iarg+6 > narg)
+                error->all(FLERR,"Illegal fix particletemplate/sphere command, not enough arguments");
+            const double mu = atof(arg[iarg+2]);
+            const double sigma = atof(arg[iarg+3]);
+            const double min = atof(arg[iarg+4])*force->cg(atom_type);
+            const double max = atof(arg[iarg+5])*force->cg(atom_type);
+            if (sigma <= 0.)
+                error->fix_error(FLERR,this,"lognormal radius sigma must be > 0");
+            if (min <= 0. || max <= 0.)
+                error->fix_error(FLERR,this,"lognormal radius bounds must be > 0");
+            if (max <= min)
+                error->fix_error(FLERR,this,"lognormal radius requires max > min");
+            pdf_radius->set_params<RANDOM_LOGNORMAL>(mu,sigma);
+            pdf_radius->set_min_max(min,max);
+            iarg += 6;
+        }
         else
             error->fix_error(FLERR,this,"invalid radius random style");
     }
@@ -546,9 +605,13 @@ unsigned int FixTemplateSphere::generate_hash()
     add_hash_value(pdf_radius->rand_style(), start, hash);
     add_hash_value(expectancy(pdf_radius), start, hash);
     add_hash_value(cubic_expectancy(pdf_radius), start, hash);
+    add_hash_value(pdf_min(pdf_radius), start, hash);
+    add_hash_value(pdf_max(pdf_radius), start, hash);
     add_hash_value(pdf_density->rand_style(), start, hash);
     add_hash_value(expectancy(pdf_density), start, hash);
     add_hash_value(cubic_expectancy(pdf_density), start, hash);
+    add_hash_value(pdf_min(pdf_density), start, hash);
+    add_hash_value(pdf_max(pdf_density), start, hash);
     return hash;
 }
 
