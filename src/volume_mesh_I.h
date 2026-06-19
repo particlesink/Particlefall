@@ -386,7 +386,7 @@ template<int NUM_NODES,int NUM_FACES,int NUM_NODES_PER_FACE>
 bool VolumeMesh<NUM_NODES,NUM_FACES,NUM_NODES_PER_FACE>::isInside(double *p)
 {
     // check subdomain
-    if(!this->domain->is_in_subdomain(p)) return false;
+    if(!this->domain->is_in_subdomain_periodic(p)) return false;
 
     // check bbox
     if(!this->bbox_.isInside(p)) return false;

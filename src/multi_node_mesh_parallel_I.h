@@ -222,7 +222,7 @@
       for(int j=0;j<NUM_NODES;j++)
       {
         
-        if(!this->domain->is_in_domain(this->node_(i)[j]))
+        if(!this->domain->is_in_domain_periodic(this->node_(i)[j]))
         {
             flag = 1;
             break;
@@ -567,6 +567,11 @@
 
       double comBefore[3];
       this->center_of_mass(comBefore);
+
+      // Canonicalize periodic meshes before ownership is assigned. Without
+      // this, seam-straddling geometry can be dropped during the initial
+      // deleteUnowned() pass before the regular mesh PBC path runs.
+      pbc();
       
       // delete all elements that do not belong to this processor
       
@@ -722,7 +727,7 @@
 
           while(i < nLocal_)
           {
-              if(!this->domain->is_in_subdomain(this->center_(i)))
+              if(!this->domain->is_in_subdomain_periodic(this->center_(i)))
                   this->deleteElement(i);
               else i++;
           }

@@ -1432,6 +1432,7 @@ int Neighbor::check_distance()
         delx = x[i][0] - xhold[i][0];
         dely = x[i][1] - xhold[i][1];
         delz = x[i][2] - xhold[i][2];
+        domain->minimum_image(delx,dely,delz);
         rsq = delx*delx + dely*dely + delz*delz;
         if (rsq > deltasq) flag = 1;
         
@@ -1444,6 +1445,7 @@ int Neighbor::check_distance()
         delx = x[i][0] - xhold[i][0];
         dely = x[i][1] - xhold[i][1];
         delz = x[i][2] - xhold[i][2];
+        domain->minimum_image(delx,dely,delz);
         delr = radius[i] - rhold[i];
         rsq = delx*delx + dely*dely + delz*delz;
         delrsq = delr*delr;

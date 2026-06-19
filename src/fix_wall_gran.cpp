@@ -1124,7 +1124,7 @@ void FixWallGran::post_force_primitive(int vflag)
       {
         if(c_history)
             vectorZeroizeN(c_history[iPart],dnum_);
-        break;
+        continue;
       }
 
       if(!sidata.is_non_spherical || atom->superquadric_flag)

@@ -1,8 +1,8 @@
 Commands
 ========
 
-This section describes how a LIGGGHTS(R)-PUBLIC input script is formatted and the
-input script commands used to define a LIGGGHTS(R)-PUBLIC simulation.
+This section describes how an input script is formatted and the
+input script commands used to define a simulation.
 
 
 .. contents:: 

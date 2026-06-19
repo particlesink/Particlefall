@@ -59,16 +59,16 @@ fix		integr nve_group nve/sphere
 #output settings, include total thermal energy
 fix				ts all check/timestep/gran 1000 0.1 0.1
 compute			rke all erotate/sphere
-thermo_style	custom step atoms ke c_rke f_ts[1] f_ts[2] vol
-thermo			1000
+thermo_style	custom time step atoms ke c_rke f_ts[1] f_ts[2] vol
+thermo			0.1 sec
 thermo_modify	lost ignore norm no
 
 #insert the first particles so that dump is not empty
 run			1
-dump		dmp all custom/vtk 400 post/conveyor_*.vtk id type type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius 
+dump		dmp all custom/vtk 0.1 sec post/conveyor_*.vtk id type type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius 
 
 #insert particles
-run			140000 upto
+run			14 sec upto
 unfix		ins
 
  

@@ -190,7 +190,9 @@ class Domain : protected Pointers {
   }
 
   int is_in_domain(double* pos); 
+  int is_in_domain_periodic(double* pos);
   int is_in_subdomain(double* pos); 
+  int is_in_subdomain_periodic(double* pos);
   int is_in_extended_subdomain(double* pos); 
   double dist_subbox_borders(double* pos); 
   void min_subbox_extent(double &min_extent,int &dim); 

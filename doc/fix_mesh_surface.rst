@@ -129,6 +129,13 @@ keywords *scale*\ , *move*\ , *rotate*\ . Operations are applied in the order as
 are specified. The rotation via *rotate* is performed around the rotation axis
 that goes through the origin (0,0,0) and in the direction of *axis*\ .
 
+If a simulation box dimension is periodic, a surface mesh may extend partly
+outside the corresponding box limits. During mesh ownership assignment and
+parallel communication, Packfall remaps such geometry through the periodic
+boundary so that walls that straddle a periodic seam can be used directly.
+This is primarily intended for *mesh/surface* walls used together with
+:doc:`fix wall/gran <fix_wall_gran>`.
+
 The group-ID defines which particles will "see" the mesh, in case it is used as a granular wall.
 
 One fix represents one wall with a specific material, where the material is identified
@@ -213,6 +220,15 @@ be appended in the same order as the modules.
    Note that these restrictions are not validated and must be
    ensured by the user.
 
+.. warning::
+
+   Periodic overhang support for meshes is currently a first-pass feature.
+   Geometry may extend past a periodic box face, but the mesh should still be
+   defined as a single consistent wall and should not rely on intentional
+   self-contact through the periodic seam. If a mesh is exactly split across a
+   periodic seam, topology-sensitive operations may still be more robust if the
+   mesh is pre-shifted into a single preferred image before import.
+
 **Quality checks / error and warning messages:**
 
 The code checks a couple of quality criteria upon loading a mesh. It tries
@@ -224,6 +240,10 @@ Warning messages:
 * All nodes should be within the simulation box
 If any of the above rules is not fulfilled, a warning is generated. Keyword
 *verbose* controls if details about the warning are written to the screen.
+
+For periodic dimensions, nodes that extend beyond a periodic face are accepted
+and remapped for mesh ownership and communication. In non-periodic dimensions,
+mesh elements are still required to remain inside the simulation domain.
 
 Error messages:
 

@@ -18,7 +18,7 @@ either conceptually, or as printed out by the program.
 Common problems
 ---------------
 
-If two LIGGGHTS(R)-PUBLIC runs do not produce the same answer on different
+If two runs do not produce the same answer on different
 machines or different numbers of processors, this is typically not a
 bug.  In theory you should get identical answers on any number of
 processors and on any machine.  In practice, numerical round-off can
@@ -45,39 +45,37 @@ produce different random number streams on each processor and hence
 will produce different effects when run on different numbers of
 processors.  A commonly-used example is the :doc:`fix langevin <fix_langevin>` command for thermostatting.
 
-A LIGGGHTS(R)-PUBLIC simulation typically has two stages, setup and run.  Most
-LIGGGHTS(R)-PUBLIC errors are detected at setup time; others like a bond
+A simulation typically has two stages, setup and run.  Most
+errors are detected at setup time; others like a bond
 stretching too far may not occur until the middle of a run.
 
-LIGGGHTS(R)-PUBLIC tries to flag errors and print informative error messages so
-you can fix the problem.  Of course, LIGGGHTS(R)-PUBLIC cannot figure out your
+The code tries to flag errors and print informative error messages so
+you can fix the problem.  Of course, it cannot figure out your
 physics or numerical mistakes, like choosing too big a timestep,
 specifying erroneous force field coefficients, or putting 2 atoms on
-top of each other!  If you run into errors that LIGGGHTS(R)-PUBLIC doesn't catch
-that you think it should flag, please send an email to the
-`developers <http://lammps.sandia.gov/authors.html>`_.
+top of each other! 
 
 If you get an error message about an invalid command in your input
 script, you can determine what command is causing the problem by
 looking in the log.lammps file or using the :doc:`echo command <echo>`
-to see it on the screen.  For a given command, LIGGGHTS(R)-PUBLIC expects certain
-arguments in a specified order.  If you mess this up, LIGGGHTS(R)-PUBLIC will
+to see it on the screen.  For a given command, the code expects certain
+arguments in a specified order.  If you mess this up, the code will
 often flag the error, but it may read a bogus argument and assign a
 value that is valid, but not what you wanted.  E.g. trying to read the
 string "abc" as an integer value and assigning the associated variable
 a value of 0.
 
-Generally, LIGGGHTS(R)-PUBLIC will print a message to the screen and logfile and
+Generally, the code will print a message to the screen and logfile and
 exit gracefully when it encounters a fatal error.  Sometimes it will
 print a WARNING to the screen and logfile and continue on; you can
 decide if the WARNING is important or not.  A WARNING message that is
 generated in the middle of a run is only printed to the screen, not to
-the logfile, to avoid cluttering up thermodynamic output.  If LIGGGHTS(R)-PUBLIC
+the logfile, to avoid cluttering up thermodynamic output.  If the code
 crashes or hangs without spitting out an error message first then it
 could be a bug (see :ref:`this section <err_2>`) or one of the following
 cases:
 
-LIGGGHTS(R)-PUBLIC runs in the available memory a processor allows to be
+The code runs in the available memory a processor allows to be
 allocated.  Most reasonable MD runs are compute limited, not memory
 limited, so this shouldn't be a bottleneck on most platforms.  Almost
 all large memory allocations in the code are done via C-style malloc's
@@ -85,19 +83,19 @@ which will generate an error message if you run out of memory.
 Smaller chunks of memory are allocated via C++ "new" statements.  If
 you are unlucky you could run out of memory just when one of these
 small requests is made, in which case the code will crash or hang (in
-parallel), since LIGGGHTS(R)-PUBLIC doesn't trap on those errors.
+parallel), since the code doesn't trap on those errors.
 
-Illegal arithmetic can cause LIGGGHTS(R)-PUBLIC to run slow or crash.  This is
+Illegal arithmetic can cause the code to run slow or crash.  This is
 typically due to invalid physics and numerics that your simulation is
 computing.  If you see wild thermodynamic values or NaN values in your
-LIGGGHTS(R)-PUBLIC output, something is wrong with your simulation.  If you
+output, something is wrong with your simulation.  If you
 suspect this is happening, it is a good idea to print out
 thermodynamic info frequently (e.g. every timestep) via the
 :doc:`thermo <thermo>` so you can monitor what is happening.
 Visualizing the atom movement is also a good idea to insure your model
 is behaving as you expect.
 
-In parallel, one way LIGGGHTS(R)-PUBLIC can hang is due to how different MPI
+In parallel, one way the code can hang is due to how different MPI
 implementations handle buffering of messages.  If the code hangs
 without an error message, it may be that you need to specify an MPI
 setting or two (usually via an environment variable) to enable
@@ -112,33 +110,11 @@ buffering or boost the sizes of messages that can be buffered.
 Reporting bugs
 --------------
 
-If you are confident that you have found a bug in LIGGGHTS(R)-PUBLIC, follow these
-steps.
-
-Check the `New features and bug fixes <http://www.cfdem.com/liggghtsr-version-historyhttp://www.cfdem.com/liggghtsr-version-historyhttp://www.cfdem.com/liggghtsr-version-history>`_ section of the `LIGGGHTS(R)-PUBLIC WWW site <liws_>`_ to see if the bug has already been reported or fixed or the
-`Unfixed bug <http://www.cfdem.com/forums/bug-reports-cfdemrcoupling-liggghtsr-and-parscale>`_
-to see if a fix is pending.
-
-Check the `forums <http://www.cfdem.com/forum>`_
-to see if it has been discussed before.
-
-If not, please post a bug report describing the problem with
-any ideas you have as to what is causing it or where in the code the
-problem might be.  The developers will ask for more info if needed,
-such as an input script or data files.
-
-The most useful thing you can do to help us fix the bug is to isolate
+Try and isolate
 the problem.  Run it on the smallest number of particles and fewest number
 of processors and with the simplest input script that reproduces the
 bug and try to identify what command or combination of commands is
 causing the problem.
-
-Respectively the LAMMPS bug sections
-`bug <http://lammps.sandia.gov/bug.html>`_,
-`unfixed bug <http://lammps.sandia.gov/unbug.html>`_
-and the `mailing list <http://lammps.sandia.gov/mail.html>`_
- can be checked.
-
 
 ----------
 
@@ -149,7 +125,7 @@ Error & warning messages
 -------------------------------------
 
 These are two alphabetic lists of the :ref:`ERROR <error>` and
-:ref:`WARNING <warn>` messages LIGGGHTS(R)-PUBLIC prints out and the reason why.  If the
+:ref:`WARNING <warn>` messages the code prints out and the reason why.  If the
 explanation here is not sufficient, the documentation for the
 offending command may help.
 Error and warning messages also list the source file and line number
@@ -341,7 +317,7 @@ Errors:
    multibody joint).  The bodies you have defined exceed this limit.
 
 *Atom sort did not operate correctly*
-   This is an internal LIGGGHTS(R)-PUBLIC error.  Please report it to the
+   This is an internal error.  Please report it to the
    developers.
 
 *Atom sorting has bin size = 0.0*
@@ -381,10 +357,10 @@ Errors:
    Self-explanatory.
 
 *Attempt to pop empty stack in fix box/relax*
-   Internal LIGGGHTS(R)-PUBLIC error.  Please report it to the developers.
+   Internal error.  Please report it to the developers.
 
 *Attempt to push beyond stack limit in fix box/relax*
-   Internal LIGGGHTS(R)-PUBLIC error.  Please report it to the developers.
+   Internal error.  Please report it to the developers.
 
 *Attempting to rescale a 0.0 temperature*
    Cannot rescale a temperature that is already 0.0.
@@ -411,7 +387,7 @@ Errors:
 
 *Bad grid of processors*
    The 3d grid of processors defined by the processors command does not
-   match the number of processors LIGGGHTS(R)-PUBLIC is being run on.
+   match the number of processors the code is being run on.
 
 *Bad kspace\_modify slab parameter*
    Kspace\_modify value for the slab/volume keyword must be >= 2.0.
@@ -458,7 +434,7 @@ Errors:
    Size of bigint is less than size of tagint.
 
 *Bigint setting in lmptype.h is not compatible*
-   Bigint stored in restart file is not consistent with LIGGGHTS(R)-PUBLIC version
+   Bigint stored in restart file is not consistent with version
    you are running.
 
 *Bitmapped lookup tables require int/float be same size*
@@ -596,10 +572,10 @@ Errors:
    Self-explanatory.  See doc page discussion of command-line switches.
 
 *Can only use NEB with 1-processor replicas*
-   This is current restriction for NEB as implemented in LIGGGHTS(R)-PUBLIC.
+   This is current restriction for NEB as implemented.
 
 *Can only use TAD with 1-processor replicas for NEB*
-   This is current restriction for NEB as implemented in LIGGGHTS(R)-PUBLIC.
+   This is current restriction for NEB as implemented.
 
 *Cannot (yet) do analytic differentiation with pppm/gpu*
    This is a current restriction of this command.

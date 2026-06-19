@@ -55,7 +55,12 @@ using namespace LAMMPS_NS;
 
 inline bool Comm::use_gran_opt()
 {
-    return (0 == domain->triclinic && atom->radius);
+    // This optimization assumes the interaction reach is bounded by particle
+    // radius in the DEM sense. SPH also uses atom->radius as a smoothing
+    // support length, so applying the half-cut ghost slab there can drop
+    // periodic ghosts depending on the processor split.
+    return (0 == domain->triclinic && atom->radius &&
+            !(atom->rho_flag && atom->p_flag));
 }
 
 /* ----------------------------------------------------------------------

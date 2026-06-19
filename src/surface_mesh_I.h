@@ -1118,7 +1118,7 @@ int SurfaceMesh<NUM_NODES,NUM_NEIGH_MAX>::handleCorner(int iSrf, int iNode,
     checkNodeRecursive(iSrf,nodeToCheck,nIdListVisited,idListVisited,
         nIdListHasNode,idListHasNode,edgeList,edgeEndPoint,anyActiveEdge);
 
-    if (!this->domain->is_in_subdomain(nodeToCheck))
+    if (!this->domain->is_in_subdomain_periodic(nodeToCheck))
         return nIdListHasNode;
 
     // each element that shares the node contributes two edges

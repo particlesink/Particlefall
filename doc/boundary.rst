@@ -82,6 +82,12 @@ triclinic representations.
    are used, not only atom positions, but also the mesh nodes are used
    for setting the boundaries.
 
+For periodic dimensions, Packfall can also handle surface mesh wall geometry
+that extends partly beyond the periodic box limits. Such geometry is remapped
+through the periodic boundary during mesh setup and communication. This does
+not change the requirements for non-periodic dimensions, where mesh elements
+must still remain inside the simulation domain.
+
 Restrictions
 """"""""""""
 

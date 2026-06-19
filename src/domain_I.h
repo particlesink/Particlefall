@@ -62,6 +62,13 @@ inline int Domain::is_in_domain(double* pos)
     return 0;
 }
 
+inline int Domain::is_in_domain_periodic(double* pos)
+{
+    double remapped[3] = {pos[0], pos[1], pos[2]};
+    remap(remapped);
+    return is_in_domain(remapped);
+}
+
 inline int Domain::is_in_subdomain(double* pos) 
 {
     if(is_wedge)
@@ -84,6 +91,13 @@ inline int Domain::is_in_subdomain(double* pos)
          pos[2] >= checklo[2] && pos[2] < checkhi[2])
         return 1;
     return 0;
+}
+
+inline int Domain::is_in_subdomain_periodic(double* pos)
+{
+    double remapped[3] = {pos[0], pos[1], pos[2]};
+    remap(remapped);
+    return is_in_subdomain(remapped);
 }
 
 inline int Domain::is_in_extended_subdomain(double* pos) 

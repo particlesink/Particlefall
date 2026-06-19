@@ -54,17 +54,17 @@ fix		integr nve_group nve/sphere
 
 #output settings, include total thermal energy
 compute			rke all erotate/sphere
-thermo_style	custom step atoms ke c_rke vol
-thermo			1000
+thermo_style	custom time step atoms ke c_rke vol
+thermo			0.1 sec
 thermo_modify	lost ignore norm no
 
 #insert the first particles so that dump is not empty
 run			1
-dump		dmp all custom/vtk 800 post/noCohesion_*.vtk id type type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius
+dump		dmp all custom/vtk 0.1 sec post/noCohesion_*.vtk id type type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius
 
 #insert particles
-run			10000
+run			1 sec
 unfix		ins
 
 #run
-run			50000 upto
+run			5 sec upto
