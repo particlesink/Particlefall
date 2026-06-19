@@ -1,7 +1,13 @@
-# to run the script you have to define the variables via '-var' option
-#  - blockiness1
-#  - blockiness2
-#  - angle
+# Optional command-line overrides:
+#  -var blockiness1 <n1>
+#  -var blockiness2 <n2>
+#  -var angle <degrees>
+#
+# These defaults are only applied if the variables were not already
+# created via the command line.
+variable blockiness1 index 8.0
+variable blockiness2 index 2.0
+variable angle index 45.0
 
 echo both
 
@@ -9,12 +15,14 @@ atom_style	superquadric
 
 atom_modify	map array
 
-boundary	f f f
+boundary	m m m
 newton		off
 communicate	single vel yes
 units		si
 
 region		reg block -0.05 0.05 -0.05 0.05 0.0 0.1 units box
+region		reg_ins1 block -0.015 0.015 -0.015 0.015 0.008 0.028 units box
+region		reg_ins2 block -0.015 0.015 -0.015 0.015 0.072 0.092 units box
 create_box	2 reg
 
 neighbor	0.002 bin
@@ -23,11 +31,13 @@ neigh_modify	delay 0
 variable dt equal 1e-5
 variable nStepsRun    equal 1.0/${dt}
 variable writeOutEvery equal 0.005/${dt}
-variable thermofreq   equal 0.01/${dt}
+variable thermofreq   equal ${writeOutEvery}
+variable q0 equal cos(${angle}*PI/360.0)
+variable qx equal sin(${angle}*PI/360.0)
 
 variable cf_ww equal 1.0
-variable cf_pw equal 0.5
-variable cf_pp equal 0.5
+variable cf_pw equal 0.2
+variable cf_pp equal 0.2
 
 variable cof_ww equal 0.5
 variable cof_pw equal 0.5
@@ -61,6 +71,8 @@ timestep ${dt}
 
 variable totaltime equal step*${dt}
 
+fix		gravi all gravity 9.81 vector 0.0 0.0 -1.0
+
 #fix		cad all mesh/surface/stress file meshes/simple_chute.stl type 1 wear finnie
 #fix		inface all mesh/surface file meshes/insertion_face.stl type 1
 #fix granwalls all wall/gran model hertz tangential history surface superquadric mesh n_meshes 1 meshes cad
@@ -73,13 +85,25 @@ fix zwalls1 all wall/gran model hertz tangential history rolling_friction epsd2 
 fix zwalls2 all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 zplane 0.1
 
 
-create_atoms 1 single 0.0 0.0 0.01
-set atom 1 type 2 shape 0.002 0.002 0.004 blockiness ${blockiness1} ${blockiness2} density 2500 vz 0.1 quat 1 0 0 ${angle} #omegaz 10
-
-create_atoms 1 single 0.0 0.0 0.09
-set atom 2 type 2 shape 0.002 0.002 0.004 blockiness ${blockiness1} ${blockiness2} density 2500 vz -0.1 quat 1 0 0 -${angle} #omegaz 10
+# two superquadric templates to mirror the original manual setup
+fix		pts1 all particletemplate/superquadric 15485863 atom_type 2 density constant 2500 &
+		shape constant 0.002 0.002 0.008 blockiness constant ${blockiness1} ${blockiness2}
+fix		pts2 all particletemplate/superquadric 15485867 atom_type 2 density constant 2500 &
+		shape constant 0.002 0.002 0.004 blockiness constant ${blockiness1} ${blockiness2}
+fix		pdd1 all particledistribution/discrete 32452843 1 pts1 1.0
+fix		pdd2 all particledistribution/discrete 32452867 1 pts2 1.0
 
 group		nve_group region reg
+
+# insert a small cloud of each template near the original lower/upper zones
+fix		ins1 nve_group insert/pack seed 49979687 distributiontemplate pdd1 &
+			maxattempt 100 insert_every 500 overlapcheck yes all_in no vel constant 0. 0. 0.1 &
+			orientation random omega constant 0. 0. 0. &
+			region reg_ins1 particles_in_region 100
+fix		ins2 nve_group insert/pack seed 67867979 distributiontemplate pdd2 &
+			maxattempt 100 insert_every once overlapcheck yes all_in no vel constant 0. 0. -0.1 &
+			orientation constant ${q0} -${qx} 0. 0. omega constant 0. 0. 0. &
+			region reg_ins2 particles_in_region 100
 
 #apply nve integration to all particles that are inserted as single particles
 fix		integr all nve/superquadric integration_scheme 1
@@ -102,14 +126,19 @@ thermo		${thermofreq}
 thermo_modify	lost ignore norm no
 compute_modify	thermo_temp dynamic yes
 
-#insert the first particles so that dump is not empty
-
 #fix write_m1 all print ${writeOutEvery} "${time} ${rot_en}" file rotational_energy_.txt screen no
 #fix write_m2 all print ${writeOutEvery} "${time} ${kin_en}" file kinetic_energy_.txt screen no
 
+# run one step so the one-shot insertion fixes create their particles,
+# then disable insertion and continue the collision example proper.
 run		1
-shell mkdir post
-dump		dmp all custom/vtk ${writeOutEvery} post/dump*.superq.vtk type mass x y z id vx vy vz fx fy fz omegax omegay omegaz radius shapex shapey shapez quat1 quat2 quat3 quat4 blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
+unfix		ins1
+unfix		ins2
+
+# Dump into the working directory so the example works even when the
+# platform shell command used to create subdirectories is unavailable.
+shell mkdir -p post
+dump		dmp all custom/vtk ${writeOutEvery} post/dump*.superq.vtp type mass x y z id vx vy vz fx fy fz omegax omegay omegaz radius shapex shapey shapez quat1 quat2 quat3 quat4 blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
 #dump 		dumpstress all mesh/gran/VTK ${writeOutEvery} post/dump*.vtk id
 
 run		${nStepsRun} upto

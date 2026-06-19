@@ -14,6 +14,9 @@ Introduction:
 -------------
 
 "SUPERQUADRIC" simulations allow LIGGGHTS(R) to use superquadric bodies as particles.
+Superquadrics are smooth convex aspherical bodies described by three
+semi-axes and two blockiness parameters. The ellipsoidal case is recovered
+for blockiness values equal to 2.
 
 Compilation:
 ------------
@@ -48,8 +51,34 @@ The overall simulation structure stays the same for SUPERQUADRIC simulations as 
 
 * Use :doc:`atom\_style superquadric <atom_style>`
 * For contact models (pair\_style gran as well as fix wall/gran) use :doc:`surface superquadric <gran_surface_superquadric>`
-* The SUPERQUADRIC model requires a special integrator, namly :doc:`fix nve/superquadric <fix_nve_superquadric>`
-* To define new SUPERQUADRIC particles use the :doc:`fix particletemplate/superquadric <fix_particletemplate_superquadric>`
+* The SUPERQUADRIC model requires a special integrator, namely :doc:`fix nve/superquadric <fix_nve_superquadric>`
+* To define new SUPERQUADRIC particles use :doc:`fix particletemplate/superquadric <fix_particletemplate_superquadric>`
+* To insert superquadrics from templates or template distributions use the standard insertion fixes such as :doc:`fix insert/pack <fix_insert_pack>`, :doc:`fix insert/rate/region <fix_insert_rate_region>`, or :doc:`fix insert/stream <fix_insert_stream>`
+
+Important practical notes:
+
+* Superquadric shape is controlled by the semi-axes *a*\ , *b*\ , *c* and the
+  blockiness parameters *n1* and *n2*.
+* The insertion fixes control the initial particle orientation. Use
+  ``orientation random`` if particles should not all start with the same pose.
+* Primitive and mesh walls both require the superquadric surface model when
+  used with superquadric particles.
+* For post-processing, :doc:`dump custom/vtk <dump_custom_vtk>` can write the
+  semi-axes, blockiness values, and quaternion components needed to
+  reconstruct particle geometry in a visualization tool.
+
+Typical workflow:
+
+* define :doc:`atom_style superquadric <atom_style>`
+* define contact and wall models with :doc:`surface superquadric <gran_surface_superquadric>`
+* define one or more :doc:`fix particletemplate/superquadric <fix_particletemplate_superquadric>` templates
+* optionally combine them with :doc:`fix particledistribution/discrete <fix_particledistribution_discrete>`
+* insert particles with an insertion fix, choosing ``orientation random`` or another orientation mode as needed
+* integrate motion with :doc:`fix nve/superquadric <fix_nve_superquadric>`
+* dump quaternion and shape data for post-processing if visualization of the real body geometry is desired
+
+See also the public example in
+``examples/LIGGGHTS/Tutorials_public/superquadric/in.particle_particle``.
 
 Performance
 -----------

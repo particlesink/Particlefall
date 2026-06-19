@@ -623,11 +623,17 @@ void Output::write(bigint ntimestep)
     }
   }
 
-  if (!restart_due_single && restart_flag_single && restart_every_time_single > 0.)
-    next_restart_single = ntimestep + 1;
-  if (!restart_due_double && restart_flag_double && restart_every_time_double > 0.)
-    next_restart_double = ntimestep + 1;
-  next_restart = MIN(next_restart_single,next_restart_double);
+  if (restart_flag && update->restrict_output == 0) {
+    if (!restart_flag_single) next_restart_single = update->laststep + 1;
+    else if (!restart_due_single && restart_every_time_single > 0.)
+      next_restart_single = ntimestep + 1;
+
+    if (!restart_flag_double) next_restart_double = update->laststep + 1;
+    else if (!restart_due_double && restart_every_time_double > 0.)
+      next_restart_double = ntimestep + 1;
+
+    next_restart = MIN(next_restart_single,next_restart_double);
+  } else next_restart = update->laststep + 1;
 
   // insure next_thermo forces output on last step of run
   // thermo may invoke computes so wrap with clear/add

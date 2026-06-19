@@ -347,7 +347,7 @@ Region* FixTemplateSphere::region()
 
 void FixTemplateSphere::randomize_single()
 {
-    
+
     pti->atom_type = atom_type;
 
     // randomize radius
@@ -472,7 +472,7 @@ void FixTemplateSphere::direct_set_ptlist(const int i, const void * const data, 
 
 double FixTemplateSphere::min_rad()
 {
-    
+
     return pdf_min(pdf_radius);
 }
 
@@ -480,7 +480,7 @@ double FixTemplateSphere::min_rad()
 
 double FixTemplateSphere::max_rad()
 {
-    
+
     return pdf_max(pdf_radius);
 }
 

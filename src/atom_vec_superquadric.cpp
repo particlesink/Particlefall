@@ -74,7 +74,7 @@ AtomVecSuperquadric::AtomVecSuperquadric(LAMMPS *lmp) : AtomVec(lmp)
   size_reverse = 6;
   size_border = 23;
   size_velocity = 6;
-  size_data_atom = 8;
+  size_data_atom = 11;
   size_data_vel = 7;
   xcol_data = 9;
 
@@ -87,7 +87,18 @@ AtomVecSuperquadric::AtomVecSuperquadric(LAMMPS *lmp) : AtomVec(lmp)
 void AtomVecSuperquadric::init()
 {
   AtomVec::init();
+
   radvary = 0;
+  size_forward = 7;
+
+  for (int i = 0; i < modify->nfix; i++) {
+    if (modify->fix[i]->rad_mass_vary_flag) {
+      radvary = 1;
+      size_forward = 11;
+    }
+  }
+
+  atom->radvary_flag = radvary;
 }
 
 /* ----------------------------------------------------------------------
@@ -207,8 +218,6 @@ int AtomVecSuperquadric::pack_comm(int n, int *list, double *buf,
 {
   int i,j,m;
   double dx,dy,dz;
-  if(radvary == 1)
-    error->one(FLERR,"the case of radvary=1 for superquadrics is not implemented");
 
   m = 0;
   if (pbc_flag == 0) {
@@ -222,6 +231,12 @@ int AtomVecSuperquadric::pack_comm(int n, int *list, double *buf,
       buf[m++] = quaternion[j][1];
       buf[m++] = quaternion[j][2];
       buf[m++] = quaternion[j][3];
+      if (radvary) {
+        buf[m++] = ubuf(type[j]).d;
+        buf[m++] = radius[j];
+        buf[m++] = rmass[j];
+        buf[m++] = density[j];
+      }
 //----------------------------------------------------
     }
   } else {
@@ -244,6 +259,12 @@ int AtomVecSuperquadric::pack_comm(int n, int *list, double *buf,
       buf[m++] = quaternion[j][1];
       buf[m++] = quaternion[j][2];
       buf[m++] = quaternion[j][3];
+      if (radvary) {
+        buf[m++] = ubuf(type[j]).d;
+        buf[m++] = radius[j];
+        buf[m++] = rmass[j];
+        buf[m++] = density[j];
+      }
 //----------------------------------------------------
     }
   }
@@ -258,8 +279,6 @@ int AtomVecSuperquadric::pack_comm_vel(int n, int *list, double *buf,
   int i,j,m;
   double dx,dy,dz,dvx,dvy,dvz;
   m = 0;
-  if(radvary == 1)
-      error->one(FLERR,"the case of radvary=1 for superquadrics is not implemented");
   if (pbc_flag == 0) {
     for (i = 0; i < n; i++) {
       j = list[i];
@@ -277,6 +296,12 @@ int AtomVecSuperquadric::pack_comm_vel(int n, int *list, double *buf,
       buf[m++] = quaternion[j][1];
       buf[m++] = quaternion[j][2];
       buf[m++] = quaternion[j][3];
+      if (radvary) {
+        buf[m++] = ubuf(type[j]).d;
+        buf[m++] = radius[j];
+        buf[m++] = rmass[j];
+        buf[m++] = density[j];
+      }
 //----------------------------------------------------
     }
   } else {
@@ -307,6 +332,12 @@ int AtomVecSuperquadric::pack_comm_vel(int n, int *list, double *buf,
         buf[m++] = quaternion[j][1];
         buf[m++] = quaternion[j][2];
         buf[m++] = quaternion[j][3];
+        if (radvary) {
+          buf[m++] = ubuf(type[j]).d;
+          buf[m++] = radius[j];
+          buf[m++] = rmass[j];
+          buf[m++] = density[j];
+        }
 //-----------------------------------------------------
       }
     } else {
@@ -335,6 +366,12 @@ int AtomVecSuperquadric::pack_comm_vel(int n, int *list, double *buf,
         buf[m++] = quaternion[j][1];
         buf[m++] = quaternion[j][2];
         buf[m++] = quaternion[j][3];
+        if (radvary) {
+          buf[m++] = ubuf(type[j]).d;
+          buf[m++] = radius[j];
+          buf[m++] = rmass[j];
+          buf[m++] = density[j];
+        }
 //----------------------------------------------------
       }
     }
@@ -346,8 +383,23 @@ int AtomVecSuperquadric::pack_comm_vel(int n, int *list, double *buf,
 
 int AtomVecSuperquadric::pack_comm_hybrid(int n, int *list, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::pack_comm_hybrid is not implemented yet");
-  return 0;
+  int i,j,m;
+
+  m = 0;
+  for (i = 0; i < n; i++) {
+    j = list[i];
+    buf[m++] = quaternion[j][0];
+    buf[m++] = quaternion[j][1];
+    buf[m++] = quaternion[j][2];
+    buf[m++] = quaternion[j][3];
+    if (radvary) {
+      buf[m++] = ubuf(type[j]).d;
+      buf[m++] = radius[j];
+      buf[m++] = rmass[j];
+      buf[m++] = density[j];
+    }
+  }
+  return m;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -356,8 +408,6 @@ void AtomVecSuperquadric::unpack_comm(int n, int first, double *buf)
 {
   int i,m,last;
   m = 0;
-  if(radvary == 1)
-      error->one(FLERR,"the case of radvary=1 for superquadrics is not implemented");
   last = first + n;
   for (i = first; i < last; i++) {
     x[i][0] = buf[m++];
@@ -368,6 +418,12 @@ void AtomVecSuperquadric::unpack_comm(int n, int first, double *buf)
     quaternion[i][1] = buf[m++];
     quaternion[i][2] = buf[m++];
     quaternion[i][3] = buf[m++];
+    if (radvary) {
+      type[i] = (int) ubuf(buf[m++]).i;
+      radius[i] = buf[m++];
+      rmass[i] = buf[m++];
+      density[i] = buf[m++];
+    }
 //------------------------------------------
   }
 }
@@ -378,8 +434,6 @@ void AtomVecSuperquadric::unpack_comm_vel(int n, int first, double *buf)
 {
   int i,m,last;
   m = 0;
-  if(radvary == 1)
-      error->one(FLERR,"the case of radvary=1 for superquadrics is not implemented");
   last = first + n;
   for (i = first; i < last; i++) {
     x[i][0] = buf[m++];
@@ -396,6 +450,12 @@ void AtomVecSuperquadric::unpack_comm_vel(int n, int first, double *buf)
     quaternion[i][1] = buf[m++];
     quaternion[i][2] = buf[m++];
     quaternion[i][3] = buf[m++];
+    if (radvary) {
+      type[i] = (int) ubuf(buf[m++]).i;
+      radius[i] = buf[m++];
+      rmass[i] = buf[m++];
+      density[i] = buf[m++];
+    }
 //---------------------------------------------------
   }
 }
@@ -404,8 +464,23 @@ void AtomVecSuperquadric::unpack_comm_vel(int n, int first, double *buf)
 
 int AtomVecSuperquadric::unpack_comm_hybrid(int n, int first, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::unpack_comm_hybrid is not implemented yet");
-  return 0;
+  int i,m,last;
+
+  m = 0;
+  last = first + n;
+  for (i = first; i < last; i++) {
+    quaternion[i][0] = buf[m++];
+    quaternion[i][1] = buf[m++];
+    quaternion[i][2] = buf[m++];
+    quaternion[i][3] = buf[m++];
+    if (radvary) {
+      type[i] = (int) ubuf(buf[m++]).i;
+      radius[i] = buf[m++];
+      rmass[i] = buf[m++];
+      density[i] = buf[m++];
+    }
+  }
+  return m;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -431,8 +506,16 @@ int AtomVecSuperquadric::pack_reverse(int n, int first, double *buf)
 
 int AtomVecSuperquadric::pack_reverse_hybrid(int n, int first, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::pack_reverse_hybrid is not implemented yet");
-  return 0;
+  int i,m,last;
+
+  m = 0;
+  last = first + n;
+  for (i = first; i < last; i++) {
+    buf[m++] = torque[i][0];
+    buf[m++] = torque[i][1];
+    buf[m++] = torque[i][2];
+  }
+  return m;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -457,8 +540,16 @@ void AtomVecSuperquadric::unpack_reverse(int n, int *list, double *buf)
 
 int AtomVecSuperquadric::unpack_reverse_hybrid(int n, int *list, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::unpack_reverse_hybrid is not implemented yet");
-  return 0;
+  int i,j,m;
+
+  m = 0;
+  for (i = 0; i < n; i++) {
+    j = list[i];
+    torque[j][0] += buf[m++];
+    torque[j][1] += buf[m++];
+    torque[j][2] += buf[m++];
+  }
+  return m;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -717,8 +808,35 @@ int AtomVecSuperquadric::pack_border_vel(int n, int *list, double *buf,
 
 int AtomVecSuperquadric::pack_border_hybrid(int n, int *list, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::pack_border_hybrid is not implemented yet");
-  return 0;
+  int i,j,m;
+
+  m = 0;
+  for (i = 0; i < n; i++) {
+    j = list[i];
+    buf[m++] = radius[j];
+    buf[m++] = rmass[j];
+    buf[m++] = density[j];
+
+    buf[m++] = shape[j][0];
+    buf[m++] = shape[j][1];
+    buf[m++] = shape[j][2];
+
+    buf[m++] = blockiness[j][0];
+    buf[m++] = blockiness[j][1];
+
+    buf[m++] = inertia[j][0];
+    buf[m++] = inertia[j][1];
+    buf[m++] = inertia[j][2];
+
+    buf[m++] = volume[j];
+    buf[m++] = area[j];
+
+    buf[m++] = quaternion[j][0];
+    buf[m++] = quaternion[j][1];
+    buf[m++] = quaternion[j][2];
+    buf[m++] = quaternion[j][3];
+  }
+  return m;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -825,8 +943,35 @@ void AtomVecSuperquadric::unpack_border_vel(int n, int first, double *buf)
 
 int AtomVecSuperquadric::unpack_border_hybrid(int n, int first, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::unpack_border_hybrid is not implemented yet");
-  return 0;
+  int i,m,last;
+
+  m = 0;
+  last = first + n;
+  for (i = first; i < last; i++) {
+    radius[i] = buf[m++];
+    rmass[i] = buf[m++];
+    density[i] = buf[m++];
+
+    shape[i][0] = buf[m++];
+    shape[i][1] = buf[m++];
+    shape[i][2] = buf[m++];
+
+    blockiness[i][0] = buf[m++];
+    blockiness[i][1] = buf[m++];
+
+    inertia[i][0] = buf[m++];
+    inertia[i][1] = buf[m++];
+    inertia[i][2] = buf[m++];
+
+    volume[i] = buf[m++];
+    area[i] = buf[m++];
+
+    quaternion[i][0] = buf[m++];
+    quaternion[i][1] = buf[m++];
+    quaternion[i][2] = buf[m++];
+    quaternion[i][3] = buf[m++];
+  }
+  return m;
 }
 
 /* ----------------------------------------------------------------------
@@ -1219,8 +1364,30 @@ void AtomVecSuperquadric::data_atom(double *coord, tagint imagetmp, char **value
 
 int AtomVecSuperquadric::data_atom_hybrid(int nlocal, char **values)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::data_atom_hybrid is not implemented yet");
-  return 0;
+  density[nlocal] = atof(values[0]);
+  if (density[nlocal] <= 0.0)
+    error->one(FLERR,"Invalid density in Atoms section of data file");
+
+  shape[nlocal][0] = atof(values[1]);
+  shape[nlocal][1] = atof(values[2]);
+  shape[nlocal][2] = atof(values[3]);
+  if (shape[nlocal][0] <= 0.0 || shape[nlocal][1] <= 0.0 || shape[nlocal][2] <= 0.0)
+    error->one(FLERR,"Invalid shape in Atoms section of data file");
+
+  blockiness[nlocal][0] = atof(values[4]);
+  blockiness[nlocal][1] = atof(values[5]);
+  if (blockiness[nlocal][0] < 2.0 || blockiness[nlocal][1] < 2.0)
+    error->one(FLERR,"Invalid blockiness in Atoms section of data file");
+
+  quatIdentity4D(quaternion[nlocal]);
+
+  MathExtraLiggghtsNonspherical::bounding_sphere_radius_superquadric(shape[nlocal], blockiness[nlocal], radius+nlocal);
+  MathExtraLiggghtsNonspherical::volume_superquadric(shape[nlocal], blockiness[nlocal], volume+nlocal);
+  rmass[nlocal] = volume[nlocal] * density[nlocal];
+  MathExtraLiggghtsNonspherical::inertia_superquadric(shape[nlocal], blockiness[nlocal], density[nlocal], inertia[nlocal]);
+  MathExtraLiggghtsNonspherical::area_superquadric(shape[nlocal], blockiness[nlocal], area+nlocal);
+
+  return 6;
 }
 
 /* ----------------------------------------------------------------------
@@ -1243,8 +1410,10 @@ void AtomVecSuperquadric::data_vel(int m, char **values)
 
 int AtomVecSuperquadric::data_vel_hybrid(int m, char **values)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::data_vel_hybrid is not implemented yet");
-  return 0;
+  omega[m][0] = atof(values[0]);
+  omega[m][1] = atof(values[1]);
+  omega[m][2] = atof(values[2]);
+  return 3;
 }
 
 /* ----------------------------------------------------------------------
@@ -1258,26 +1427,17 @@ void AtomVecSuperquadric::pack_data(double **buf)
     buf[i][0] = ubuf(tag[i]).d;
     buf[i][1] = ubuf(type[i]).d;
     buf[i][2] = density[i];
-    buf[i][3] = volume[i];
-    buf[i][4] = x[i][0];
-    buf[i][5] = x[i][1];
-    buf[i][6] = x[i][2];
-    buf[i][7] = ubuf((image[i] & IMGMASK) - IMGMAX).d;
-    buf[i][8] = ubuf((image[i] >> IMGBITS & IMGMASK) - IMGMAX).d;
-    buf[i][9] = ubuf((image[i] >> IMG2BITS) - IMGMAX).d;
-    buf[i][10] = shape[i][0];
-    buf[i][11] = shape[i][1];
-    buf[i][12] = shape[i][2];
-    buf[i][13] = blockiness[i][0];
-    buf[i][14] = blockiness[i][1];
-    buf[i][15] = quaternion[i][0];
-    buf[i][16] = quaternion[i][1];
-    buf[i][17] = quaternion[i][2];
-    buf[i][18] = quaternion[i][3];
-    buf[i][19] = inertia[i][0];
-    buf[i][20] = inertia[i][1];
-    buf[i][21] = inertia[i][2];
-    buf[i][22] = area[i];
+    buf[i][3] = shape[i][0];
+    buf[i][4] = shape[i][1];
+    buf[i][5] = shape[i][2];
+    buf[i][6] = blockiness[i][0];
+    buf[i][7] = blockiness[i][1];
+    buf[i][8] = x[i][0];
+    buf[i][9] = x[i][1];
+    buf[i][10] = x[i][2];
+    buf[i][11] = ubuf((image[i] & IMGMASK) - IMGMAX).d;
+    buf[i][12] = ubuf((image[i] >> IMGBITS & IMGMASK) - IMGMAX).d;
+    buf[i][13] = ubuf((image[i] >> IMG2BITS) - IMGMAX).d;
   }
 }
 
@@ -1292,26 +1452,17 @@ void AtomVecSuperquadric::pack_data(double **buf,int tag_offset)
     buf[i][0] = ubuf(tag[i]+tag_offset).d;
     buf[i][1] = ubuf(type[i]).d;
     buf[i][2] = density[i];
-    buf[i][3] = volume[i];
-    buf[i][4] = x[i][0];
-    buf[i][5] = x[i][1];
-    buf[i][6] = x[i][2];
-    buf[i][7] = ubuf((image[i] & IMGMASK) - IMGMAX).d;
-    buf[i][8] = ubuf((image[i] >> IMGBITS & IMGMASK) - IMGMAX).d;
-    buf[i][9] = ubuf((image[i] >> IMG2BITS) - IMGMAX).d;
-    buf[i][10] = shape[i][0];
-    buf[i][11] = shape[i][1];
-    buf[i][12] = shape[i][2];
-    buf[i][13] = blockiness[i][0];
-    buf[i][14] = blockiness[i][1];
-    buf[i][15] = quaternion[i][0];
-    buf[i][16] = quaternion[i][1];
-    buf[i][17] = quaternion[i][2];
-    buf[i][18] = quaternion[i][3];
-    buf[i][19] = inertia[i][0];
-    buf[i][20] = inertia[i][1];
-    buf[i][21] = inertia[i][2];
-    buf[i][22] = area[i];
+    buf[i][3] = shape[i][0];
+    buf[i][4] = shape[i][1];
+    buf[i][5] = shape[i][2];
+    buf[i][6] = blockiness[i][0];
+    buf[i][7] = blockiness[i][1];
+    buf[i][8] = x[i][0];
+    buf[i][9] = x[i][1];
+    buf[i][10] = x[i][2];
+    buf[i][11] = ubuf((image[i] & IMGMASK) - IMGMAX).d;
+    buf[i][12] = ubuf((image[i] >> IMGBITS & IMGMASK) - IMGMAX).d;
+    buf[i][13] = ubuf((image[i] >> IMG2BITS) - IMGMAX).d;
   }
 }
 
@@ -1321,8 +1472,13 @@ void AtomVecSuperquadric::pack_data(double **buf,int tag_offset)
 
 int AtomVecSuperquadric::pack_data_hybrid(int i, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::pack_data_hybrid is not implemented yet");
-  return 0;
+  buf[0] = density[i];
+  buf[1] = shape[i][0];
+  buf[2] = shape[i][1];
+  buf[3] = shape[i][2];
+  buf[4] = blockiness[i][0];
+  buf[5] = blockiness[i][1];
+  return 6;
 }
 
 /* ----------------------------------------------------------------------
@@ -1332,12 +1488,12 @@ int AtomVecSuperquadric::pack_data_hybrid(int i, double *buf)
 void AtomVecSuperquadric::write_data(FILE *fp, int n, double **buf)
 {
   for (int i = 0; i < n; i++)
-    fprintf(fp,"%d %d %-1.16e %-1.16e %-1.16e %-1.16e %-1.16e %d %d %d\n",
+    fprintf(fp,"%d %d %-1.16e %-1.16e %-1.16e %-1.16e %-1.16e %-1.16e %-1.16e %-1.16e %d %d %d\n",
             (int) ubuf(buf[i][0]).i,(int) ubuf(buf[i][1]).i,
-            buf[i][2],buf[i][3],
-            buf[i][4],buf[i][5],buf[i][6],
-            (int) ubuf(buf[i][7]).i,(int) ubuf(buf[i][8]).i,
-            (int) ubuf(buf[i][9]).i);
+            buf[i][2],buf[i][3],buf[i][4],buf[i][5],buf[i][6],buf[i][7],
+            buf[i][8],buf[i][9],buf[i][10],
+            (int) ubuf(buf[i][11]).i,(int) ubuf(buf[i][12]).i,
+            (int) ubuf(buf[i][13]).i);
 }
 
 /* ----------------------------------------------------------------------
@@ -1346,8 +1502,9 @@ void AtomVecSuperquadric::write_data(FILE *fp, int n, double **buf)
 
 int AtomVecSuperquadric::write_data_hybrid(FILE *fp, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::write_data_hybrid is not implemented yet");
-  return 0;
+  fprintf(fp," %-1.16e %-1.16e %-1.16e %-1.16e %-1.16e %-1.16e",
+          buf[0],buf[1],buf[2],buf[3],buf[4],buf[5]);
+  return 6;
 }
 
 /* ----------------------------------------------------------------------
@@ -1392,8 +1549,10 @@ void AtomVecSuperquadric::pack_vel(double **buf,int tag_offset)
 
 int AtomVecSuperquadric::pack_vel_hybrid(int i, double *buf)
 {
-  error->one(FLERR,"function AtomVecSuperquadric::pack_vel_hybrid is not implemented yet");
-  return 0;
+  buf[0] = omega[i][0];
+  buf[1] = omega[i][1];
+  buf[2] = omega[i][2];
+  return 3;
 }
 
 /* ----------------------------------------------------------------------
@@ -1414,8 +1573,8 @@ void AtomVecSuperquadric::write_vel(FILE *fp, int n, double **buf)
 
 int AtomVecSuperquadric::write_vel_hybrid(FILE *fp, double *buf)
 {
-	error->one(FLERR,"function AtomVecSuperquadric::write_vel_hybrid is not implemented yet");
-  return 0;
+  fprintf(fp," %-1.16e %-1.16e %-1.16e",buf[0],buf[1],buf[2]);
+  return 3;
 }
 
 /* ----------------------------------------------------------------------

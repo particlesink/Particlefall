@@ -77,6 +77,15 @@ void write_legacy_scalar_or_vector(std::ofstream &file, vtkSmartPointer<vtkAbstr
             for (std::size_t i = 0; i < data.size(); i += 3)
                 file << data[i] << ' ' << data[i+1] << ' ' << data[i+2] << '\n';
         }
+        else if (ncomp == 9)
+        {
+            file << "TENSORS " << array->GetName() << " int\n";
+            for (std::size_t i = 0; i < data.size(); i += 9) {
+                file << data[i] << ' ' << data[i+1] << ' ' << data[i+2] << '\n';
+                file << data[i+3] << ' ' << data[i+4] << ' ' << data[i+5] << '\n';
+                file << data[i+6] << ' ' << data[i+7] << ' ' << data[i+8] << '\n';
+            }
+        }
         else
         {
             file << "SCALARS " << array->GetName() << " int 1\n";
@@ -94,6 +103,15 @@ void write_legacy_scalar_or_vector(std::ofstream &file, vtkSmartPointer<vtkAbstr
             file << "VECTORS " << array->GetName() << " double\n";
             for (std::size_t i = 0; i < data.size(); i += 3)
                 file << data[i] << ' ' << data[i+1] << ' ' << data[i+2] << '\n';
+        }
+        else if (ncomp == 9)
+        {
+            file << "TENSORS " << array->GetName() << " double\n";
+            for (std::size_t i = 0; i < data.size(); i += 9) {
+                file << data[i] << ' ' << data[i+1] << ' ' << data[i+2] << '\n';
+                file << data[i+3] << ' ' << data[i+4] << ' ' << data[i+5] << '\n';
+                file << data[i+6] << ' ' << data[i+7] << ' ' << data[i+8] << '\n';
+            }
         }
         else
         {

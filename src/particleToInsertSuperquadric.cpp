@@ -90,7 +90,7 @@ int ParticleToInsertSuperquadric::insert()
                 vectorCopy3D(v_ins,atom->v[m]);
                 vectorCopy3D(omega_ins,atom->omega[m]);
                 vectorCopy4D(quat_ins, atom->quaternion[m]);
-                atom->radius[m] = radius_ins[0];
+                atom->radius[m] = radius_ins[i];
                 atom->density[m] = density_ins;
                 atom->rmass[m] = mass_ins;
 
@@ -119,33 +119,69 @@ int ParticleToInsertSuperquadric::check_near_set_x_v_omega(double *x,double *v, 
 {
     // check sphere against all others in xnear
     // if no overlap add to xnear
+    if(nparticles == 1) {
+        if(neighList.hasOverlap_superquadric(x, radius_ins[0], quat, shape_ins, blockiness_ins)) {
+          return 0;
+        }
 
-    if(nparticles > 1)
-        error->one(FLERR,"check_near_set_x_v_omega not implemented yet for nparticles>1");
+        // no overlap with any other - success
 
-    if(neighList.hasOverlap_superquadric(x, radius_ins[0], quat, shape_ins, blockiness_ins)) {
-      return 0;
+        vectorCopy3D(x,x_ins[0]);
+        vectorCopy3D(v,v_ins);
+        vectorCopy3D(omega,omega_ins);
+        vectorCopy4D(quat, quat_ins);
+
+        // add to xnear
+        neighList.insert_superquadric(x_ins[0], radius_ins[0], quat_ins, shape_ins, blockiness_ins);
+
+        return 1;
     }
 
-    // no overlap with any other - success
+    double rel[3], xins_j_try[3];
 
-    vectorCopy3D(x,x_ins[0]);
-    vectorCopy3D(v,v_ins);
-    vectorCopy3D(omega,omega_ins);
+    for(int j = 0; j < nparticles; j++) {
+        vectorSubtract3D(x_ins[j], x_bound_ins, rel);
+        MathExtraLiggghts::vec_quat_rotate(rel, quat);
+        vectorAdd3D(rel, x, xins_j_try);
+
+        if(neighList.hasOverlap_superquadric(xins_j_try, radius_ins[j], quat, shape_ins, blockiness_ins)) {
+            return 0;
+        }
+    }
+
+    for(int j = 0; j < nparticles; j++) {
+        vectorSubtract3D(x_ins[j], x_bound_ins, rel);
+        MathExtraLiggghts::vec_quat_rotate(rel, quat);
+        vectorAdd3D(rel, x, x_ins[j]);
+    }
+
+    vectorCopy3D(v, v_ins);
+    vectorCopy3D(omega, omega_ins);
     vectorCopy4D(quat, quat_ins);
 
-    // add to xnear
-    neighList.insert_superquadric(x_ins[0], radius_ins[0], quat_ins, shape_ins, blockiness_ins);
+    for(int j = 0; j < nparticles; j++) {
+        neighList.insert_superquadric(x_ins[j], radius_ins[j], quat_ins, shape_ins, blockiness_ins);
+    }
 
-    return 1;
+    return nparticles;
 }
 
 /* ---------------------------------------------------------------------- */
 
 int ParticleToInsertSuperquadric::set_x_v_omega(double *x, double *v, double *omega, double *quat)
 {
-    // set velocity and omega
-    vectorCopy3D(x,x_ins[0]);
+    double rel[3];
+
+    for(int j = 0; j < nparticles; j++) {
+        if(1 == nparticles) {
+            vectorCopy3D(x,x_ins[j]);
+        } else {
+            vectorSubtract3D(x_ins[j],x_bound_ins,rel);
+            MathExtraLiggghts::vec_quat_rotate(rel,quat);
+            vectorAdd3D(rel,x,x_ins[j]);
+        }
+    }
+
     vectorCopy3D(v,v_ins);
     vectorCopy3D(omega,omega_ins);
     vectorCopy4D(quat, quat_ins);
@@ -158,19 +194,24 @@ int ParticleToInsertSuperquadric::set_x_v_omega(double *x, double *v, double *om
 void ParticleToInsertSuperquadric::scale_pti(double r_scale)
 {
     double r_scale3 = r_scale*r_scale*r_scale;
+    double r_scale2 = r_scale*r_scale;
+    double r_scale5 = r_scale2*r_scale3;
 
     for(int i = 0; i < nparticles; i++) {
         radius_ins[i] *= r_scale;
-        shape_ins[0] *= r_scale;
-        shape_ins[1] *= r_scale;
-        shape_ins[2] *= r_scale;
         vectorScalarMult3D(x_ins[i],r_scale);
     }
+    shape_ins[0] *= r_scale;
+    shape_ins[1] *= r_scale;
+    shape_ins[2] *= r_scale;
 
     volume_ins *= r_scale3;
+    area_ins *= r_scale2;
     mass_ins *= r_scale3;
+    vectorScalarMult3D(inertia_ins,r_scale5);
 
     r_bound_ins *= r_scale;
+    vectorScalarMult3D(x_bound_ins,r_scale);
 }
 
 #endif

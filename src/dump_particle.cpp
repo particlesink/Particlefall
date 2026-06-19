@@ -3157,7 +3157,7 @@ void DumpParticle::pack_tensor(int n)
     double **quaternion = atom->quaternion;
     for (int i = 0; i < nchoose; i++) {
         double mat[3][3];
-        MathExtra::quat_to_mat(quaternion[i], mat);
+        MathExtra::quat_to_mat(quaternion[clist[i]], mat);
         buf[n]  =  mat[0][0];
         buf[n+1] = mat[0][1];
         buf[n+2] = mat[0][2];

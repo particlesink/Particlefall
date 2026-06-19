@@ -64,7 +64,7 @@ ComputeERotateSuperquadric::ComputeERotateSuperquadric(LAMMPS *lmp, int &iarg, i
   // error check
 
   if (!atom->superquadric_flag)
-    error->all(FLERR,"Compute erotate/superquadric requires atom style sphere");
+    error->all(FLERR,"Compute erotate/superquadric requires atom style superquadric");
 
 }
 

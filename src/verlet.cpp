@@ -52,6 +52,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <inttypes.h>
 #include "verlet.h"
 #include "neighbor.h"
 #include "domain.h"
@@ -382,8 +383,19 @@ void Verlet::run(int n)
       timer->stamp(TIME_OUTPUT);
     }
     
-    if (SignalHandler::request_quit && !SignalHandler::request_write_restart)
+    if (SignalHandler::request_quit && !SignalHandler::request_write_restart) {
+      if (comm->me == 0) {
+        if (screen)
+          fprintf(screen,
+                  "Run interrupted by signal handling at timestep " BIGINT_FORMAT "\n",
+                  ntimestep);
+        if (logfile)
+          fprintf(logfile,
+                  "Run interrupted by signal handling at timestep " BIGINT_FORMAT "\n",
+                  ntimestep);
+      }
         break;
+    }
   }
 }
 

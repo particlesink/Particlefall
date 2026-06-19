@@ -321,6 +321,11 @@ void Run::command(int narg, char **arg, bigint nsteps_input_ext)
     update->integrate->run(nsteps);
     timer->barrier_stop(TIME_LOOP);
 
+    bigint completed_steps = update->ntimestep - update->firststep;
+    if (completed_steps < 0) completed_steps = 0;
+    if (completed_steps > MAXSMALLINT) update->nsteps = MAXSMALLINT;
+    else update->nsteps = static_cast<int>(completed_steps);
+
     update->integrate->cleanup();
 
     Finish finish(lmp);
@@ -364,6 +369,11 @@ void Run::command(int narg, char **arg, bigint nsteps_input_ext)
       timer->barrier_start(TIME_LOOP);
       update->integrate->run(nsteps);
       timer->barrier_stop(TIME_LOOP);
+
+      bigint completed_steps = update->ntimestep - update->firststep;
+      if (completed_steps < 0) completed_steps = 0;
+      if (completed_steps > MAXSMALLINT) update->nsteps = MAXSMALLINT;
+      else update->nsteps = static_cast<int>(completed_steps);
 
       update->integrate->cleanup();
 

@@ -13,12 +13,12 @@ Syntax
 
 * ID, group-ID are documented in :doc:`fix <fix>` command
 * nve/superquadric = style name of this fix command
-* zero or one keyword/value pair may be appended to args; the *dim* keyword must be used
+* zero or one keyword/value pair may be appended to args
 * keyword = *integration\_scheme*
   
   .. parsed-literal::
   
-       *integration_scheme* values = 0, 1 or 2
+       *integration_scheme* values = 0, 1, 2 or 3
          0 = based on Richardson iterations
          1 = symplectic algorithm (recommended)
          2 = leap-frog predictor-corrector
@@ -44,6 +44,9 @@ trajectory consistent with the microcanonical ensemble.
 
 This fix differs from the :doc:`fix nve/sphere <fix_nve_sphere>` command, which
 assumes point particles and only updates their position and velocity.
+
+For practical DEM use, *integration\_scheme* = 1 is generally the best
+starting choice and is the default used by the bundled superquadric example.
 
 This model is used in the framework of SUPERQUADRIC simulations. For more information see also the :doc:`SUPERQUADRIC guide <superquadric_simulations>`.
 
