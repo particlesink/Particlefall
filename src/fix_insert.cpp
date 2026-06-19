@@ -1015,6 +1015,7 @@ int FixInsert::load_xnear(int ninsert_this_local)
   double **x = atom->x;
   double *radius = atom->radius;
   const int nall = atom->nlocal + atom->nghost;
+  const double tol = 1e-10;
 
   BoundingBox bb = getBoundingBox();
   neighList.reset();
@@ -1026,16 +1027,35 @@ int FixInsert::load_xnear(int ninsert_this_local)
   {
     for (int i = 0; i < nall; ++i)
     {
+      double xremap[3] = {x[i][0], x[i][1], x[i][2]};
+      domain->remap(xremap);
+
+      if(xremap[0] < domain->boxlo[0] - tol || xremap[0] > domain->boxhi[0] + tol ||
+         xremap[1] < domain->boxlo[1] - tol || xremap[1] > domain->boxhi[1] + tol ||
+         xremap[2] < domain->boxlo[2] - tol || xremap[2] > domain->boxhi[2] + tol)
+      {
+        char msg[1024];
+        snprintf(msg, sizeof(msg),
+                 "Fix insert load_xnear detected inconsistent atom state before neighbor-list insertion. "
+                 "atom=%d step=" BIGINT_FORMAT " radius=%g x=(%g,%g,%g) remapped=(%g,%g,%g) "
+                 "load_xnear maxrad=%g box=[(%g,%g,%g),(%g,%g,%g)].",
+                 i, update->ntimestep, radius[i], x[i][0], x[i][1], x[i][2],
+                 xremap[0], xremap[1], xremap[2],
+                 maxrad,
+                 domain->boxlo[0], domain->boxlo[1], domain->boxlo[2],
+                 domain->boxhi[0], domain->boxhi[1], domain->boxhi[2]);
+        error->one(FLERR,msg);
+      }
       
-      if (is_nearby(i) && neighList.isInBoundingBox(x[i]) )
+      if (is_nearby(i) && neighList.isInBoundingBox(xremap) )
       {
 #ifdef SUPERQUADRIC_ACTIVE_FLAG
         if(atom->superquadric_flag and check_obb_flag)
-          neighList.insert_superquadric(x[i], radius[i], atom->quaternion[i], atom->shape[i], atom->blockiness[i]);
+          neighList.insert_superquadric(xremap, radius[i], atom->quaternion[i], atom->shape[i], atom->blockiness[i]);
         else
-          neighList.insert(x[i], radius[i]);
+          neighList.insert(xremap, radius[i]);
 #else
-        neighList.insert(x[i], radius[i]);
+        neighList.insert(xremap, radius[i]);
 #endif
       }
     }

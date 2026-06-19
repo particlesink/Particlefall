@@ -60,6 +60,7 @@
 #include <mpi.h>
 #include <limits>
 #include <algorithm>
+#include <cstdio>
 
 #ifdef SUPERQUADRIC_ACTIVE_FLAG
 #include "math_extra_liggghts_superquadric.h"
@@ -152,6 +153,8 @@ class RegionNeighborList : public IRegionNeighborList, protected Pointers
     inline void getOrigin(double *origin) const
     { vectorCopy3D(bboxlo, origin); }
 
+    void formatPbcSpacingDiagnostic(double radius, char *buf, size_t bufsize) const;
+
   protected:
 
     std::vector<Bin<INTERPOLATE> > bins;// list of particle bins
@@ -159,6 +162,7 @@ class RegionNeighborList : public IRegionNeighborList, protected Pointers
     size_t ncount;                      // total number of particles in neighbor list
 
     bool bbox_set;
+    double maxrad_setting;
 
     double bboxlo[3];               // lowest point of bounding box
     double bboxhi[3];               // highest point of bounding box

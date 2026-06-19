@@ -58,7 +58,8 @@ RegionNeighborList<INTERPOLATE>::RegionNeighborList(LAMMPS *lmp) :
     IRegionNeighborList(),
     Pointers(lmp),
     ncount(0),
-    bbox_set(false)
+    bbox_set(false),
+    maxrad_setting(0.)
 {
 }
 
@@ -72,14 +73,18 @@ template<bool INTERPOLATE>
 bool RegionNeighborList<INTERPOLATE>::hasOverlap(double * x, double radius) const
 {
   int ibin = coord2bin(x);
+  if((ibin < 0) || ((size_t)(ibin) >= bins.size()))
+  {
+    // A candidate outside the neighbor-list box cannot be inserted safely.
+    return true;
+  }
 
   for(std::vector<int>::const_iterator it = stencil.begin(); it != stencil.end(); ++it)
   {
     const int offset = *it;
     if((ibin+offset < 0) || ((size_t)(ibin+offset) >= bins.size()))
     {
-        
-        error->one(FLERR,"assertion failed");
+        continue;
     }
     const std::vector<Particle<INTERPOLATE> > & plist = bins[ibin+offset].particles;
 
@@ -102,13 +107,16 @@ template<bool INTERPOLATE>
 bool RegionNeighborList<INTERPOLATE>::hasOverlap_superquadric(double * x, double radius, double *quaternion, double *shape, double *blockiness) const
 {
   int ibin = coord2bin(x);
+  if((ibin < 0) || ((size_t)(ibin) >= bins.size()))
+  {
+    return true;
+  }
 
   for(std::vector<int>::const_iterator it = stencil.begin(); it != stencil.end(); ++it) {
     const int offset = *it;
     if((ibin+offset < 0) || ((size_t)(ibin+offset) >= bins.size()))
     {
-
-        error->one(FLERR,"assertion failed");
+        continue;
     }
     const std::vector<Particle<INTERPOLATE> > & plist = bins[ibin+offset].particles;
 
@@ -153,6 +161,10 @@ template<bool INTERPOLATE>
 bool RegionNeighborList<INTERPOLATE>::hasOverlapWith(double * x, double radius, std::vector<int> &overlap_list) const
 {
   int ibin = coord2bin(x);
+  if((ibin < 0) || ((size_t)(ibin) >= bins.size()))
+  {
+    return true;
+  }
 
   bool overlap = false;
 
@@ -161,8 +173,7 @@ bool RegionNeighborList<INTERPOLATE>::hasOverlapWith(double * x, double radius, 
     const int offset = *it;
     if((ibin+offset < 0) || ((size_t)(ibin+offset) >= bins.size()))
     {
-        
-        error->one(FLERR,"assertion failed");
+        continue;
     }
     const std::vector<Particle<INTERPOLATE> > & plist = bins[ibin+offset].particles;
 
@@ -197,8 +208,30 @@ void RegionNeighborList<INTERPOLATE>::insert(double * x, double radius,int index
   int ibin = coord2bin(x,quadrant,wx,wy,wz);
   if((ibin < 0) || ((size_t)(ibin) >= bins.size()))
   {
-      
-      error->one(FLERR,"assertion failed");
+      char msg[1600];
+      char pbcmsg[384];
+      const bool indexed_geometry_proxy = (index >= 0);
+      const char *object_label = indexed_geometry_proxy ? "geometry element proxy" : "particle center";
+      const char *advice =
+          indexed_geometry_proxy ?
+          " The reported radius is the bounding-sphere radius of a mesh/geometry element, not the DEM particle template radius. "
+          "For thin-direction PBC cross-section workflows, reduce the largest facet/element size so its bounding-sphere radius is smaller than half the periodic span in the thin direction, or enlarge the periodic span." :
+          " For DEM insertion, check the insertion region, the particle template radius, and whether the insertion candidate lies inside the intended periodic box.";
+      formatPbcSpacingDiagnostic(radius, pbcmsg, sizeof(pbcmsg));
+      std::snprintf(msg, sizeof(msg),
+                    "RegionNeighborList::insert could not map %s to a valid bin. "
+                    "x=(%g,%g,%g) radius=%g bbox=[(%g,%g,%g),(%g,%g,%g)] "
+                    "nbins=(%d,%d,%d) mbins=(%d,%d,%d) offsets=(%d,%d,%d). "
+                    "This usually means the candidate insertion point lies outside the "
+                    "neighbor-list bounding box, which can happen for thin regions or near periodic boundaries. %s%s",
+                    object_label, x[0], x[1], x[2], radius,
+                    bboxlo[0], bboxlo[1], bboxlo[2],
+                    bboxhi[0], bboxhi[1], bboxhi[2],
+                    nbinx, nbiny, nbinz,
+                    mbinx, mbiny, mbinz,
+                    mbinxlo, mbinylo, mbinzlo,
+                    pbcmsg, advice);
+      error->one(FLERR,msg);
   }
 
   bins[ibin].particles.push_back(Particle<INTERPOLATE>(index,x, radius,ibin,quadrant,wx,wy,wz));
@@ -214,8 +247,30 @@ void RegionNeighborList<INTERPOLATE>::insert_superquadric(double * x, double rad
   int ibin = coord2bin(x,quadrant,wx,wy,wz);
   if((ibin < 0) || ((size_t)(ibin) >= bins.size()))
   {
-
-      error->one(FLERR,"assertion failed");
+      char msg[1600];
+      char pbcmsg[384];
+      const bool indexed_geometry_proxy = (index >= 0);
+      const char *object_label = indexed_geometry_proxy ? "geometry element proxy" : "particle center";
+      const char *advice =
+          indexed_geometry_proxy ?
+          " The reported radius is the bounding-sphere radius of a mesh/geometry element, not the DEM particle template radius. "
+          "For thin-direction PBC cross-section workflows, reduce the largest facet/element size so its bounding-sphere radius is smaller than half the periodic span in the thin direction, or enlarge the periodic span." :
+          " For DEM insertion, check the insertion region, the particle template radius, and whether the insertion candidate lies inside the intended periodic box.";
+      formatPbcSpacingDiagnostic(radius, pbcmsg, sizeof(pbcmsg));
+      std::snprintf(msg, sizeof(msg),
+                    "RegionNeighborList::insert_superquadric could not map %s to a valid bin. "
+                    "x=(%g,%g,%g) radius=%g bbox=[(%g,%g,%g),(%g,%g,%g)] "
+                    "nbins=(%d,%d,%d) mbins=(%d,%d,%d) offsets=(%d,%d,%d). "
+                    "This usually means the candidate insertion point lies outside the "
+                    "neighbor-list bounding box, which can happen for thin regions or near periodic boundaries. %s%s",
+                    object_label, x[0], x[1], x[2], radius,
+                    bboxlo[0], bboxlo[1], bboxlo[2],
+                    bboxhi[0], bboxhi[1], bboxhi[2],
+                    nbinx, nbiny, nbinz,
+                    mbinx, mbiny, mbinz,
+                    mbinxlo, mbinylo, mbinzlo,
+                    pbcmsg, advice);
+      error->one(FLERR,msg);
   }
 
   bins[ibin].particles.push_back(Particle<INTERPOLATE>(index,x,radius,quaternion, shape, blockiness, ibin,quadrant,wx,wy,wz));
@@ -233,6 +288,7 @@ void RegionNeighborList<INTERPOLATE>::reset()
   bins.clear();
   stencil.clear();
   bbox_set = false;
+  maxrad_setting = 0.;
   nbinx = nbiny = nbinz = 0;
   binsizex = binsizey = binsizez = 0;
   bininvx = bininvy = bininvz = 0;
@@ -252,6 +308,51 @@ template<bool INTERPOLATE>
 int RegionNeighborList<INTERPOLATE>::getSizeOne() const
 {
     return 4;
+}
+
+template<bool INTERPOLATE>
+void RegionNeighborList<INTERPOLATE>::formatPbcSpacingDiagnostic(double radius, char *buf, size_t bufsize) const
+{
+  if(bufsize == 0) return;
+
+  const double min_spacing = 2.0 * radius;
+  const double expected_min_spacing = 2.0 * maxrad_setting;
+  const char *dimnames[3] = {"x", "y", "z"};
+  int written = std::snprintf(buf, bufsize,
+                              "Minimum periodic span for failing particle is > 2*radius = %g. "
+                              "Neighbor list was built for max radius %g (expected periodic span > %g).",
+                              min_spacing, maxrad_setting, expected_min_spacing);
+  if(written < 0 || static_cast<size_t>(written) >= bufsize) return;
+
+  size_t used = static_cast<size_t>(written);
+  bool any_periodic = false;
+
+  for(int idim = 0; idim < 3; ++idim)
+  {
+    if(!domain->periodicity[idim]) continue;
+    any_periodic = true;
+
+    const double current_span = domain->prd[idim];
+    const char *status = current_span > min_spacing ? "OK" : "TOO SMALL";
+    written = std::snprintf(buf + used, bufsize - used,
+                            " %s-periodic span=%g, required>%g for failing particle [%s]",
+                            dimnames[idim], current_span, min_spacing, status);
+    if(written < 0 || static_cast<size_t>(written) >= bufsize - used) return;
+    used += static_cast<size_t>(written);
+
+    if(maxrad_setting > 0.0)
+    {
+      const char *expected_status = current_span > expected_min_spacing ? "OK" : "TOO SMALL";
+      written = std::snprintf(buf + used, bufsize - used,
+                              ", required>%g for configured max radius [%s].",
+                              expected_min_spacing, expected_status);
+      if(written < 0 || static_cast<size_t>(written) >= bufsize - used) return;
+      used += static_cast<size_t>(written);
+    }
+  }
+
+  if(!any_periodic)
+    std::snprintf(buf + used, bufsize - used, " No periodic dimensions are active.");
 }
 
 /**
@@ -404,6 +505,7 @@ bool RegionNeighborList<INTERPOLATE>::setBoundingBox(BoundingBox & bb, double ma
 {
   double extent[3];
   bb.getExtent(extent);
+  maxrad_setting = maxrad;
 
   if(extent[0] <= 0.0 || extent[1] <= 0.0 || extent[2] <= 0.0) {
     // empty or invalid region
