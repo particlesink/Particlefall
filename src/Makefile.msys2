@@ -21,10 +21,10 @@ SHLINKFLAGS ?= -Wl,--out-implib,$(IMPORT_LIB) -Wl,--export-all-symbols
 
 # Build mode:
 #   USE_MPI=0 -> default single-process build against the MPI shim in src/STUBS
-#   USE_MPI=1 -> opt in to the MSYS2 MPI wrapper compiler
+#   USE_MPI=1 -> opt in to the MSYS2 MinGW MPI wrapper compiler
 USE_MPI ?= 0
-MPICXX ?= mpic++
-SERIAL_CXX ?= g++
+MPICXX ?= /mingw64/bin/mpic++
+SERIAL_CXX ?= /mingw64/bin/g++
 
 ENABLE_VTK ?= 1
 ENABLE_XDR ?= 1

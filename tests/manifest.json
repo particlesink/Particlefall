@@ -1,0 +1,363 @@
+{
+  "cases": [
+    {
+      "name": "sphere_primitive_wall_smoke",
+      "group": "smoke",
+      "cwd": "tests/cases/sphere_primitive_wall_smoke",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2
+      }
+    },
+    {
+      "name": "sphere_insert_pack_once",
+      "group": "smoke",
+      "cwd": "tests/cases/sphere_insert_pack_once",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 6
+      }
+    },
+    {
+      "name": "sphere_mesh_inclusion_insert",
+      "group": "regression",
+      "cwd": "tests/cases/sphere_mesh_inclusion_insert",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 8
+      }
+    },
+    {
+      "name": "superquadric_insert_pack_once",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_insert_pack_once",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 4
+      }
+    },
+    {
+      "name": "superquadric_orientation_modes",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_orientation_modes",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 6
+      }
+    },
+    {
+      "name": "superquadric_template_distributions",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_template_distributions",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 6
+      }
+    },
+    {
+      "name": "superquadric_set_direct",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_set_direct",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 4
+      }
+    },
+    {
+      "name": "superquadric_mesh_wall",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_mesh_wall",
+      "input": "in.test",
+      "timeout_s": 30,
+      "metrics": {
+        "natoms": 4
+      }
+    },
+    {
+      "name": "sphere_mesh_wall_periodic_overhang",
+      "group": "regression",
+      "cwd": "tests/cases/sphere_mesh_wall_periodic_overhang",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 0
+      }
+    },
+    {
+      "name": "superquadric_dump_schema",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_dump_schema",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 1
+      },
+      "required_files": [
+        "schema_0.superq.vtp"
+      ],
+      "required_file_substrings": {
+        "schema_0.superq.vtp": [
+          "Name=\"shapex\"",
+          "Name=\"blockiness1\"",
+          "Name=\"TENSOR\""
+        ]
+      }
+    },
+    {
+      "name": "superquadric_restart_roundtrip",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_restart_roundtrip",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms_before": 2,
+        "natoms_after": 2
+      },
+      "required_files": [
+        "state.restart"
+      ]
+    },
+    {
+      "name": "sphere_restart_roundtrip",
+      "group": "regression",
+      "cwd": "tests/cases/sphere_restart_roundtrip",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms_before": 2,
+        "natoms_after": 2
+      },
+      "required_files": [
+        "state.restart"
+      ]
+    },
+    {
+      "name": "sphere_dump_schema",
+      "group": "regression",
+      "cwd": "tests/cases/sphere_dump_schema",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 1
+      },
+      "required_files": [
+        "sphere_schema_0.vtp"
+      ],
+      "required_file_substrings": {
+        "sphere_schema_0.vtp": [
+          "Name=\"radius\"",
+          "Name=\"id\"",
+          "Name=\"mass\""
+        ]
+      }
+    },
+    {
+      "name": "sphere_two_template_distribution",
+      "group": "regression",
+      "cwd": "tests/cases/sphere_two_template_distribution",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2
+      }
+    },
+    {
+      "name": "run_seconds_vs_steps_equivalence",
+      "group": "regression",
+      "cwd": "tests/cases/run_seconds_vs_steps_equivalence",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "step_from_steps": 25,
+        "step_from_seconds": 25
+      }
+    },
+    {
+      "name": "sphere_seed_collision_rejected",
+      "group": "validation-failure",
+      "cwd": "tests/cases/sphere_seed_collision_rejected",
+      "input": "in.test",
+      "timeout_s": 20,
+      "expect_exit_code": 1,
+      "required_output_substrings": [
+        "random seeds of this fix insert/*",
+        "are different"
+      ]
+    },
+    {
+      "name": "sphere_missing_material_rejected",
+      "group": "validation-failure",
+      "cwd": "tests/cases/sphere_missing_material_rejected",
+      "input": "in.test",
+      "timeout_s": 20,
+      "expect_exit_code": 1,
+      "required_output_substrings": [
+        "Could not locate a fix/property storing value(s) for youngsModulus"
+      ]
+    },
+    {
+      "name": "superquadric_pair_contact_smoke",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_pair_contact_smoke",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2
+      }
+    },
+    {
+      "name": "superquadric_ellipsoid_case",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_ellipsoid_case",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2
+      }
+    },
+    {
+      "name": "sph_continuity_smoke",
+      "group": "smoke",
+      "cwd": "tests/cases/sph_continuity_smoke",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2,
+        "final_step": 1
+      }
+    },
+    {
+      "name": "sph_stationary_wall_smoke",
+      "group": "smoke",
+      "cwd": "tests/cases/sph_stationary_wall_smoke",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2,
+        "final_step": 1
+      }
+    },
+    {
+      "name": "sph_density_summation_smoke",
+      "group": "smoke",
+      "cwd": "tests/cases/sph_density_summation_smoke",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2,
+        "final_step": 1
+      }
+    },
+    {
+      "name": "sph_dem_bridge_smoke",
+      "group": "smoke",
+      "cwd": "tests/cases/sph_dem_bridge_smoke",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "coupled_particles": {
+          "min": 0.5
+        },
+        "solid_vx": {
+          "min": 1.0e-12
+        },
+        "fluid_vx": {
+          "max": 0.99999995
+        }
+      }
+    },
+    {
+      "name": "sph_dem_buoyancy_smoke",
+      "group": "smoke",
+      "cwd": "tests/cases/sph_dem_buoyancy_smoke",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "coupled_particles": {
+          "min": 0.5
+        },
+        "buoyancy_force_z": {
+          "min": 1.0e-12
+        }
+      }
+    },
+    {
+      "name": "sph_dem_pressure_gradient_regression",
+      "group": "regression",
+      "cwd": "tests/cases/sph_dem_pressure_gradient_regression",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "coupled_particles": {
+          "min": 0.5
+        },
+        "pressure_force_x": {
+          "min": 1.0e-12
+        },
+        "porosity_sum": {
+          "min": 1.0e-12
+        }
+      }
+    },
+    {
+      "name": "sph_tutorial1_short_regression",
+      "group": "regression",
+      "cwd": "tests/cases/sph_tutorial1_short_regression",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 4,
+        "step_after_wall": 20,
+        "final_step": 25
+      },
+      "required_files": [
+        "post/sph_reg_20.vtk"
+      ],
+      "required_file_substrings": {
+        "post/sph_reg_20.vtk": [
+          "rho",
+          "POINTS"
+        ]
+      }
+    },
+    {
+      "name": "superquadric_two_template_distribution",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_two_template_distribution",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2
+      }
+    },
+    {
+      "name": "superquadric_primitive_wall_multihit",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_primitive_wall_multihit",
+      "input": "in.test",
+      "timeout_s": 20,
+      "metrics": {
+        "natoms": 2
+      }
+    },
+    {
+      "name": "superquadric_seed_collision_rejected",
+      "group": "wip-superquadric",
+      "cwd": "tests/cases/superquadric_seed_collision_rejected",
+      "input": "in.test",
+      "timeout_s": 20,
+      "expect_exit_code": 1,
+      "required_output_substrings": [
+        "random seeds of this fix insert/*",
+        "are different"
+      ]
+    }
+  ]
+}

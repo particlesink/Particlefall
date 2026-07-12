@@ -22,6 +22,23 @@ make linux USE_MPI=1
 make msys2 USE_MPI=1
 ```
 
+The default release path currently targets sphere, SPH, and SPH-DEM workflows.
+Superquadric support remains work in progress and is not part of the default
+build-and-smoke gate yet.
+
+## Documentation Status
+
+Packfall currently ships a mix of validated workflows, inherited examples, and
+legacy manual content carried forward from the LIGGGHTS-PUBLIC codebase.
+
+- The default supported release path is the build-and-smoke workflow described
+  above.
+- Additional examples and tutorials may still ship even when they are not part
+  of the current validation set.
+- Built documentation may include inherited LIGGGHTS-era material that remains
+  useful for reference, but does not by itself imply that every documented
+  feature is currently validated in Packfall.
+
 ## Attribution
 
 This repository contains code derived from LIGGGHTS-PUBLIC and LAMMPS. `LIGGGHTS` and `CFDEM` are registered trademarks of DCS Computing GmbH. Packfall is not approved or endorsed by DCS Computing GmbH. See `LICENSE` and source-file headers for license, copyright, and attribution details.

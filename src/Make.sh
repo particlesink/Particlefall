@@ -10,7 +10,7 @@
 # else Make will not recreate them
 
 style () {
-  # modified C.K. create version_liggghts.h
+  # create the runtime version banner used by the supported Packfall builds
   builddate=`date +%Y-%m-%d-%H:%M:%S`
   wai=`whoami`
   vers=`cat version_liggghts.txt`
@@ -18,14 +18,14 @@ style () {
 
   if [ -d .git ]; then
     githash=`git log -1 --format="%H"`
-    echo "#define LIGGGHTS_VERSION \"$bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_liggghts.h
+    echo "#define LIGGGHTS_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_liggghts.h
   elif [ -d ../.git ]; then
     cd ..    
     githash=`git log -1 --format="%H"`
     cd src
-    echo "#define LIGGGHTS_VERSION \"$bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_liggghts.h
+    echo "#define LIGGGHTS_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_liggghts.h
   else
-    echo "#define LIGGGHTS_VERSION \"$bra $vers, compiled $builddate by $wai, git commit unknown\"" > version_liggghts.h
+    echo "#define LIGGGHTS_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit unknown\"" > version_liggghts.h
   fi;
 
   list=`grep -sl $1 $2*.h`
