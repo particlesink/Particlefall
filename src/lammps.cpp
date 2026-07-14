@@ -308,12 +308,12 @@ LAMMPS::LAMMPS(int narg, char **arg, MPI_Comm communicator)
         error->universe_one(FLERR,"Cannot open universe screen file");
     }
     if (logflag == 0) {
-      universe->ulogfile  = fopen("log.liggghts","w");  
+      universe->ulogfile  = fopen("log.packfall","w");  
       if(thermoflag > 0) universe->uthermofile = fopen(arg[thermoflag],"w");  
       if (universe->ulogfile == NULL)
-        error->universe_warn(FLERR,"Cannot open log.liggghts for writing");   
+        error->universe_warn(FLERR,"Cannot open log.packfall for writing");   
       if (thermoflag > 0 && universe->uthermofile == NULL)                                         
-        error->universe_warn(FLERR,"Cannot open log.liggghts.thermo for writing");
+        error->universe_warn(FLERR,"Cannot open log.packfall.thermo for writing");
     } else if (strcmp(arg[logflag],"none") == 0) {
       universe->ulogfile = NULL;
       universe->uthermofile = NULL; 
@@ -323,7 +323,7 @@ LAMMPS::LAMMPS(int narg, char **arg, MPI_Comm communicator)
       if (universe->ulogfile == NULL)
         error->universe_one(FLERR,"Cannot open universe log file");
       if (thermoflag > 0 && universe->uthermofile == NULL)                     
-        error->universe_warn(FLERR,"Cannot open log.liggghts.thermo for writing");
+        error->universe_warn(FLERR,"Cannot open log.packfall.thermo for writing");
     }
   }
 
@@ -357,9 +357,9 @@ LAMMPS::LAMMPS(int narg, char **arg, MPI_Comm communicator)
     }
 
     if (universe->me == 0) {
-      if (screen) fprintf(screen,"LIGGGHTS (%s)\n",universe->version);  
-      if (logfile) fprintf(logfile,"LIGGGHTS (%s)\n",universe->version);  
-      if (thermofile) fprintf(thermofile,"LIGGGHTS (%s)\n",universe->version);  
+      if (screen) fprintf(screen,"packfall (%s)\n",universe->version);  
+      if (logfile) fprintf(logfile,"packfall (%s)\n",universe->version);  
+      if (thermofile) fprintf(thermofile,"packfall   (%s)\n",universe->version);  
     }
 
   // universe is one or more worlds, as setup by partition switch
@@ -400,7 +400,7 @@ LAMMPS::LAMMPS(int narg, char **arg, MPI_Comm communicator)
       if (partlogflag == 0)
        if (logflag == 0) {
          char str[512];
-         sprintf(str,"log.liggghts.%d",universe->iworld); 
+         sprintf(str,"log.packfall.%d",universe->iworld); 
          logfile = fopen(str,"w");
          if (logfile == NULL) error->one(FLERR,"Cannot open logfile");
          sprintf(str,"%s.%d",arg[thermoflag],universe->iworld); 
@@ -447,12 +447,12 @@ LAMMPS::LAMMPS(int narg, char **arg, MPI_Comm communicator)
 
     if (universe->me == 0) {
       if (universe->uscreen) {
-        fprintf(universe->uscreen,"LIGGGHTS (%s)\n",universe->version); 
+        fprintf(universe->uscreen,"packfall (%s)\n",universe->version); 
         fprintf(universe->uscreen,"Running on %d partitions of processors\n",
                 universe->nworlds);
       }
       if (universe->ulogfile) {
-        fprintf(universe->ulogfile,"LIGGGHTS (%s)\n",universe->version); 
+        fprintf(universe->ulogfile,"packfall (%s)\n",universe->version); 
         fprintf(universe->ulogfile,"Running on %d partitions of processors\n",
                 universe->nworlds);
       }
@@ -460,11 +460,11 @@ LAMMPS::LAMMPS(int narg, char **arg, MPI_Comm communicator)
 
     if (me == 0) {
       if (screen) {
-        fprintf(screen,"LIGGGHTS (%s)\n",universe->version); 
+        fprintf(screen,"packfall (%s)\n",universe->version); 
         fprintf(screen,"Processor partition = %d\n",universe->iworld);
       }
       if (logfile) {
-        fprintf(logfile,"LIGGGHTS (%s)\n",universe->version); 
+        fprintf(logfile,"packfall (%s)\n",universe->version); 
         fprintf(logfile,"Processor partition = %d\n",universe->iworld);
       }
     }
