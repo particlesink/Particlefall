@@ -1,15 +1,13 @@
 Introduction
 ============
 
-This section provides an overview of what LIGGGHTS(R)-PUBLIC can do,
-describes what it means for LIGGGHTS(R)-PUBLIC to be an open-source code, and
-acknowledges the funding and people who have contributed to LIGGGHTS(R)-PUBLIC
-over the years.
+This section provides a brief overview of Packfall, its scope, and its
+license.
 
 
 .. contents:: 
-		:local:
-		:depth: 1
+   :local:
+   :depth: 1
    
 
 
@@ -17,115 +15,52 @@ over the years.
 
 .. _intro\_1:
 
-What is LIGGGHTS(R)-PUBLIC
+What is Packfall
 --------------------------
 
-LIGGGHTS(R)-PUBLIC is an Open Source Discrete Element Method Particle
-Simulation Software.
+Packfall is an open-source Discrete Element Method (DEM) particle
+simulation code.
 
-Core developer and main author:
-Christoph Kloss, christoph.kloss@dcs-computing.com
-
-LIGGGHTS(R)-PUBLIC is an Open Source Discrete Element Method Particle
-Simulation Software, distributed by DCS Computing GmbH, Linz, Austria.
-LIGGGHTS (R) and CFDEM(R) are registered trade marks of DCS Computing GmbH,
-the producer of the LIGGGHTS (R) software and the CFDEM(R)coupling software
-See http://www.cfdem.com/terms-trademark-policy for details.
-
-LIGGGHTS (R) stands for LAMMPS improved for general granular and
-granular heat transfer simulations.
-LAMMPS is a classical molecular dynamics simulator. It is widely
-used in the field of Molecular Dynamics. Thanks to physical and
-algorithmic analogies, LAMMPS offers basic functionalities for
-DEM simulations. LIGGGHTS (R) aims to improve those capability with
-the goal to apply it to industrial applications. LIGGGHTS® is currently
-used by a variety of research institutions world-wide. A number of Blue
-Chip companies in the fields of chemical, consumer goods, pharmaceutical,
-agricultural engineering, food production, steel production, mining,
-plastics production use LIGGGHTS (R) for improvement of production processes.
-LIGGGHTS(R)-PUBLIC runs efficiently on single-processor desktop or laptop
-machines, but is designed for parallel computers.  It will run on any
-parallel machine that compiles C++ and supports the `MPI <mpi_>`_
-message-passing library.  This includes distributed- or shared-memory
-parallel machines.
-LIGGGHTS (R) can model systems with only a few particles up to millions or
-billions. LIGGGHTS (R) is designed to be easy to modify or extend with new
-capabilities, such as new force fields, atom types, boundary
+Packfall is designed to be extended with new capabilities, such as new
+force fields, atom types, boundary
 conditions, or diagnostics.  See :doc:`Section\_modify <Section_modify>`
 for more details.
 
-.. _mpi: http://www-unix.mcs.anl.gov/mpi
-
-
-
-LIGGGHTS(R)-PUBLIC is a freely-available open-source code, distributed under the
-terms of the `GNU Public License <gnu_>`_, which means you can use or
-modify the code however you wish.  See :ref:`this section <intro_4>` for a
-brief discussion of the open-source philosophy.
+Packfall is distributed under the terms of the `GNU Public License
+<gnu_>`_.
 
 .. _gnu: http://www.gnu.org/copyleft/gpl.html
 
 
 
-LIGGGHTS-PUBLIC VS. LIGGGHTS-PREMIUM
-------------------------------------
-
-There are 2 flavors of LIGGGHTS. This documentation may refer to
-LIGGGHTS as LIGGGHTS-PUBLIC or as LIGGGHTS-PREMIUM, where PREMIUM
-is the name of your company or institution
-
-LIGGGHTS-PUBLIC is the version of LIGGGHTS which is available for public
-download at this cite. It offers everything a researcher needs to do simulations:
-A large model portfolio, performance, and it is easy to understand and extend with
-new capabilities. It is periodically updated, and includes all the contributions
-from the community.
-LIGGGHTS-PREMIUM is a version with additional features for large-scale industrial
-application, available for industrial partner companies of CFDEM(R)project from all
-around the world, who have spent several million Euros for developing LIGGGHTS(R)-PUBLIC.
-The Premium version is made available to industrial partners and customers as part
-of a long-term collaboration involving development projects to further strengthen
-the model porfolio of CFDEM(R)project.
-
 History
 -------
 
-As the sanme implies, some parts of LIGGGHTS(R)-PUBLIC are based on LAMMPS.
-LAMMPS is a classical molecular dynamics simulation code designed to
-run efficiently on parallel computers.  It was developed at Sandia
-National Laboratories, a US Department of Energy facility, with
-funding from the DOE.  It is an open-source code, distributed freely
-under the terms of the GNU Public License (GPL).
-The primary developers of LAMMPS are Steve Plimpton, Aidan
-Thompson, and Paul Crozier.  The LAMMPS WWW Site at
-http://lammps.sandia.gov has more information about LAMMPS.
-LAMMPS was originally developed under a US Department of Energy CRADA
-(Cooperative Research and Development Agreement) between two DOE labs
-and 3 companies.
-
-
-----------
+Packfall is a fork of LIGGGHTS. The project keeps the inherited
+simulation base where it is useful, while evolving the code and
+documentation in directions needed for Packfall.
 
 
 .. _intro\_2:
 
-LIGGGHTS(R)-PUBLIC features
+Packfall features
 ---------------------------
 
-In the most general sense, LIGGGHTS(R)-PUBLIC integrates Newton's equations of
+In the most general sense, Packfall integrates Newton's equations of
 motion for collections of atoms, molecules, or macroscopic particles
 that interact via short- or long-range forces with a variety of
 initial and/or boundary conditions.  For computational efficiency
-LIGGGHTS(R)-PUBLIC uses neighbor lists to keep track of nearby particles.  The
+Packfall uses neighbor lists to keep track of nearby particles.  The
 lists are optimized for systems with particles that are repulsive at
 short distances, so that the local density of particles never becomes
-too large.  On parallel machines, LIGGGHTS(R)-PUBLIC uses spatial-decomposition
+too large.  On parallel machines, Packfall uses spatial-decomposition
 techniques to partition the simulation domain into small 3d
 sub-domains, one of which is assigned to each processor.  Processors
 communicate and store "ghost" atom information for atoms that border
 their sub-domain.
 
-LIGGGHTS(R)-PUBLIC General features
------------------------------------
+General features
+----------------
 
 * runs on a single processor or in parallel
 * distributed-memory message-passing parallelism (MPI)
@@ -139,31 +74,22 @@ LIGGGHTS(R)-PUBLIC General features
 * syntax for looping over runs and breaking out of loops
 * run one or multiple simulations simultaneously (in parallel) from one script
 * output to the widely used, open source VTK data format
-* build as library, invoke LIGGGHTS(R)-PUBLIC thru library interface or provided Python wrapper
-* couple with other codes: LIGGGHTS(R)-PUBLIC calls other code, other code calls LIGGGHTS(R)-PUBLIC, umbrella code calls both
-* a strong eco-system of fellow simulation engines for co-simulation, efficienty and tightly coupled via MPI.
-* LIGGGHTS(R)-PUBLIC can be coupled to CFDEM(R)coupling for CFD-DEM simulations and Lagrange-Euler coupling in general
-* LIGGGHTS(R)-PUBLIC can be coupled to the simulation engine ParScale for the modelling of intra-particle transport processes
+* build as a library, invoke Packfall through the library interface or the provided Python wrapper
+* couple with other codes: Packfall calls other code, other code calls Packfall, umbrella code calls both
+* a strong ecosystem of fellow simulation engines for co-simulation, efficiently and tightly coupled via MPI
 
-LIGGGHTS(R)-PUBLIC Model features: LIGGGHTS-PUBLIC features
------------------------------------------------------------
+Model features
+--------------
 
 * import and handling of complex geometries: STL walls and VTK tet volume meshes
-* moving mesh feature with a varierty of motion schemes and a model for conveyor belts
+* moving mesh feature with a variety of motion schemes and a model for conveyor belts
 * force and wear analysis on meshes as well as stress-controlled walls
-* a variety of particle-particle contact implementations, including models for tangential history, non-spericity and cohesion
+* a variety of particle-particle contact implementations, including models for tangential history, non-sphericity, and cohesion
 * interface to easily extend contact implementations
 * heat conduction between particles
 * particle insertion based on pre-defined volumes, meshes and particle streams from faces as well as particle growth and shrinkage
 * flexible definition of particle distributions
-* smoothed Particle Hydrodynamics (SPH) fluid models
-
-LIGGGHTS(R)-PUBLIC Model features: Additional features for LIGGGHTS(R)-PUBLIC
------------------------------------------------------------------------------
-
-LIGGGHTS versions other than LIGGGHTS-PUBLIC have additional functionalities,
-which are all described in the doc pages for the different commands.
-
+* (WIP) smoothed Particle Hydrodynamics (SPH) fluid models
 
 ----------
 
@@ -173,50 +99,17 @@ which are all described in the doc pages for the different commands.
 Open source distribution
 ------------------------
 
-LIGGGHTS(R)-PUBLIC comes with no warranty of any kind.  As each source file states
-in its header, it is a copyrighted code that is distributed free-of-
-charge, under the terms of the `GNU Public License <gnu_>`_ (GPL).  This
-is often referred to as open-source distribution - see
-`www.gnu.org <gnuorg_>`_ or `www.opensource.org <opensource_>`_ for more
-details.  The legal text of the GPL is in the LICENSE file that is
-included in the LIGGGHTS(R)-PUBLIC distribution.
+Packfall comes with no warranty of any kind and is distributed under the
+terms of the `GNU Public License <gnu_>`_ (GPL). The full license text is
+included in the ``LICENSE`` file in the Packfall distribution.
 
-.. _gnuorg: http://www.gnu.org
+In practical terms, this means you may use, modify, and redistribute
+Packfall under the GPL. If you redistribute modified versions or source
+that incorporates Packfall code, the GPL obligations continue to apply.
 
-
-
-.. _opensource: http://www.opensource.org
-
-
-
-Here is a summary of what the GPL means for LIGGGHTS(R)-PUBLIC users:
-
-(1) Anyone is free to use, modify, or extend LIGGGHTS(R)-PUBLIC in any way they
-choose, including for commercial purposes.
-
-(2) If you distribute a modified version of LIGGGHTS(R)-PUBLIC, it must remain
-open-source, meaning you distribute it under the terms of the GPL.
-You must clearly annotate such a code as a derivative version of
-LIGGGHTS(R)-PUBLIC.
-
-(3) If you release any code that includes LIGGGHTS(R)-PUBLIC source code, then it
-must also be open-sourced, meaning you distribute it under the terms
-of the GPL.
-
-(4) If you give LIGGGHTS(R)-PUBLIC files to someone else, the GPL LICENSE file and
-source file headers (including the copyright and GPL notices) must
-remain part of the code.
-
-In the spirit of an open-source code, these are various ways you can
-contribute to making LIGGGHTS(R)-PUBLIC better. If you find an error, omission or bug
-in this manual or in the code, please
-`see our website for more info <http://http://www.cfdem.com/get-involved-contribute>`_
-on how to get involved
-
-* If you publish a paper using LIGGGHTS(R)-PUBLIC results, send the citation (and
-  any cool pictures or movies if you like) to add to the Publications,
-  Pictures, and Movies pages of the our website, with links
-  and attributions back to you.
+If you find an error, omission, or bug in this manual or in the code,
+please report it through the project channels you are using for Packfall
+development.
 
 ----------
 
@@ -226,22 +119,14 @@ on how to get involved
 Acknowledgments and citations
 --------------------------------------------
 
-LIGGGHTS(R)-PUBLIC development has been funded by a variety of sources:
-
-* The by far largest part of funding has been contributed by a variety of companies in bi-laterial projects with DCS Computing
-* The EU FP7 programmes NanoSim and T-MAPPP
-* The Austrial funding agency FWF, www.fwf.at
-* The Austrial funding agency FFG, www.ffg.at
-
-* The early days of LIGGGHTS(R)-PUBLIC development have been funded by:
-* Christian Doppler Forschungsgesellschaft, www.cdg.at
-* Industrial partner of the CD Lab of Particulate Flow Modelling, JKU Linz
-
-As LIGGGHTS(R)-PUBLIC is based on LAMMPS, we also acknowledge the funding
-that helped creating LAMMPS.  LAMMPS development has been funded by the `US Department of Energy <doe_>`_ (DOE), through its CRADA, LDRD, ASCI, and Genomes-to-Life
-programs and its `OASCR <oascr_>`_ and `OBER <ober_>`_ offices. Also there was funding
-by the US Department of Energy's Genomics:GTL program (`www.doegenomestolife.org <gtl_>`_) under the `project <ourgtl_>`_, "Carbon
-Sequestration in Synechococcus Sp.: From Molecular Machines to Hierarchical Modeling".
+Packfall inherits substantial architecture from both LIGGGHTS and
+LAMMPS. The LAMMPS development effort was supported by the
+`US Department of Energy <doe_>`_ (DOE), including its CRADA, LDRD,
+ASCI, and Genomes-to-Life programs and its `OASCR <oascr_>`_ and
+`OBER <ober_>`_ offices. Additional support came from the DOE
+Genomics:GTL program (`www.doegenomestolife.org <gtl_>`_) under the
+`project <ourgtl_>`_, "Carbon Sequestration in Synechococcus Sp.: From
+Molecular Machines to Hierarchical Modeling".
 
 .. _doe: http://www.doe.gov
 
@@ -263,9 +148,10 @@ Sequestration in Synechococcus Sp.: From Molecular Machines to Hierarchical Mode
 
 
 
-The following paper describe the basic parallel algorithms used in
-LIGGGHTS(R)-PUBLIC.  If you use LIGGGHTS(R)-PUBLIC results in your published work, please cite
-`this paper <citelig_>`_ and include a pointer to the http://www.cfdem.com site
+If Packfall contributes to published work, please cite Packfall 
+and, where relevant, the upstream method papers describing the 
+algorithms used. For example, the following paper describes the 
+basic parallel algorithms used in the underlying code base. `this paper <citelig_>`_.
 
 .. _citelig: http://www.cfdem.com/citing-liggghtsr
 

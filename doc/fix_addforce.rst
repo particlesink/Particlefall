@@ -84,13 +84,13 @@ potential energy to formulate a self-consistent minimization problem
 
 The *energy* keyword is not allowed if the added force is a constant
 vector F = (fx,fy,fz), with all components defined as numeric
-constants and not as variables.  This is because LIGGGHTS(R)-PUBLIC can compute
+constants and not as variables.  This is because Packfall can compute
 the energy for each atom directly as E = -x dot F = -(x\*fx + y\*fy +
 z\*fz), so that -Grad(E) = F.
 
 The *energy* keyword is optional if the added force is defined with
 one or more variables, and if you are performing dynamics via the
-:doc:`run <run>` command.  If the keyword is not used, LIGGGHTS(R)-PUBLIC will set
+:doc:`run <run>` command.  If the keyword is not used, Packfall will set
 the energy to 0.0, which is typically fine for dynamics.
 
 The *energy* keyword is required if the added force is defined with
@@ -161,7 +161,7 @@ inconsistancies.
 .. note::
 
    :doc:`Coarsegraining <coarsegraining>` may or 
-   may not be available in LIGGGHTS(R)-PUBLIC.
+   may not be available in Packfall.
 
 Related commands
 """"""""""""""""

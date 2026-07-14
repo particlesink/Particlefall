@@ -128,7 +128,7 @@ the g(r) and coord(r) values for a specific set of *itypeN* versus
 *jtypeN* interactions, as described above.  These values can be used
 by any command that uses a global values from a compute as input.  See
 :ref:`Section\_howto 15 <howto_8>` for an overview of
-LIGGGHTS(R)-PUBLIC output options.
+Packfall output options.
 
 The array values calculated by this compute are all "intensive".
 
@@ -145,7 +145,7 @@ The RDF is not computed for distances longer than the force cutoff,
 since processors (in parallel) don't know about atom coordinates for
 atoms further away than that distance.  If you want an RDF for larger
 distances, you can use the :doc:`rerun <rerun>` command to post-process
-a dump file. The definition of g(r) used by LIGGGHTS(R)-PUBLIC is only appropriate
+a dump file. The definition of g(r) used by Packfall is only appropriate
 for characterizing atoms that are uniformly distributed throughout the
 simulation cell. In such cases, the coordination number is still
 correct and meaningful.  As an example, if a large simulation cell

@@ -233,7 +233,7 @@ to the motion.  The :doc:`neigh\_modify exclude <neigh_modify>` and
 
 For computational efficiency, you should typically define one fix
 rigid or fix rigid/small command which includes all the desired rigid
-bodies.  LIGGGHTS(R)-PUBLIC will allow multiple rigid fixes to be defined, but it
+bodies.  Packfall will allow multiple rigid fixes to be defined, but it
 is more expensive.
 
 
@@ -241,7 +241,7 @@ is more expensive.
 
 
 The constituent particles within a rigid body can be point particles
-(the default in LIGGGHTS(R)-PUBLIC) or finite-size particles, such as spheres or
+(the default in Packfall) or finite-size particles, such as spheres or
 ellipsoids or line segments or triangles.  See the :doc:`atom\_style sphere and ellipsoid and line and tri <atom_style>` commands for more
 details on these kinds of particles.  Finite-size particles contribute
 differently to the moment of inertia of a rigid body than do point
@@ -270,12 +270,12 @@ iterations.
 
 
 The *infile* keyword allows a file of rigid body attributes to be read
-in from a file, rather then having LIGGGHTS(R)-PUBLIC compute them.  There are 3
+in from a file, rather then having Packfall compute them.  There are 3
 such attributes: the total mass of the rigid body, its center-of-mass
 position, and its 6 moments of inertia.  For rigid bodies consisting
-of point particles or non-overlapping finite-size particles, LIGGGHTS(R)-PUBLIC
+of point particles or non-overlapping finite-size particles, Packfall
 can compute these values accurately.  However, for rigid bodies
-consisting of finite-size particles which overlap each other, LIGGGHTS(R)-PUBLIC
+consisting of finite-size particles which overlap each other, Packfall
 will ignore the overlaps when computing these 3 attributes.  The
 amount of error this induces depends on the amount of overlap.  To
 avoid this issue, the values can be pre-computed (e.g. using Monte
@@ -307,12 +307,12 @@ The masstotal and center-of-mass coordinates (xcm,ycm,zcm) are
 self-explanatory.  The center-of-mass should be consistent with what
 is calculated for the position of the rigid body with all its atoms
 unwrapped by their respective image flags.  If this produces a
-center-of-mass that is outside the simulation box, LIGGGHTS(R)-PUBLIC wraps it
+center-of-mass that is outside the simulation box, Packfall wraps it
 back into the box.  The 6 moments of inertia (ixx,iyy,izz,ixy,ixz,iyz)
 should be the values consistent with the current orientation of the
 rigid body around its center of mass.  The values are with respect to
 the simulation box XYZ axes, not with respect to the prinicpal axes of
-the rigid body itself.  LIGGGHTS(R)-PUBLIC performs the latter calculation
+the rigid body itself.  Packfall performs the latter calculation
 internally.
 
 .. warning::

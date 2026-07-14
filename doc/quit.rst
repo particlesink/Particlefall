@@ -23,7 +23,7 @@ Examples
 Description
 """""""""""
 
-This command causes LIGGGHTS(R)-PUBLIC to exit, after shutting down all
+This command causes Packfall to exit, after shutting down all
 output cleanly.
 
 It can be used as a debug statement in an input script, to terminate

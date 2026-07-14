@@ -167,7 +167,7 @@ Any dimension (xyz) that has a reflecting wall must be non-periodic.
 A reflecting wall should not be used with rigid bodies such as those
 defined by a "fix rigid" command.  This is because the wall/reflect
 displaces atoms directly rather than exerts a force on them.  For
-rigid bodies, use a soft wall instead, such as :doc:`fix wall/lj93 <fix_wall>`.  LIGGGHTS(R)-PUBLIC will flag the use of a rigid
+rigid bodies, use a soft wall instead, such as :doc:`fix wall/lj93 <fix_wall>`.  Packfall will flag the use of a rigid
 fix with fix wall/reflect with a warning, but will not generate an
 error.
 

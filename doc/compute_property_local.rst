@@ -114,7 +114,7 @@ the array is the number of bonds. If a single input is
 specified, a local vector is produced.  If two or more inputs are
 specified, a local array is produced where the number of columns = the
 number of inputs.  The vector or array can be accessed by any command
-that uses local values from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+that uses local values from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 The vector or array values will be integers that correspond to the

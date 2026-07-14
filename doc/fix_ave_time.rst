@@ -161,7 +161,7 @@ which can sum per-atom quantities into a global scalar or vector which
 can thus be accessed by fix ave/time.  Or it can be a compute defined
 not in your input script, but by :doc:`thermodynamic output <thermo_style>` or other fixes such as :doc:`fix nvt <fix_nh>` or :doc:`fix temp/rescale <fix_temp_rescale>`.  See
 the doc pages for these commands which give the IDs of these computes.
-Users can also write code for their own compute styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+Users can also write code for their own compute styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "f\_", a fix ID must follow which has been
 previously defined in the input script.  If *mode* = scalar, then if
@@ -176,7 +176,7 @@ Ith column of the global array calculated by the fix is used.
 
 Note that some fixes only produce their values on certain timesteps,
 which must be compatible with *Nevery*\ , else an error will result.
-Users can also write code for their own fix styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+Users can also write code for their own fix styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "v\_", a variable name must follow which has
 been previously defined in the input script.  Variables can only be
@@ -256,7 +256,7 @@ output.  This option can only be used with the *ave running* setting.
 
 The *title1* and *title2* and *title3* keywords allow specification of
 the strings that will be printed as the first 2 or 3 lines of the
-output file, assuming the *file* keyword was used.  LIGGGHTS(R)-PUBLIC uses
+output file, assuming the *file* keyword was used.  Packfall uses
 default values for each of these, so they do not need to be specified.
 
 By default, these header lines are as follows for *mode* = scalar:

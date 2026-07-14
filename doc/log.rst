@@ -26,7 +26,7 @@ Examples
 Description
 """""""""""
 
-This command closes the current LIGGGHTS(R)-PUBLIC log file, opens a new file with
+This command closes the current Packfall log file, opens a new file with
 the specified name, and begins logging information to it.  If the
 specified file name is *none*\ , then no new log file is opened.  If the
 optional keyword *append* is specified, then output will be appended
@@ -36,7 +36,7 @@ If multiple processor partitions are being used, the file name should
 be a variable, so that different processors do not attempt to write to
 the same log file.
 
-The file "log.lammps" is the default log file for a LIGGGHTS(R)-PUBLIC run.  The
+The file "log.lammps" is the default log file for a Packfall run.  The
 name of the initial log file can also be set by the command-line
 switch -log.  See :ref:`Section\_start 6 <start_7>` for
 details.
@@ -50,7 +50,7 @@ Restrictions
 Default
 """""""
 
-The default LIGGGHTS(R)-PUBLIC log file is named log.lammps
+The default Packfall log file is named log.lammps
 
 
 .. _lws: http://lammps.sandia.gov

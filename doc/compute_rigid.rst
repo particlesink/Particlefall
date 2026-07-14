@@ -77,7 +77,7 @@ ID is generated.
 For style multisphere, this compute calculates a local vector or local array depending 
 on the length of the data (see above).
 The vector or array can be accessed by any command that
-uses local values from a compute as input.  See :ref:`this section <4_15>` for an overview of LIGGGHTS(R)-PUBLIC output
+uses local values from a compute as input.  See :ref:`this section <4_15>` for an overview of Packfall output
 options.
 
 Likewise, for style multisphere/single, this compute calculates a global

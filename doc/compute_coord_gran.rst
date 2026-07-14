@@ -44,7 +44,7 @@ coord/gran style.
 
 This compute calculates a per-atom vector, which can be accessed by
 any command that uses per-atom values from a compute as input.  See
-:ref:`this section <4_15>` for an overview of LIGGGHTS(R)-PUBLIC
+:ref:`this section <4_15>` for an overview of Packfall
 output options.
 
 The per-atom vector values will be a number >= 0.0, as explained

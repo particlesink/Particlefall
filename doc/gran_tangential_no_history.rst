@@ -22,7 +22,7 @@ Syntax
        use in :doc:`fix calculate/dissipated_energy <fix_calculate_dissipated_energy>`
        of = no values are saved
 
-**LIGGGHTS(R)-PUBLIC vs. LAMMPS Info:**
+**Packfall vs. LAMMPS Info:**
 
 This part of :doc:`pair gran <pair_gran>` and
 :doc:`fix wall/gran <fix_wall_gran>`
@@ -55,7 +55,7 @@ statistically equivalent dynamics in the system.
 .. note::
 
    :doc:`Coarsegraining <coarsegraining>` may or 
-   may not be available in LIGGGHTS(R)-PUBLIC.
+   may not be available in Packfall.
 
 
 .. _lws: http://lammps.sandia.gov

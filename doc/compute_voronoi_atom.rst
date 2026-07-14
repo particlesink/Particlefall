@@ -116,7 +116,7 @@ the neighbor count and edge histogram outputs.
 
 
 The Voronoi calculation is performed by the freely available `Voro++ package <voronoi_>`_, written by Chris Rycroft at UC Berkeley and LBL,
-which must be installed on your system when building LIGGGHTS(R)-PUBLIC for use
+which must be installed on your system when building Packfall for use
 with this compute.  See instructions on obtaining and installing the
 Voro++ software in the src/VORONOI/README file.
 
@@ -140,10 +140,10 @@ Voro++ software in the src/VORONOI/README file.
 .. warning::
 
    The Voro++ package performs its calculation in 3d.
-   This should still work for a 2d LIGGGHTS(R)-PUBLIC simulation, to effectively
+   This should still work for a 2d Packfall simulation, to effectively
    compute Voronoi "areas", so long as the z-dimension of the box is
    roughly the same (or smaller) compared to the separation of the atoms.
-   Typical values for the z box dimensions in a 2d LIGGGHTS(R)-PUBLIC model are -0.5
+   Typical values for the z box dimensions in a 2d Packfall model are -0.5
    to 0.5, which satisfies the criterion for most :doc:`units <units>`
    systems.  Note that you define the z extent of the simulation box for
    2d simulations when using the :doc:`create\_box <create_box>` or
@@ -154,7 +154,7 @@ Voro++ software in the src/VORONOI/README file.
 This compute calculates a per-atom array with 2 columns.  The first
 column is the Voronoi volume, the second is the neighbor count, as
 described above.  These values can be accessed by any command that
-uses per-atom values from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+uses per-atom values from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of Packfall output
 options.
 
 The Voronoi cell volume will be in distance :doc:`units <units>` cubed.
@@ -164,7 +164,7 @@ Restrictions
 
 
 This compute is part of the VORONOI package.  It is only enabled if
-LIGGGHTS(R)-PUBLIC was built with that package.  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info.
+Packfall was built with that package.  See the :ref:`Making Packfall <start_3>` section for more info.
 
 Related commands
 """"""""""""""""

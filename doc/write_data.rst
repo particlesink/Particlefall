@@ -58,7 +58,7 @@ value.
 Because a data file is in text format, if you use a data file written
 out by this command to restart a simulation, the initial state of the
 new run will be slightly different than the final state of the old run
-(when the file was written) which was represented internally by LIGGGHTS(R)-PUBLIC
+(when the file was written) which was represented internally by Packfall
 in binary format.  A new simulation which reads the data file will
 thus typically diverge from a simulation that continued in the
 original input script.

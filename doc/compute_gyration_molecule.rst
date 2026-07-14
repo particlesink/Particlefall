@@ -58,7 +58,7 @@ ordered xx, yy, zz, xy, xz, yz.
 
 Rg for a particular molecule is only computed if one or more of its
 atoms are in the specified group.  Normally all atoms in the molecule
-should be in the group, however this is not required.  LIGGGHTS(R)-PUBLIC will
+should be in the group, however this is not required.  Packfall will
 warn you if this is not the case.  Only atoms in the group contribute
 to the Rg calculation for the molecule.
 
@@ -85,7 +85,7 @@ specified and a global array if it is.  The length of the vector or
 number of rows in the array is the number of molecules.  If the
 *tensor* keyword is specified, the global array has 6 columns.  The
 vector or array can be accessed by any command that uses global values
-from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 All the vector or array values calculated by this compute are

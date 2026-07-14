@@ -92,7 +92,7 @@ thermodynamic timestep.  Note that the keywords c\_ID, f\_ID, v\_name are
 references to :doc:`computes <compute>`, :doc:`fixes <fix>`, and
 equal-style :doc:`variables <variable>` that have been defined
 elsewhere in the input script or can even be new styles which users
-have added to LIGGGHTS(R)-PUBLIC (see the :doc:`Section\_modify <Section_modify>`
+have added to Packfall (see the :doc:`Section\_modify <Section_modify>`
 section of the documentation).  Thus the *custom* style provides a
 flexible means of outputting essentially any desired quantity as a
 simulation proceeds.
@@ -181,7 +181,7 @@ The keywords *cella*\ , *cellb*\ , *cellc*\ , *cellalpha*\ , *cellbeta*\ ,
 *cellgamma*\ , correspond to the usual crystallographic quantities that
 define the periodic unit cell of a crystal.  See :ref:`this section <howto_7>` of the doc pages for a geometric
 description of triclinic periodic cells, including a precise defintion
-of these quantities in terms of the internal LIGGGHTS(R)-PUBLIC cell dimensions
+of these quantities in terms of the internal Packfall cell dimensions
 *lx*\ , *ly*\ , *lz*\ , *yz*\ , *xz*\ , *xy*\ .
 
 

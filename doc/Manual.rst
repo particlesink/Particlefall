@@ -1,10 +1,5 @@
-----------
-
-
 Packfall Documentation, Version X
 =================================
-
-----------
 
 .. toctree::
    :maxdepth: 2
@@ -21,7 +16,6 @@ Packfall Documentation, Version X
    Section_modify
    Section_python
    Section_errors
-
 
 Indices and tables
 ==================

@@ -104,7 +104,7 @@ per-atom or local quantities.  See the individual
 is appended, the vector calculated by the compute is used.  If a
 bracketed integer is appended, the Ith column of the array calculated
 by the compute is used.  Users can also write code for their own
-compute styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+compute styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "f\_", a fix ID must follow which has been
 previously defined in the input script.  Fixes can generate per-atom
@@ -114,7 +114,7 @@ timesteps, which must be compatible with when compute reduce
 references the values, else an error results.  If no bracketed integer
 is appended, the vector calculated by the fix is used.  If a bracketed
 integer is appended, the Ith column of the array calculated by the fix
-is used.  Users can also write code for their own fix style and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+is used.  Users can also write code for their own fix style and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "v\_", a variable name must follow which has
 been previously defined in the input script.  It must be an
@@ -183,7 +183,7 @@ specified or a global vector of length N where N is the number of
 inputs, and which can be accessed by indices 1 to N.  These values can
 be used by any command that uses global scalar or vector values from a
 compute as input.  See :ref:`Section\_howto 15 <howto_8>`
-for an overview of LIGGGHTS(R)-PUBLIC output options.
+for an overview of Packfall output options.
 
 All the scalar or vector values calculated by this compute are
 "intensive", except when the *sum* mode is used on per-atom or local

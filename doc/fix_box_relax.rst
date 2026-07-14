@@ -97,7 +97,7 @@ values *yes* will turn on scaling, which corresponds to adjusting the
 linear dimensions of the cell while preserving its shape.  Choosing
 *no* ensures that the tilt factors are not scaled with the box
 dimensions. See below for restrictions and default values in different
-situations. In older versions of LIGGGHTS(R)-PUBLIC, scaling of tilt factors was
+situations. In older versions of Packfall, scaling of tilt factors was
 not performed. The old behavior can be recovered by setting all three
 scale keywords to *no*\ .
 
@@ -122,10 +122,10 @@ displaced by the same amount, different on each iteration.
    external shear stress tensor that exceeds the yield stress of the
    solid.  In either case the minimization may converge to a bogus
    conformation or not converge at all.  Also note that if the box shape
-   tilts to an extreme shape, LIGGGHTS(R)-PUBLIC will run less efficiently, due to
+   tilts to an extreme shape, Packfall will run less efficiently, due to
    the large volume of communication needed to acquire ghost atoms around
    a processor's irregular-shaped sub-domain.  For extreme values of
-   tilt, LIGGGHTS(R)-PUBLIC may also lose atoms and generate an error.
+   tilt, Packfall may also lose atoms and generate an error.
 
 
 ----------
@@ -233,7 +233,7 @@ global system stress tensor **P** will satisfy the relation:
 
 where **I** is the identity matrix, **h**\ \_0 is the box dimension tensor of
 the reference cell, and **h**\ \_0\ *d* is the diagonal part of
-**h**\ \_0. **S**\ \_\ *t* is a symmetric stress tensor that is chosen by LIGGGHTS(R)-PUBLIC
+**h**\ \_0. **S**\ \_\ *t* is a symmetric stress tensor that is chosen by Packfall
 so that the upper-triangular components of **P** equal the stress tensor
 specified by the user.
 

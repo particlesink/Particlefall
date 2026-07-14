@@ -35,7 +35,7 @@ The 3 basis vectors B1, B2, B3 must be mutually orthogonal and form a
 right-handed system such that B1 cross B2 is in the direction of B3.
 
 The basis vectors should be specified in an irreducible form (smallest
-possible integers), though LIGGGHTS(R)-PUBLIC does not check for this.
+possible integers), though Packfall does not check for this.
 
 Restrictions
 """"""""""""

@@ -64,7 +64,7 @@ calculated by looping over a neighbor list.
 This compute calculates a global scalar (the energy) and a global
 vector of length 3 (force), which can be accessed by indices 1-3.
 These values can be used by any command that uses global scalar or
-vector values from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+vector values from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 Both the scalar and vector values calculated by this compute are

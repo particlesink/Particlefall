@@ -1,6 +1,3 @@
-[LIGGGHTS(R)-TUG WWW Site](http://www.cfdem.com),
-[LIGGGHTS(R)-TUG Commands](Section_commands.html#comm)
-
 fix wall/sph/general  command
 ===============
 * * *
@@ -49,11 +46,6 @@ Examples
 fix sphMeshWall all wall/sph/general mesh n_meshes 1 meshes cad1 r0 0.0005 D 0.1 vwall 0 0.1 0
 fix sphMeshWalls all wall/sph/general mesh n_meshes 2 meshes cad1 cad2 r0 0.0005 D 0.1
 ```
-
-* * *
-LIGGGHTS(R)-TUG vs. LIGGGHTS(R)-TUG Info
----------------------
-This command is not available in LIGGGHTS(R)-TUG.
 
 * * *
 Description

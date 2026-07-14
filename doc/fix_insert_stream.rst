@@ -242,7 +242,7 @@ the *random\_distribute* settings. This is because in this case the
 and applying a simple floor/ceil rounding operation would lead to a
 statistical bias.
 
-If keyword *parallel* is set to 'yes', LIGGGHTS(R)-PUBLIC tries to pre-calculate
+If keyword *parallel* is set to 'yes', Packfall tries to pre-calculate
 more accurately the overlap of process subdomains and extrusion volume.
 For cases where the insertion volume is highly divided between different
 processes, this can lead to a speed-up of insertion as random number generation

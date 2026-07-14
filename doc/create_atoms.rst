@@ -71,7 +71,7 @@ simulation box with atoms on the lattice.  If your simulation box is
 periodic, you should insure its size is a multiple of the lattice
 spacings, to avoid unwanted atom overlaps at the box boundaries.  If
 your box is periodic and a multiple of the lattice spacing in a
-particular dimension, LIGGGHTS(R)-PUBLIC is careful to put exactly one atom at the
+particular dimension, Packfall is careful to put exactly one atom at the
 boundary (on either side of the box), not zero or two.
 
 For the *region* style, the geometric volume is filled that is inside
@@ -79,7 +79,7 @@ the simulation box and is also consistent with the region volume.  See
 the :doc:`region <region>` command for details.  Note that a region can
 be specified so that its "volume" is either inside or outside a
 geometric boundary.  Also note that if your region is the same size as
-a periodic simulation box (in some dimension), LIGGGHTS(R)-PUBLIC does not
+a periodic simulation box (in some dimension), Packfall does not
 implement the same logic as with the *box* style, to insure exactly
 one atom at the boundary.  if this is what you desire, you should
 either use the *box* style, or tweak the region size to get precisely

@@ -39,7 +39,7 @@ Description
 """""""""""
 
 Set options for how thermodynamic information is computed and printed
-by LIGGGHTS(R)-PUBLIC.
+by Packfall.
 
 .. warning::
 
@@ -50,15 +50,15 @@ by LIGGGHTS(R)-PUBLIC.
    your input script specifies a thermo\_style command, you should use the
    thermo\_modify command after it.
 
-The *lost* keyword determines whether LIGGGHTS(R)-PUBLIC checks for lost atoms
+The *lost* keyword determines whether Packfall checks for lost atoms
 each time it computes thermodynamics and what it does if atoms are
 lost.  An atom can be "lost" if it moves across a non-periodic
 simulation box :doc:`boundary <boundary>` or if it moves more than a box
 length outside the simulation domain (or more than a processor
 sub-domain length) before reneighboring occurs.  The latter case is
 typically due to bad dynamics, e.g. too large a timestep or huge
-forces and velocities.  If the value is *ignore*\ , LIGGGHTS(R)-PUBLIC does not
-check for lost atoms.  If the value is *error* or *warn*\ , LIGGGHTS(R)-PUBLIC
+forces and velocities.  If the value is *ignore*\ , Packfall does not
+check for lost atoms.  If the value is *error* or *warn*\ , Packfall
 checks and either issues an error or warning.  The code will exit with
 an error and continue with a warning.  A warning will only be issued
 once, the first time an atom is lost.  This can be a useful debugging
@@ -92,7 +92,7 @@ if this is not the case.
 
 The *flush* keyword invokes a flush operation after thermodynamic info
 is written to the log file.  This insures the output in that file is
-current (no buffering by the OS), even if LIGGGHTS(R)-PUBLIC halts before the
+current (no buffering by the OS), even if Packfall halts before the
 simulation completes.
 
 The *line* keyword determines whether thermodynamics will be printed
@@ -114,7 +114,7 @@ take precedent over the *int* or *float* setting.
    The thermo output values *step* and *atoms* are stored
    internally as 8-byte signed integers, rather than the usual 4-byte
    signed integers.  When specifying the "format int" keyword you can use
-   a "%d"-style format identifier in the format string and LIGGGHTS(R)-PUBLIC will
+   a "%d"-style format identifier in the format string and Packfall will
    convert this to the corresponding "%lu" form when it is applied to
    those keywords.  However, when specifying the "format M string"
    keyword for *step* and *natoms*\ , you should specify a string

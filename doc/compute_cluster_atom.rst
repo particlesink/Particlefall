@@ -49,7 +49,7 @@ too frequently or to have multiple compute/dump commands, each of a
 This compute calculates a per-atom vector, which can be accessed by
 any command that uses per-atom values from a compute as input.  See
 :ref:`Section\_howto 15 <howto_8>` for an overview of
-LIGGGHTS(R)-PUBLIC output options.
+Packfall output options.
 
 The per-atom vector values will be an ID > 0, as explained above.
 

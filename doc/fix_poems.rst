@@ -60,7 +60,7 @@ by Prof Kurt Anderson, his graduate student Rudranarayan Mukherjee,
 and other members of his group at Rensselaer Polytechnic Institute
 (RPI).  Rudranarayan developed the original POEMS interface.  For
 copyright information on POEMS and other details, please refer to the
-documents in the poems directory distributed with LIGGGHTS(R)-PUBLIC.
+documents in the poems directory distributed with Packfall.
 
 .. _poems: http://www.rpi.edu/~anderk5/lab
 
@@ -114,7 +114,7 @@ the motion.  The "neigh\_modify exclude" and "delete\_bonds" commands
 can be used to do this if each rigid segment is a group.
 
 For computational efficiency, you should only define one fix poems
-which includes all the desired rigid segments. LIGGGHTS(R)-PUBLIC will allow
+which includes all the desired rigid segments. Packfall will allow
 multiple poems fixes to be defined, but it is more expensive.
 
 The degrees-of-freedom removed by coupled rigid segments are accounted
@@ -135,9 +135,9 @@ Restrictions
 """"""""""""
 
 
-This fix is part of the POEMS package.  It is only enabled if LIGGGHTS(R)-PUBLIC
+This fix is part of the POEMS package.  It is only enabled if Packfall
 was built with that package, which also requires the POEMS library be
-built and linked with LIGGGHTS(R)-PUBLIC.  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info.
+built and linked with Packfall.  See the :ref:`Making Packfall <start_3>` section for more info.
 
 Related commands
 """"""""""""""""

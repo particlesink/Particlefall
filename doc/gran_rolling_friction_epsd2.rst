@@ -25,7 +25,7 @@ This model can be used as part of :doc:`pair gran <pair_gran>` and
 
 The alternative elastic-plastic spring-dashpot (EPSD2) model (see Iwashita and Oda) adds an additional
 torque contribution. It is similar to the :doc:`EPSD model <gran_rolling_friction_epsd>`, but in contrast
- to the original model the rolling stiffness k\_r is defined as
+to the original model the rolling stiffness k\_r is defined as
 
 .. image:: Eqs/pair_gran_hooke_eqEpsd5.gif
    :align: center
@@ -60,7 +60,7 @@ inconsistancies.
 .. note::
 
    :doc:`Coarsegraining <coarsegraining>` may or 
-   may not be available in LIGGGHTS(R)-PUBLIC.
+   may not be available in Packfall.
 
 Default
 """""""

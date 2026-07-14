@@ -104,7 +104,7 @@ find the needed atoms.
 
    In these scenarios, if you do not set the ghost cutoff
    long enough, and if there is only one processor in a periodic
-   dimension (e.g. you are running in serial), then LIGGGHTS(R)-PUBLIC may "find" the
+   dimension (e.g. you are running in serial), then Packfall may "find" the
    atom it is looking for (e.g. the partner atom in a bond), that is on
    the far side of the simulation box, across a periodic boundary.  This
    will typically lead to bad dynamics (i.e. the bond length is now the

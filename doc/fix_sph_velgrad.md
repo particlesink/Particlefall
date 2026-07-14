@@ -1,6 +1,3 @@
-[LIGGGHTS(R)-TUG WWW Site](http://www.cfdem.com),
-[LIGGGHTS(R)-TUG Commands](Section_commands.html#comm)
-
 fix sph/velgrad  command
 ===============
 * * *
@@ -26,11 +23,6 @@ Examples
 fix vgrad all sph/velgrad
 fix vgrad all sph/velgrad every 200
 ```
-
-* * *
-LIGGGHTS(R)-TUG vs. LIGGGHTS(R)-TUG Info
----------------------
-This command is not available in LIGGGHTS(R)-TUG.
 
 * * *
 Description

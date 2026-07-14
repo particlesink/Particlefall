@@ -203,7 +203,7 @@ include:
 
 The *element* keyword applies only to the the dump *cfg*\ , *xyz*\ , and
 *image* styles.  It associates element names (e.g. H, C, Fe) with
-LIGGGHTS(R)-PUBLIC atom types.  See the list of element names at the bottom of
+Packfall atom types.  See the list of element names at the bottom of
 this page.
 
 In the case of dump *cfg*\ , this allows the `AtomEye <atomeye_>`_
@@ -304,7 +304,7 @@ default, then it will not be written.
 The *flush* keyword determines whether a flush operation is invoked
 after a dump snapshot is written to the dump file.  A flush insures
 the output in that file is current (no buffering by the OS), even if
-LIGGGHTS(R)-PUBLIC halts before the simulation completes.  Flushes cannot be
+Packfall halts before the simulation completes.  Flushes cannot be
 performed with dump style *xtc*\ .
 
 The text-based dump styles have a default C-style format string which
@@ -801,7 +801,7 @@ The option defaults are
 ----------
 
 
-These are the standard 109 element names that LIGGGHTS(R)-PUBLIC pre-defines for
+These are the standard 109 element names that Packfall pre-defines for
 use with the :doc:`dump image <dump_image>` and dump\_modify commands.
 
 * 1-10 = "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne"
@@ -820,7 +820,7 @@ use with the :doc:`dump image <dump_image>` and dump\_modify commands.
 ----------
 
 
-These are the 140 colors that LIGGGHTS(R)-PUBLIC pre-defines for use with the
+These are the 140 colors that Packfall pre-defines for use with the
 :doc:`dump image <dump_image>` and dump\_modify commands.  Additional
 colors can be defined with the dump\_modify color command.  The 3
 numbers listed for each name are the RGB (red/green/blue) values.

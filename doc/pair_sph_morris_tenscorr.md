@@ -1,6 +1,3 @@
-[LIGGGHTS(R)-TUG WWW Site](http://www.cfdem.com),
-[LIGGGHTS(R)-TUG Commands](Section_commands.html#comm)
-
 pair_style sph/morris/tensCorr command
 ===============
 * * *
@@ -51,11 +48,6 @@ pair_style sph/morris/tensCorr cubicspline 0.001 newton 0.5 tensCorr 0.2 5e-4
 pair_style sph/morris/tensCorr cubicspline 0.001 power 3 0.6 10 0 tensCorr 0.2 5e-4
 pair_style sph/morris/tensCorr cubicspline 0.001 carreau 0.5 0 0.1 2 0.6 tensCorr 0.2 5e-4
 ```
-
-* * *
-LIGGGHTS(R)-TUG vs. LIGGGHTS(R)-TUG Info
----------------------
-This command is not available in LIGGGHTS(R)-TUG.
 
 * * *
 Description

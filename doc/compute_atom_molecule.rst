@@ -66,7 +66,7 @@ quantities.  See the individual :doc:`compute <compute>` doc page for
 details.  If no bracketed integer is appended, the vector calculated
 by the compute is used.  If a bracketed integer is appended, the Ith
 column of the array calculated by the compute is used.  Users can also
-write code for their own compute styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+write code for their own compute styles and :doc:`add them to Packfall <Section_modify>`.
 
 If an input begins with "f\_", a fix ID must follow which has been
 previously defined in the input script and which generates per-atom
@@ -76,7 +76,7 @@ which must be compatible with when compute atom/molecule references
 the values, else an error results.  If no bracketed integer is
 appended, the vector calculated by the fix is used.  If a bracketed
 integer is appended, the Ith column of the array calculated by the fix
-is used.  Users can also write code for their own fix style and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+is used.  Users can also write code for their own fix style and :doc:`add them to Packfall <Section_modify>`.
 
 If an input begins with "v\_", a variable name must follow which has
 been previously defined in the input script.  It must be an
@@ -98,7 +98,7 @@ rows in the array is the number of molecules.  If a single input is
 specified, a global vector is produced.  If two or more inputs are
 specified, a global array is produced where the number of columns =
 the number of inputs.  The vector or array can be accessed by any
-command that uses global values from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+command that uses global values from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 All the vector or array values calculated by this compute are

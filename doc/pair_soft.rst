@@ -58,12 +58,12 @@ cutoff is used.
 .. warning::
 
    The syntax for :doc:`pair\_coeff <pair_coeff>` with a
-   single A coeff is different in the current version of LIGGGHTS(R)-PUBLIC than in
+   single A coeff is different in the current version of Packfall than in
    older versions which took two values, Astart and Astop, to ramp
    between them.  This functionality is now available in a more general
    form through the :doc:`fix adapt <fix_adapt>` command, as explained
    below.  Note that if you use an old input script and specify Astart
-   and Astop without a cutoff, then LIGGGHTS(R)-PUBLIC will interpret that as A and a
+   and Astop without a cutoff, then Packfall will interpret that as A and a
    cutoff, which is probabably not what you want.
 
 The :doc:`fix adapt <fix_adapt>` command can be used to vary A for one

@@ -79,28 +79,31 @@ In case solid boundaries are present the last term is given according to :ref:`W
 where
 
 
-.. parsed-literal::
+.. math::
 
-       **a**\ _{jk} = **r**\ _j - c_{jk}
+       \mathbf{a}_{jk} = \mathbf{r}_j - c_{jk}
 
-and **c**\ \_{jk} is the contact point of particle *j* with wall *k* and the sum runs over all particles *j* and walls *k*\ .
+and :math:`\mathbf{c}_{jk}` is the contact point of particle *j* with wall *k* and the sum runs over all particles *j* and walls *k*\ .
 
 If the *compute* keyword is set to either strain or stress\_strain this fix calculates the incremental strain tensor at
 each particle according to :ref:`Zhang et al. <Zhang>` The formula is given by
 
 
-.. parsed-literal::
+.. math::
 
-     epsilon_\ *i,ab* = 1/(2 rho_i) sum_\ *j,k* m_j m_k phi(\ **r**\ _{ij}) dt (\ **v**\ _{jk,a} grad_phi(\ **r**\ _{ik},b) + **v**\ _{jk,b} grad_phi(\ **r**\ _{ik},a))
+   \epsilon_{i,ab} = \frac{1}{2 \rho_i} \sum_{j,k} m_j m_k \phi(\mathbf{r}_{ij}) \, dt \,
+   \left( \mathbf{v}_{jk,a} \nabla \phi(\mathbf{r}_{ik},b) +
+          \mathbf{v}_{jk,b} \nabla \phi(\mathbf{r}_{ik},a) \right)
 
 where most of the variables are given as above and additionally
 
 
-.. parsed-literal::
+:math:`\mathbf{v}_{ij,a}` is the a-th component of the velocity difference between i and j
 
-       **v**\ _{ij,a} is the a-th component of the velocity difference between i and j
-       grad_phi(\ **r**\ _{ij},a) is the a-th component of the gradient of phi with respect to **r**\ _i
-       dt is the time-step size
+:math:`\nabla \phi(\mathbf{r}_{ik},b)` is the b-th component of the gradient of phi with respect to :math:`\mathbf{r}_i`
+
+:math:`dt` is the time-step size
+
 
 The following three kernel types are implemented at the moment:
 
@@ -171,20 +174,20 @@ Related commands
 
 
 
-**(Goldhirsch)** Goldhirsch; Stress, stress asymmetry and couple stress: from discrete particles to continuous fields, Granular Matter (2010)
+**(Goldhirsch)** Goldhirsch, I.; Stress, stress asymmetry and couple stress: from discrete particles to continuous fields. Granular Matter 12, 239–252 (2010). https://doi.org/10.1007/s10035-010-0181-z
 
 .. _Weinhart:
 
 
 
-**(Weinhart)** Weinhart, Thornton, Luding, Bokhove; From discrete particles to continuum fields near a boundary (2012)
+**(Weinhart)** Weinhart, T., Thornton, A.R., Luding, S., Bokhove, O.; From discrete particles to continuum fields near a boundary. Granular Matter 14, 289–294 (2012). https://doi.org/10.1007/s10035-012-0317-4
+
 
 .. _Zhang:
 
 
 
-**(Zhang)** Zhang, Behringer, Goldhirsch; Coarse-Graining of a Physical Granular System, Progress of Theoretical Physics Supplement (2010)
-
+**(Zhang)** Zhang, J., Behringer, R., Goldhirsch, I.; Coarse-Graining of a Physical Granular System, Progress of Theoretical Physics Supplement, Volume 184, March 2010, Pages 16–30, https://doi.org/10.1143/PTPS.184.16
 
 .. _lws: http://lammps.sandia.gov
 .. _ld: Manual.html

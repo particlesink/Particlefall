@@ -116,7 +116,7 @@ or the *mix* keyword is used,
 this compute calculates a per-atom vector.  If multiple *typeN*
 keywords are specified, this compute calculates a per-atom array, with
 N columns.  These values can be accessed by any command that uses
-per-atom values from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+per-atom values from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of Packfall output
 options.
 
 The per-atom vector or array values will be a number >= 0.0, as

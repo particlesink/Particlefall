@@ -32,8 +32,8 @@ Examples
 Description
 """""""""""
 
-Set the formula(s) LIGGGHTS(R)-PUBLIC uses to compute bond interactions between
-pairs of atoms.  In LIGGGHTS(R)-PUBLIC, a bond differs from a pairwise
+Set the formula(s) Packfall uses to compute bond interactions between
+pairs of atoms.  In Packfall, a bond differs from a pairwise
 interaction, which are set via the :doc:`pair\_style <pair_style>`
 command.  Bonds are defined between specified pairs of atoms and
 remain in force for the duration of the simulation (unless the bond
@@ -72,12 +72,12 @@ between the 2 atoms in the bond.
 ----------
 
 
-Here is an alphabetic list of bond styles defined in LIGGGHTS(R)-PUBLIC.  Click on
+Here is an alphabetic list of bond styles defined in Packfall.  Click on
 the style to display the formula it computes and coefficients
 specified by the associated :doc:`bond\_coeff <bond_coeff>` command.
 
 Note that there are also additional bond styles submitted by users
-which are included in the LIGGGHTS(R)-PUBLIC distribution.  The list of these with
+which are included in the Packfall distribution.  The list of these with
 links to the individual styles are given in the bond section of :ref:`this page <cmd_5>`.
 
 * :doc:`bond\_style none <bond_none>` - turn off bonded interactions
@@ -97,7 +97,7 @@ Bond styles can only be set for atom styles that allow bonds to be
 defined.
 
 Most bond styles are part of the MOLECULAR package.  They are only
-enabled if LIGGGHTS(R)-PUBLIC was built with that package.  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info on packages.
+enabled if Packfall was built with that package.  See the :ref:`Making Packfall <start_3>` section for more info on packages.
 The doc pages for individual bond potentials tell if it is part of a
 package.
 

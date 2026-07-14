@@ -83,7 +83,7 @@ inputs.  See for example, the :doc:`compute reduce <compute_reduce>`,
 
 The list of possible attributes is the same as that used by the :doc:`dump custom <dump>` command, which describes their meaning, with some
 additional quantities that are only defined for certain :doc:`atom styles <atom_style>`.  Basically, this list gives your input script
-access to any per-atom quantity stored by LIGGGHTS(R)-PUBLIC.
+access to any per-atom quantity stored by Packfall.
 
 The values are stored in a per-atom vector or array as discussed
 below.  Zeroes are stored for atoms not in the specified group or for
@@ -121,7 +121,7 @@ on the number of input values.  If a single input is specified, a
 per-atom vector is produced.  If two or more inputs are specified, a
 per-atom array is produced where the number of columns = the number of
 inputs.  The vector or array can be accessed by any command that uses
-per-atom values from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+per-atom values from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 The vector or array values will be in whatever :doc:`units <units>` the

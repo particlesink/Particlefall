@@ -67,21 +67,21 @@ logical 3d grid.  The arguments to this command control each of these
 2 steps.
 
 The Px, Py, Pz parameters affect the factorization.  Any of the 3
-parameters can be specified with an asterisk "\*", which means LIGGGHTS(R)-PUBLIC
+parameters can be specified with an asterisk "\*", which means Packfall
 will choose the number of processors in that dimension of the grid.
 It will do this based on the size and shape of the global simulation
 box so as to minimize the surface-to-volume ratio of each processor's
 sub-domain.
 
-Since LIGGGHTS(R)-PUBLIC does not load-balance by changing the grid of 3d
+Since Packfall does not load-balance by changing the grid of 3d
 processors on-the-fly, choosing explicit values for Px or Py or Pz can
-be used to override the LIGGGHTS(R)-PUBLIC default if it is known to be
+be used to override the Packfall default if it is known to be
 sub-optimal for a particular problem.  E.g. a problem where the extent
 of atoms will change dramatically in a particular dimension over the
 course of the simulation.
 
 The product of Px, Py, Pz must equal P, the total # of processors
-LIGGGHTS(R)-PUBLIC is running on.  For a :doc:`2d simulation <dimension>`, Pz must
+Packfall is running on.  For a :doc:`2d simulation <dimension>`, Pz must
 equal 1.
 
 Note that if you run on a prime number of processors P, then a grid
@@ -126,7 +126,7 @@ both the factorization and mapping steps.
 
 The *Cx*\ , *Cy*\ , *Cz* settings are similar to the *Px*\ , *Py*\ , *Pz*
 settings, only their product should equal *Nc*\ .  Any of the 3
-parameters can be specified with an asterisk "\*", which means LIGGGHTS(R)-PUBLIC
+parameters can be specified with an asterisk "\*", which means Packfall
 will choose the number of cores in that dimension of the node's
 sub-grid.  As with Px,Py,Pz, it will do this based on the size and
 shape of the global simulation box so as to minimize the
@@ -135,7 +135,7 @@ surface-to-volume ratio of each processor's sub-domain.
 .. warning::
 
    For the *twolevel* style to work correctly, it
-   assumes the MPI ranks of processors LIGGGHTS(R)-PUBLIC is running on are ordered
+   assumes the MPI ranks of processors Packfall is running on are ordered
    by core and then by node.  E.g. if you are running on 2 quad-core
    nodes, for a total of 8 processors, then it assumes processors 0,1,2,3
    are on node 1, and processors 4,5,6,7 are on node 2.  This is the
@@ -285,7 +285,7 @@ processors, it could create a 4x2x10 grid, but it will not create a
    invoke different "processsors" commands on different partitions, and
    you also use the *part* keyword, then you must insure that both the
    sending and receiving partitions invoke the "processors" command that
-   connects the 2 partitions via the *part* keyword.  LIGGGHTS(R)-PUBLIC cannot
+   connects the 2 partitions via the *part* keyword.  Packfall cannot
    easily check for this, but your simulation will likely hang in its
    setup phase if this error has been made.
 
@@ -311,13 +311,13 @@ world-ID universe-ID original-ID: I J K: name
 
 The IDs are the processor's rank in this simulation (the world), the
 universe (of multiple simulations), and the original MPI communicator
-used to instantiate LIGGGHTS(R)-PUBLIC, respectively.  The world and universe IDs
+used to instantiate Packfall, respectively.  The world and universe IDs
 will only be different if you are running on more than one partition;
 see the :ref:`-partition command-line switch <start_7>`.
 The universe and original IDs will only be different if you used the
 :ref:`-reorder command-line switch <start_7>` to reorder
 the processors differently than their rank in the original
-communicator LIGGGHTS(R)-PUBLIC was instantiated with.
+communicator Packfall was instantiated with.
 
 I,J,K are the indices of the processor in the 3d logical grid, each
 from 1 to Nd, where Nd is the number of processors in that dimension

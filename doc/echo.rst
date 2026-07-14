@@ -25,7 +25,7 @@ Examples
 Description
 """""""""""
 
-This command determines whether LIGGGHTS(R)-PUBLIC echoes each input script
+This command determines whether Packfall echoes each input script
 command to the screen and/or log file as it is read and processed.  If
 an input script has errors, it can be useful to look at echoed output
 to see the last command processed.

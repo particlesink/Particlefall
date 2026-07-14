@@ -31,12 +31,12 @@ and data file, as well as quantities output to the screen, log file,
 and dump files.  Typically, this command is used at the very beginning
 of an input script.
 
-For all units except *lj*\ , LIGGGHTS(R)-PUBLIC uses physical constants from
+For all units except *lj*\ , Packfall uses physical constants from
 www.physics.nist.gov.  For the definition of Kcal in real units,
-LIGGGHTS(R)-PUBLIC uses the thermochemical calorie = 4.184 J.
+Packfall uses the thermochemical calorie = 4.184 J.
 
 For style *lj*\ , all quantities are unitless.  Without loss of
-generality, LIGGGHTS(R)-PUBLIC sets the fundamental quantities mass, sigma,
+generality, Packfall sets the fundamental quantities mass, sigma,
 epsilon, and the Boltzmann constant = 1.  The masses, distances,
 energies you specify are multiples of these fundamental values.  The
 formulas relating the reduced or unitless quantity (with an asterisk)

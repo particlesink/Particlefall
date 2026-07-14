@@ -238,6 +238,7 @@ Warning messages:
 
 * There should be no angle < 0.5 degrees in any element (soft limit for angles)
 * All nodes should be within the simulation box
+
 If any of the above rules is not fulfilled, a warning is generated. Keyword
 *verbose* controls if details about the warning are written to the screen.
 
@@ -253,6 +254,7 @@ Error messages:
 * Mesh elements must not be duplicate
 * Coplanar mesh elements that share an edge must not overlap
 * Mesh elements must not leave the simulation domain (based on the center of the element)
+
 If any of the obove rules is not fulfilled, an error is generated and
 the code halts. Error messages are always *verbose*\ .
 If the code halts due to the last error, you might think about (a)
@@ -269,6 +271,7 @@ can not be read correctly in the first place:
 * *element\_exclusion\_list*
 * *min\_feature\_length*
 * *curvature\_tolerant*
+
 The *precision* keyword specifies how far away mesh nodes can be at maximum to
 be recognized as identical. This is important for building the topology of the mesh
 and identify elements as neighbors. Normally, this should only be changed if the mesh file
@@ -290,6 +293,7 @@ will write a list of elements which
 * have more than the allowed 5 face neighbors per surface
 * have an angle below 0.0181185 degrees
 * are duplicate
+
 element to a file. The 'read' mode can then use this file and will skip the elements in 
 the list. However, you can also manually write such a file to exclude elements you do not 
 want to have included

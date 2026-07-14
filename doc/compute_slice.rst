@@ -65,7 +65,7 @@ global vector or array.  See the individual :doc:`compute <compute>` doc
 page for details.  If no bracketed integer is appended, the vector
 calculated by the compute is used.  If a bracketed integer is
 appended, the Ith column of the array calculated by the compute is
-used.  Users can also write code for their own compute styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+used.  Users can also write code for their own compute styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "f\_", a fix ID must follow which has been
 previously defined in the input script and which generates a global
@@ -75,7 +75,7 @@ timesteps, which must be compatible with when compute slice references
 the values, else an error results.  If no bracketed integer is
 appended, the vector calculated by the fix is used.  If a bracketed
 integer is appended, the Ith column of the array calculated by the fix
-is used.  Users can also write code for their own fix style and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+is used.  Users can also write code for their own fix style and :doc:`add them to Packfall <Section_modify>`.
 
 If a single input is specified this compute produces a global vector,
 even if the length of the vector is 1.  If multiple inputs are
@@ -93,7 +93,7 @@ specified or a global array with N columns where N is the number of
 inputs.  The length of the vector or the number of rows in the array
 is equal to the number of values extracted from each input vector.
 These values can be used by any command that uses global vector or
-array values from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+array values from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 The vector or array values calculated by this compute are simply

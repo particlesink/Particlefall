@@ -110,7 +110,7 @@ previously defined in the input script.  If no bracketed term is
 appended, the per-atom vector calculated by the compute is used.  If a
 bracketed term containing an index I is appended, the Ith column of
 the per-atom array calculated by the compute is used.  Users can also
-write code for their own compute styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+write code for their own compute styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "f\_", a fix ID must follow which has been
 previously defined in the input script.  If no bracketed term is
@@ -119,7 +119,7 @@ bracketed term containing an index I is appended, the Ith column of
 the per-atom array calculated by the fix is used.  Note that some
 fixes only produce their values on certain timesteps, which must be
 compatible with *Nevery*\ , else an error will result.  Users can also
-write code for their own fix styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+write code for their own fix styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "v\_", a variable name must follow which has
 been previously defined in the input script as an :doc:`atom-style variable <variable>` Variables of style *atom* can reference

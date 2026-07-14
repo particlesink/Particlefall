@@ -250,7 +250,7 @@ attributes.  For periodic dimensions, they specify which image of the
 simulation box the atom is considered to be in.  An image of 0 means
 it is inside the box as defined.  A value of 2 means add 2 box lengths
 to get the true value.  A value of -1 means subtract 1 box length to
-get the true value.  LIGGGHTS(R)-PUBLIC updates these flags as atoms cross
+get the true value.  Packfall updates these flags as atoms cross
 periodic boundaries during the simulation.
 
 The *mux*\ , *muy*\ , *muz* attributes are specific to dipolar systems
@@ -324,7 +324,7 @@ attributes are available only for *superquadric* particles and hence require thi
 :doc:`atom\_style <atom_style>`
 
 See :doc:`Section\_modify <Section_modify>` of the manual for information
-on how to add new compute and fix styles to LIGGGHTS(R)-PUBLIC to calculate
+on how to add new compute and fix styles to Packfall to calculate
 per-atom quantities which could then be output into dump files.
 
 
@@ -338,8 +338,8 @@ Restrictions
 The *custom/vtk* style does not support writing of gzipped dump files.
 
 To be able to use *custom/vtk*\ , you have to link to the VTK library,
-please adapt your Makefile accordingly. You must compile LIGGGHTS(R)-PUBLIC with the
--DLAMMPS\_VTK option - see the :ref:`Making LIGGGHTS(R)-PUBLIC <start_2>`
+please adapt your Makefile accordingly. You must compile Packfall with the
+-DLAMMPS\_VTK option - see the :ref:`Making Packfall <start_2>`
 section of the documentation.
 
 The *custom/vtk* dump style neither supports buffering nor custom format strings.

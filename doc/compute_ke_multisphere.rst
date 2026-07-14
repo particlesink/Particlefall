@@ -43,7 +43,7 @@ calculation.
 
 This compute calculates a global scalar (the summed KE of all the
 multisphere bodies).  This value can be used by any command that uses a
-global scalar value from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+global scalar value from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of Packfall output
 options.
 
 The scalar value calculated by this compute is "extensive".  The

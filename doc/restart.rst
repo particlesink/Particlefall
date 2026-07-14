@@ -51,7 +51,7 @@ both of two modes, as a run proceeds.  A value of 0 means do not write
 out any restart files.  The two modes are as follows.  If one filename
 is specified, a series of filenames will be created which include the
 timestep in the filename.  If two filenames are specified, only 2
-restart files will be created, with those names.  LIGGGHTS(R)-PUBLIC will toggle
+restart files will be created, with those names.  Packfall will toggle
 between the 2 names as it writes successive restart files.
 
 As a prototype, the restart cadence can also be specified directly in

@@ -188,7 +188,7 @@ Default
 """""""
 
 The option defaults are dist = uniform, sum = no, mom = yes, rot = no,
- style on group-ID, loop = all, and units = box.  The
+style on group-ID, loop = all, and units = box.  The
 rigid option is not defined by default.
 
 

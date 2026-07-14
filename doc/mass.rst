@@ -70,7 +70,7 @@ If you define a :doc:`hybrid atom style <atom_style>` which includes one
 (or more) sub-styles which require per-type mass and one (or more)
 sub-styles which require per-atom mass, then you must define both.
 However, in this case the per-type mass will be ignored; only the
-per-atom mass will be used by LIGGGHTS(R)-PUBLIC.
+per-atom mass will be used by Packfall.
 
 Restrictions
 """"""""""""

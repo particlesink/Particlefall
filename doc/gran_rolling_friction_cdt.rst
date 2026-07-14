@@ -56,7 +56,7 @@ inconsistancies.
 .. note::
 
    :doc:`Coarsegraining <coarsegraining>` may or 
-   may not be available in LIGGGHTS(R)-PUBLIC.
+   may not be available in Packfall.
 
 Default
 """""""

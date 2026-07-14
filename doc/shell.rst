@@ -58,15 +58,15 @@ the command in a shell.
 This is means to invoke other commands from your input script.  For
 example, you can move files around in preparation for the next section
 of the input script.  Or you can run a program that pre-processes data
-for input into LIGGGHTS(R)-PUBLIC.  Or you can run a program that post-processes
-LIGGGHTS(R)-PUBLIC output data.
+for input into Packfall.  Or you can run a program that post-processes
+Packfall output data.
 
 With the exception of *cd*\ , all commands, including ones invoked via a
 system() call, are executed by only a single processor, so that
 files/directories are not being manipulated by multiple processors.
 
 The *cd* cmd executes the Unix "cd" command to change the working
-directory.  All subsequent LIGGGHTS(R)-PUBLIC commands that read/write files will
+directory.  All subsequent Packfall commands that read/write files will
 use the new directory.  All processors execute this command.
 
 The *mkdir* cmd executes the Unix "mkdir" command to create one or
@@ -85,7 +85,7 @@ removed.
 The *putenv* cmd defines or updates an environment variable directly.
 Since this command does not pass through the shell, no shell variable
 expansion or globbing is performed, only the usual substitution for
-LIGGGHTS(R)-PUBLIC variables defined with the :doc:`variable <variable>` command is
+Packfall variables defined with the :doc:`variable <variable>` command is
 performed.  The resulting string is then used literally.
 
 Any other cmd is passed as-is to the shell along with its arguments as
@@ -113,7 +113,7 @@ Restrictions
 """"""""""""
 
 
-LIGGGHTS(R)-PUBLIC does not detect errors or print warnings when any of these
+Packfall does not detect errors or print warnings when any of these
 commands execute.  E.g. if the specified directory does not exist,
 executing the *cd* command will silently do nothing.
 

@@ -63,7 +63,7 @@ number. The following table gives an overview over the different options:
 This compute calculates a per-atom vector, whose values can be
 accessed by any command that uses per-atom values from a compute as
 input.  See :ref:`Section\_howto 15 <howto_8>` for an
-overview of LIGGGHTS(R)-PUBLIC output options.
+overview of Packfall output options.
 
 The per-atom vector values will be a number >= 0.0, as explained
 above.

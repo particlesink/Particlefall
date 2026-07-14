@@ -43,8 +43,8 @@ Restrictions
 """"""""""""
 
 
-This bond style can only be used if LIGGGHTS(R)-PUBLIC was built with the
-MOLECULAR package (which it is by default).  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info on packages.
+This bond style can only be used if Packfall was built with the
+MOLECULAR package (which it is by default).  See the :ref:`Making Packfall <start_3>` section for more info on packages.
 
 Related commands
 """"""""""""""""

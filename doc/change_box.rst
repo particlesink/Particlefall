@@ -88,7 +88,7 @@ simulation box is orthogonal or triclinic and their doc pages explain
 the meaning of the xy,xz,yz tilt factors.
 
 See :ref:`Section\_howto 12 <howto_7>` of the doc pages
-for a geometric description of triclinic boxes, as defined by LIGGGHTS(R)-PUBLIC,
+for a geometric description of triclinic boxes, as defined by Packfall,
 and how to transform these parameters to and from other commonly used
 triclinic representations.
 
@@ -240,7 +240,7 @@ For style *delta*\ , a plus or minus change in the tilt factor is
 specified.  The value can be in lattice or box distance units.  See
 the discussion of the units keyword below.
 
-All of these styles change the xy, xz, yz tilt factors.  In LIGGGHTS(R)-PUBLIC,
+All of these styles change the xy, xz, yz tilt factors.  In Packfall,
 tilt factors (xy,xz,yz) for triclinic boxes are required to be no more
 than half the distance of the parallel box length.  For example, if
 xlo = 2 and xhi = 12, then the x box length is 10 and the xy tilt
@@ -286,7 +286,7 @@ command.
 
 The *ortho* and *triclinic* keywords convert the simulation box to be
 orthogonal or triclinic (non-orthongonal).  See :ref:`this section <howto_12>` for a discussion of how non-orthongal
-boxes are represented in LIGGGHTS(R)-PUBLIC.
+boxes are represented in Packfall.
 
 The simulation box is defined as either orthogonal or triclinic when
 it is created via the :doc:`create\_box <create_box>`,
@@ -343,7 +343,7 @@ been previously used to define the lattice spacing.
 
 The *change\_box* command cannot be used on restarted simulations that contain
 fixes with restart data. In order to circumvent this the *force* keyword can be
-used. Note, that this only works if LIGGGHTS(r) is run on one processor only.
+used. Note, that this only works if Packfall is run on one processor only.
 
 Restrictions
 """"""""""""

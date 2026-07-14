@@ -24,7 +24,7 @@ Examples
 Description
 """""""""""
 
-Set the dimensionality of the simulation.  By default LIGGGHTS(R)-PUBLIC runs 3d
+Set the dimensionality of the simulation.  By default Packfall runs 3d
 simulations.  To run a 2d simulation, this command should be used
 prior to setting up a simulation box via the
 :doc:`create\_box <create_box>` or :doc:`read\_data <read_data>` commands.
@@ -35,7 +35,7 @@ additional instructions on how to run 2d simulations.
 
 .. warning::
 
-   Some models in LIGGGHTS(R)-PUBLIC treat particles as finite-size
+   Some models in Packfall treat particles as finite-size
    spheres or ellipsoids, as opposed to point particles.  In 2d, the
    particles will still be spheres or ellipsoids, not circular disks or
    ellipses, meaning their moment of inertia will be the same as in 3d.

@@ -72,7 +72,7 @@ collision of each particle with itself using v\_max as the assumed collision
 velocity.
 
 Keyword *warn* can be used to turn off the warning message. Keyword *error*
-can be used to have LIGGGHTS(R)-PUBLIC issue an error message and abort the simulation
+can be used to have Packfall issue an error message and abort the simulation
 if any of the criteria is violated.
 
 **Restart, fix\_modify, output, run start/stop, minimize info:**

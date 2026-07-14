@@ -104,7 +104,7 @@ command), the *every* and *delay* parameters refer to the longest
 
 The *contact\_distance\_factor* setting can be used to increase the range
 of granular neighbor lists. When *contact\_distance\_factor* > 1.0,
-instead of the standard criterion ri+rj+skin < distance, LIGGGHTS(R)-PUBLIC is
+instead of the standard criterion ri+rj+skin < distance, Packfall is
 checking for *contact\_distance\_factor* \*(ri+rj)+skin < distance to
 decided if a pair of granular particles goes into a neighbor list.
 
@@ -154,15 +154,15 @@ of neighboring atoms are stored in "pages", which are allocated one
 after another as they fill up.  The size of each page is set by the
 *page* value.  A new page is allocated when the next atom's neighbors
 could potentially overflow the list.  This threshold is set by the
-*one* value which tells LIGGGHTS(R)-PUBLIC the maximum number of neighbor's one
+*one* value which tells Packfall the maximum number of neighbor's one
 atom can have.
 
 .. warning::
 
-   LIGGGHTS(R)-PUBLIC can crash without an error message if the
+   Packfall can crash without an error message if the
    number of neighbors for a single particle is larger than the *page*
    setting, which means it is much, much larger than the *one* setting.
-   This is because LIGGGHTS(R)-PUBLIC doesn't error check these limits for every
+   This is because Packfall doesn't error check these limits for every
    pairwise interaction (too costly), but only after all the particle's
    neighbors have been found.  This problem usually means something is
    very wrong with the way you've setup your problem (particle spacing,
@@ -172,14 +172,14 @@ atom can have.
 
 The *binsize* option allows you to specify what size of bins will be
 used in neighbor list construction to sort and find neighboring atoms.
-By default, for :doc:`neighbor style bin <neighbor>`, LIGGGHTS(R)-PUBLIC uses bins
+By default, for :doc:`neighbor style bin <neighbor>`, Packfall uses bins
 that are 1/2 the size of the maximum pair cutoff.  For :doc:`neighbor style multi <neighbor>`, the bins are 1/2 the size of the minimum pair
 cutoff.  Typically these are good values values for minimizing the
 time for neighbor list construction.  This setting overrides the
 default.  If you make it too big, there is little overhead due to
 looping over bins, but more atoms are checked.  If you make it too
 small, the optimal number of atoms is checked, but bin overhead goes
-up.  If you set the binsize to 0.0, LIGGGHTS(R)-PUBLIC will use the default
+up.  If you set the binsize to 0.0, Packfall will use the default
 binsize of 1/2 the cutoff.
 
 Restrictions

@@ -33,7 +33,7 @@ subsequently substituted for in an input script command, the new value
 is used.
 
 See the :doc:`variable <variable>` command for info on how to define and
-use different kinds of variables in LIGGGHTS(R)-PUBLIC input scripts.  If a
+use different kinds of variables in Packfall input scripts.  If a
 variable name is a single lower-case character from "a" to "z", it can
 be used in an input script command as $a or $z.  If it is multiple
 letters, it can be used as ${myTemp}.
@@ -69,12 +69,12 @@ per-atom values is read from its file and assigned to the variable.
 When the next command is used with *universe*\ - or *uloop*\ -style
 variables, the next value is assigned to whichever processor partition
 executes the command first.  All processors in the partition are
-assigned the same value.  Running LIGGGHTS(R)-PUBLIC on multiple partitions of
+assigned the same value.  Running Packfall on multiple partitions of
 processors via the "-partition" command-line switch is described in
 :ref:`this section <start_7>` of the manual.  *Universe*\ -
 and *uloop*\ -style variables are incremented using the files
 "tmp.lammps.variable" and "tmp.lammps.variable.lock" which you will
-see in your directory during such a LIGGGHTS(R)-PUBLIC run.
+see in your directory during such a Packfall run.
 
 Here is an example of running a series of simulations using the next
 command with an *index*\ -style variable.  If this input script is named

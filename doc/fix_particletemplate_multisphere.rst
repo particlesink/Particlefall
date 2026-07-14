@@ -93,11 +93,11 @@ use these keywords only together, i.e. defining only *mass* but not
 *inertia\_tensor* will throw an error. Also note that only 2 out of the
 3 variables density, mass and volume are independant. Thus, you are
 offered two options when *mass* and *inertia\_tensor* are used:
-(a) if keyword *use\_volume* is specified, LIGGGHTS(R)-PUBLIC will use the
+(a) if keyword *use\_volume* is specified, Packfall will use the
 specified *mass* and volume\_mc (the volume of the particle template
 calculated by the Monte Carlo procedure), and calculate the density from
 these two variables.
-(b) if keyword *use\_density* is used, LIGGGHTS(R)-PUBLIC will use the specified
+(b) if keyword *use\_density* is used, Packfall will use the specified
 *mass* and the specified *density* (see doc of
 :doc:`fix particletemplate/sphere <fix_particletemplate_sphere>` command),
 and the volume of the clump is then calculated from these two variables.

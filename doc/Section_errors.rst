@@ -1,7 +1,7 @@
 Errors
 ======
 
-This section describes the errors you can encounter when using LIGGGHTS(R)-PUBLIC,
+This section describes the errors you can encounter when using Packfall,
 either conceptually, or as printed out by the program.
 
 
@@ -136,10 +136,6 @@ ERROR: Illegal velocity command (velocity.cpp:78)
 means that line #78 in the file src/velocity.cpp generated the error.
 Looking in the source code may help you figure out what went wrong.
 
-Note that error messages from :ref:`user-contributed packages <start_3>` are not listed here.  If such an
-error occurs and is not self-explanatory, you'll need to look in the
-source code or contact the author of the package.
-
 .. _error:
 
 Errors:
@@ -196,7 +192,7 @@ Errors:
 
 *All read\_dump x,y,z fields must be specified for scaled, triclinic coords*
    For triclinic boxes and scaled coordinates you must specify all 3 of
-   the x,y,z fields, else LIGGGHTS(R)-PUBLIC cannot reconstruct the unscaled
+   the x,y,z fields, else Packfall cannot reconstruct the unscaled
    coordinates.
 
 *All universe/uloop variables must have same # of values*
@@ -656,7 +652,7 @@ Errors:
    Self-explanatory.
 
 *Cannot compute initial g\_ewald\_disp*
-   LIGGGHTS(R)-PUBLIC failed to compute an initial guess for the PPPM\_disp g\_ewald\_6
+   Packfall failed to compute an initial guess for the PPPM\_disp g\_ewald\_6
    factor that partitions the computation between real space and k-space
    for Disptersion interactions.
 
@@ -669,7 +665,7 @@ Errors:
    command.
 
 *Cannot create/grow a vector/array of pointers for %s*
-   LIGGGHTS(R)-PUBLIC code is making an illegal call to the templated memory
+   Packfall code is making an illegal call to the templated memory
    allocaters, to create a vector or array of pointers.
 
 *Cannot create\_atoms after reading restart file with per-atom info*
@@ -712,7 +708,7 @@ Errors:
    enable the atom\_modify first command.
 
 *Cannot dump JPG file*
-   LIGGGHTS(R)-PUBLIC was not built with the -DLAMMPS\_JPEG switch in the Makefile.
+   Packfall was not built with the -DLAMMPS\_JPEG switch in the Makefile.
 
 *Cannot dump sort on atom IDs with no atom IDs defined*
    Self-explanatory.
@@ -839,22 +835,22 @@ Errors:
    the path and name are correct.
 
 *Cannot open gzipped file*
-   LIGGGHTS(R)-PUBLIC is attempting to open a gzipped version of the specified file
+   Packfall is attempting to open a gzipped version of the specified file
    but was unsuccessful.  Check that the path and name are correct.
 
 *Cannot open input script %s*
    Self-explanatory.
 
 *Cannot open log.lammps*
-   The default LIGGGHTS(R)-PUBLIC log file cannot be opened.  Check that the
+   The default Packfall log file cannot be opened.  Check that the
    directory you are running in allows for files to be created.
 
 *Cannot open logfile*
-   The LIGGGHTS(R)-PUBLIC log file named in a command-line argument cannot be opened.
+   The Packfall log file named in a command-line argument cannot be opened.
    Check that the path and name are correct.
 
 *Cannot open logfile %s*
-   The LIGGGHTS(R)-PUBLIC log file specified in the input script cannot be opened.
+   The Packfall log file specified in the input script cannot be opened.
    Check that the path and name are correct.
 
 *Cannot open pair\_write file*
@@ -963,7 +959,7 @@ Errors:
 
 *Cannot use -cuda on without USER-CUDA installed*
    The USER-CUDA package must be installed via "make yes-user-cuda"
-   before LIGGGHTS(R)-PUBLIC is built.
+   before Packfall is built.
 
 *Cannot use -reorder after -partition*
    Self-explanatory.  See doc page discussion of command-line switches.
@@ -989,7 +985,7 @@ Errors:
    Self-explanatory.
 
 *Cannot use NEB with atom\_modify sort enabled*
-   This is current restriction for NEB implemented in LIGGGHTS(R)-PUBLIC.
+   This is current restriction for NEB implemented in Packfall.
 
 *Cannot use PPPM with 2d simulation*
    The kspace style pppm cannot be used in 2d simulations.  You can use
@@ -1022,11 +1018,11 @@ Errors:
    This is a current restriction of NEB.
 
 *Cannot use a damped dynamics min style with fix box/relax*
-   This is a current restriction in LIGGGHTS(R)-PUBLIC.  Use another minimizer
+   This is a current restriction in Packfall.  Use another minimizer
    style.
 
 *Cannot use a damped dynamics min style with per-atom DOF*
-   This is a current restriction in LIGGGHTS(R)-PUBLIC.  Use another minimizer
+   This is a current restriction in Packfall.  Use another minimizer
    style.
 
 *Cannot use append/atoms in periodic dimension*
@@ -1201,7 +1197,7 @@ Errors:
 
 *Cannot use force/neigh with triclinic box*
    This is a current limitation of the GPU implementation
-   in LIGGGHTS(R)-PUBLIC.
+   in Packfall.
 
 *Cannot use kspace solver on system with no charge*
    No atoms in system have a non-zero charge.
@@ -1227,7 +1223,7 @@ Errors:
 
 *Cannot use neigh\_modify exclude with GPU neighbor builds*
    This is a current limitation of the GPU implementation
-   in LIGGGHTS(R)-PUBLIC.
+   in Packfall.
 
 *Cannot use neighbor bins - box size << cutoff*
    Too many neighbor bins will be created.  This typically happens when
@@ -1380,7 +1376,7 @@ Errors:
    This is because triangles are connected to each other.
 
 *Cannot use variable energy with constant force in fix addforce*
-   This is because for constant force, LIGGGHTS(R)-PUBLIC can compute the change
+   This is because for constant force, Packfall can compute the change
    in energy directly.
 
 *Cannot use variable every setting for dump dcd*
@@ -1532,7 +1528,7 @@ Errors:
    The atom style does not support dihedrals.
 
 *Compute does not allow an extra compute or fix to be reset*
-   This is an internal LIGGGHTS(R)-PUBLIC error.  Please report it to the
+   This is an internal Packfall error.  Please report it to the
    developers.
 
 *Compute erotate/asphere requires atom style ellipsoid or line or tri*
@@ -1548,7 +1544,7 @@ Errors:
    Self-explanatory.
 
 *Compute event/displace has invalid fix event assigned*
-   This is an internal LIGGGHTS(R)-PUBLIC error.  Please report it to the
+   This is an internal Packfall error.  Please report it to the
    developers.
 
 *Compute group/group group ID does not exist*
@@ -2342,11 +2338,11 @@ Errors:
    The quantity being read is a floating point or non-numeric value.
 
 *Failed to allocate %ld bytes for array %s*
-   Your LIGGGHTS(R)-PUBLIC simulation has run out of memory.  You need to run a
+   Your Packfall simulation has run out of memory.  You need to run a
    smaller simulation or on more processors.
 
 *Failed to reallocate %ld bytes for array %s*
-   Your LIGGGHTS(R)-PUBLIC simulation has run out of memory.  You need to run a
+   Your Packfall simulation has run out of memory.  You need to run a
    smaller simulation or on more processors.
 
 *Fewer SRD bins than processors in some dimension*
@@ -2708,7 +2704,7 @@ Errors:
 
 *Fix deform cannot use yz variable with xy*
    The yz setting cannot be a variable if xy deformation is also
-   specified.  This is because LIGGGHTS(R)-PUBLIC cannot determine if the yz setting
+   specified.  This is because Packfall cannot determine if the yz setting
    will induce a box flip which would be invalid if xy is also changing.
 
 *Fix deform is changing yz too much with xy*
@@ -2773,7 +2769,7 @@ Errors:
 
 *Fix gcmc could not find any atoms in the user-supplied template molecule*
    When using the molecule option with fix gcmc, the user must supply a
-   template molecule in the usual LIGGGHTS(R)-PUBLIC data file with its molecule id
+   template molecule in the usual Packfall data file with its molecule id
    specified in the fix gcmc command as the "type" of the exchanged gas.
 
 *Fix gcmc incompatible with given pair\_style*
@@ -3221,7 +3217,7 @@ Errors:
 *Illegal ... command*
    Self-explanatory.  Check the input script syntax and compare to the
    documentation for the command.  You can use -echo screen as a
-   command-line option when running LIGGGHTS(R)-PUBLIC to see the offending line.
+   command-line option when running Packfall to see the offending line.
 
 *Illegal COMB parameter*
    One or more of the coefficients defined in the potential file is
@@ -3462,7 +3458,7 @@ Errors:
    Self-explanatory.
 
 *Invalid REAX atom type*
-   There is a mis-match between LIGGGHTS(R)-PUBLIC atom types and the elements
+   There is a mis-match between Packfall atom types and the elements
    listed in the ReaxFF force field file.
 
 *Invalid angle style*
@@ -3592,7 +3588,7 @@ Errors:
 
 *Invalid command-line argument*
    One or more command-line arguments is invalid.  Check the syntax of
-   the command you are using to launch LIGGGHTS(R)-PUBLIC.
+   the command you are using to launch Packfall.
 
 *Invalid compute ID in variable formula*
    The compute is not recognized.
@@ -4071,7 +4067,7 @@ Errors:
    The atom style defined does not have these attributes.
    Change the atom style or switch of the coulomb solver.
 
-*LIGGGHTS(R)-PUBLIC unit\_style lj not supported by KIM models*
+*Packfall unit\_style lj not supported by KIM models*
    Self-explanatory. Check the input script or data file.
 
 *LJ6 off not supported in pair\_style buck/long/coul/long*
@@ -4131,7 +4127,7 @@ Errors:
    requested accuracy.
 
 *MSM order must be 4, 6, 8, or 10*
-   This is a limitation of the MSM implementation in LIGGGHTS(R)-PUBLIC:
+   This is a limitation of the MSM implementation in Packfall:
    the MSM order can only be 4, 6, 8, or 10.
 
 *Mass command before simulation box is defined*
@@ -4368,7 +4364,7 @@ Errors:
    multiple of the every setting.
 
 *Neighbor include group not allowed with ghost neighbors*
-   This is a current restriction within LIGGGHTS(R)-PUBLIC.
+   This is a current restriction within Packfall.
 
 *Neighbor list overflow, boost neigh\_modify one*
    There are too many neighbors of a single atom.  Use the neigh\_modify
@@ -4381,7 +4377,7 @@ Errors:
    neighbors allowed for one atom.
 
 *Neighbor multi not yet enabled for ghost neighbors*
-   This is a current restriction within LIGGGHTS(R)-PUBLIC.
+   This is a current restriction within Packfall.
 
 *Neighbor multi not yet enabled for granular*
    Self-explanatory.
@@ -4408,7 +4404,7 @@ Errors:
    Self-explanatory.
 
 *No OpenMP support compiled in*
-   An OpenMP flag is set, but LIGGGHTS(R)-PUBLIC was not built with
+   An OpenMP flag is set, but Packfall was not built with
    OpenMP support.
 
 *No angle style is defined for compute angle/local*
@@ -4590,7 +4586,7 @@ Errors:
    kspace\_modify minorder command.
 
 *PPPM order cannot be < 2 or > than %d*
-   This is a limitation of the PPPM implementation in LIGGGHTS(R)-PUBLIC.
+   This is a limitation of the PPPM implementation in Packfall.
 
 *PPPMDisp Coulomb grid is too large*
    The global PPPM grid is larger than OFFSET in one or more dimensions.
@@ -4603,7 +4599,7 @@ Errors:
    decrease the requested accuracy.
 
 *PPPMDisp coulomb order cannot be greater than %d*
-   This is a limitation of the PPPM implementation in LIGGGHTS(R)-PUBLIC.
+   This is a limitation of the PPPM implementation in Packfall.
 
 *PRD command before simulation box is defined*
    The prd command cannot be used before a read\_data,
@@ -4621,7 +4617,7 @@ Errors:
 
 *Package cuda command without USER-CUDA installed*
    The USER-CUDA package must be installed via "make yes-user-cuda"
-   before LIGGGHTS(R)-PUBLIC is built.
+   before Packfall is built.
 
 *Pair body requires atom style body*
    Self-explanatory.
@@ -5153,7 +5149,7 @@ Errors:
 
 *Processor partitions are inconsistent*
    The total number of processors in all partitions must match the number
-   of processors LIGGGHTS(R)-PUBLIC is running on.
+   of processors Packfall is running on.
 
 *Processors command after simulation box is defined*
    The processors command cannot be used after a read\_data, read\_restart,
@@ -5188,7 +5184,7 @@ Errors:
    Self-explanatory.
 
 *Read\_dump triclinic status does not match simulation*
-   Both the dump snapshot and the current LIGGGHTS(R)-PUBLIC simulation must
+   Both the dump snapshot and the current Packfall simulation must
    be using either an orthogonal or triclinic box.
 
 *Read\_dump x,y,z fields do not have consistent scaling*
@@ -5196,11 +5192,11 @@ Errors:
 
 *Reax\_defs.h setting for NATDEF is too small*
    Edit the setting in the ReaxFF library and re-compile the
-   library and re-build LIGGGHTS(R)-PUBLIC.
+   library and re-build Packfall.
 
 *Reax\_defs.h setting for NNEIGHMAXDEF is too small*
    Edit the setting in the ReaxFF library and re-compile the
-   library and re-build LIGGGHTS(R)-PUBLIC.
+   library and re-build Packfall.
 
 *Receiving partition in processors part command is already a receiver*
    Cannot specify a partition to be a receiver twice.
@@ -5430,12 +5426,12 @@ Errors:
    It has to be the size of an integer.
 
 *Smallint setting in lmptype.h is not compatible*
-   Smallint stored in restart file is not consistent with LIGGGHTS(R)-PUBLIC version
+   Smallint stored in restart file is not consistent with Packfall version
    you are running.
 
 *Specified processors != physical processors*
    The 3d grid of processors defined by the processors command does not
-   match the number of processors LIGGGHTS(R)-PUBLIC is being run on.
+   match the number of processors Packfall is being run on.
 
 *Specified target stress must be uniaxial or hydrostatic*
    Self-explanatory.
@@ -5476,7 +5472,7 @@ Errors:
    Tagint must be as large or larger than smallint.
 
 *Tagint setting in lmptype.h is not compatible*
-   Smallint stored in restart file is not consistent with LIGGGHTS(R)-PUBLIC version
+   Smallint stored in restart file is not consistent with Packfall version
    you are running.
 
 *Target temperature for fix nvt/npt/nph cannot be 0.0*
@@ -5756,7 +5752,7 @@ Errors:
 *Too many touching neighbors - boost MAXTOUCH*
    A granular simulation has too many neighbors touching one atom.  The
    MAXTOUCH parameter in fix\_shear\_history.cpp must be set larger and
-   LIGGGHTS(R)-PUBLIC must be re-built.
+   Packfall must be re-built.
 
 *Too much per-proc info for dump*
    Number of local atoms times number of columns must fit in a 32-bit
@@ -5801,7 +5797,7 @@ Errors:
    Self-explanatory.
 
 *Unexpected end of data file*
-   LIGGGHTS(R)-PUBLIC hit the end of the data file while attempting to read a
+   Packfall hit the end of the data file while attempting to read a
    section.  Something is wrong with the format of the data file.
 
 *Unexpected end of dump file*
@@ -5819,13 +5815,13 @@ Errors:
    number of processor partitions.
 
 *Unknown command: %s*
-   The command is not known to LIGGGHTS(R)-PUBLIC.  Check the input script.
+   The command is not known to Packfall.  Check the input script.
 
 *Unknown error in GPU library*
    Self-explanatory.
 
 *Unknown identifier in data file: %s*
-   A section of the data file cannot be read by LIGGGHTS(R)-PUBLIC.
+   A section of the data file cannot be read by Packfall.
 
 *Unknown table style in angle style table*
    Self-explanatory.
@@ -6220,11 +6216,11 @@ Errors:
    Self-explanatory.
 
 *Water H epsilon must be 0.0 for pair style lj/cut/tip4p/long*
-   This is because LIGGGHTS(R)-PUBLIC does not compute the Lennard-Jones interactions
+   This is because Packfall does not compute the Lennard-Jones interactions
    with these particles for efficiency reasons.
 
 *Water H epsilon must be 0.0 for pair style lj/long/tip4p/long*
-   This is because LIGGGHTS(R)-PUBLIC does not compute the Lennard-Jones interactions
+   This is because Packfall does not compute the Lennard-Jones interactions
    with these particles for efficiency reasons.
 
 *World variable count doesn't match # of partitions*
@@ -6263,10 +6259,10 @@ Warnings:
    want.
 
 *Bond/angle/dihedral extent > half of periodic box length*
-   This is a restriction because LIGGGHTS(R)-PUBLIC can be confused about which image
+   This is a restriction because Packfall can be confused about which image
    of an atom in the bonded interaction is the correct one to use.
    "Extent" in this context means the maximum end-to-end length of the
-   bond/angle/dihedral.  LIGGGHTS(R)-PUBLIC computes this by taking the maximum bond
+   bond/angle/dihedral.  Packfall computes this by taking the maximum bond
    length, multiplying by the number of bonds in the interaction (e.g. 3
    for a dihedral) and adding a small amount of stretch.
 
@@ -6278,7 +6274,7 @@ Warnings:
    restriction.
 
 *Building an occasional neighobr list when atoms may have moved too far*
-   This can cause LIGGGHTS(R)-PUBLIC to crash when the neighbor list is built.
+   This can cause Packfall to crash when the neighbor list is built.
    The solution is to check for building the regular neighbor lists
    more frequently.
 
@@ -6347,7 +6343,7 @@ Warnings:
    fix recenter should come last.
 
 *Fix shake with rRESPA computes invalid pressures*
-   This is a known bug in LIGGGHTS(R)-PUBLIC that has not yet been fixed.  If you use
+   This is a known bug in Packfall that has not yet been fixed.  If you use
    SHAKE with rRESPA and perform a constant volume simulation (e.g. using
    fix npt) this only affects the output pressure, not the dynamics of
    the simulation.  If you use SHAKE with rRESPA and perform a constant
@@ -6411,7 +6407,7 @@ Warnings:
    flags for the 2 atoms in a bond that straddles a periodic boundary.
    They should be different by 1 in that case.  This is a warning because
    inconsistent image flags will not cause problems for dynamics or most
-   LIGGGHTS(R)-PUBLIC simulations.  However they can cause problems when such atoms
+   Packfall simulations.  However they can cause problems when such atoms
    are used with the fix rigid or replicate commands.
 
 *KIM Model does not provide `energy'; Potential energy will be zero*
@@ -6605,29 +6601,29 @@ Warnings:
 *Resetting reneighboring criteria during PRD*
    A PRD simulation requires that neigh\_modify settings be delay = 0,
    every = 1, check = yes.  Since these settings were not in place,
-   LIGGGHTS(R)-PUBLIC changed them and will restore them to their original values
+   Packfall changed them and will restore them to their original values
    after the PRD simulation.
 
 *Resetting reneighboring criteria during TAD*
    A TAD simulation requires that neigh\_modify settings be delay = 0,
    every = 1, check = yes.  Since these settings were not in place,
-   LIGGGHTS(R)-PUBLIC changed them and will restore them to their original values
+   Packfall changed them and will restore them to their original values
    after the PRD simulation.
 
 *Resetting reneighboring criteria during minimization*
    Minimization requires that neigh\_modify settings be delay = 0, every =
-   1, check = yes.  Since these settings were not in place, LIGGGHTS(R)-PUBLIC
+   1, check = yes.  Since these settings were not in place, Packfall
    changed them and will restore them to their original values after the
    minimization.
 
 *Restart file used different # of processors*
-   The restart file was written out by a LIGGGHTS(R)-PUBLIC simulation running on a
+   The restart file was written out by a Packfall simulation running on a
    different number of processors.  Due to round-off, the trajectories of
    your restarted simulation may diverge a little more quickly than if
    you ran on the same # of processors.
 
 *Restart file used different 3d processor grid*
-   The restart file was written out by a LIGGGHTS(R)-PUBLIC simulation running on a
+   The restart file was written out by a Packfall simulation running on a
    different 3d grid of processors.  Due to round-off, the trajectories
    of your restarted simulation may diverge a little more quickly than if
    you ran on the same # of processors.
@@ -6641,7 +6637,7 @@ Warnings:
 *Restart file used different newton pair setting, using input script value*
    The input script value will override the setting in the restart file.
 
-*Restart file version does not match LIGGGHTS(R)-PUBLIC version*
+*Restart file version does not match Packfall version*
    This may cause problems when reading the restart file.
 
 *Restrain problem: %d %ld %d %d %d %d*
@@ -6668,11 +6664,11 @@ Warnings:
 
 *Shake determinant < 0.0*
    The determinant of the quadratic equation being solved for a single
-   cluster specified by the fix shake command is numerically suspect.  LIGGGHTS(R)-PUBLIC
+   cluster specified by the fix shake command is numerically suspect.  Packfall
    will set it to 0.0 and continue.
 
 *Should not allow rigid bodies to bounce off relecting walls*
-   LIGGGHTS(R)-PUBLIC allows this, but their dynamics are not computed correctly.
+   Packfall allows this, but their dynamics are not computed correctly.
 
 *System is not charge neutral, net charge = %g*
    The total charge on all atoms on the system is not 0.0, which
@@ -6721,7 +6717,7 @@ Warnings:
    than half the box length in that dimension.  E.g. the xy tilt must be
    between -half and +half of the x box length.  You have relaxed the
    constraint using the box tilt command, but the warning means that a
-   LIGGGHTS(R)-PUBLIC simulation may be inefficient as a result.
+   Packfall simulation may be inefficient as a result.
 
 *Use special bonds = 0,1,1 with bond style fene*
    Most FENE models need this setting for the special\_bonds command.

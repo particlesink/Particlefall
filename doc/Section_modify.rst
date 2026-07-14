@@ -1,7 +1,7 @@
-Modifying & extending LIGGGHTS(R)-PUBLIC
+Modifying & extending Packfall
 ========================================
 
-This section describes how to customize LIGGGHTS(R)-PUBLIC by modifying
+This section describes how to customize Packfall by modifying
 and extending its source code.
 
 
@@ -9,21 +9,21 @@ and extending its source code.
 		:local:
 		:depth: 1
    
-LIGGGHTS(R)-PUBLIC is designed in a modular fashion so as to be easy to modify and
+Packfall is designed in a modular fashion so as to be easy to modify and
 extend with new functionality.  In fact, about 75% of its source code
 is files added in this fashion.
 
 In this section, changes and additions users can make are listed along
-with minimal instructions.  If you add a new feature to LIGGGHTS(R)-PUBLIC and
+with minimal instructions.  If you add a new feature to Packfall and
 think it will be of interest to general users, we encourage you to
 submit it to the developers for inclusion in the released version of
-LIGGGHTS(R)-PUBLIC.  Information about how to do this is provided
+Packfall.  Information about how to do this is provided
 :ref:`below <mod_14>`.
 
 The best way to add a new feature is to find a similar feature in
-LIGGGHTS(R)-PUBLIC and look at the corresponding source and header files to figure
+Packfall and look at the corresponding source and header files to figure
 out what it does.  You will need some knowledge of C++ to be able to
-understand the hi-level structure of LIGGGHTS(R)-PUBLIC and its class
+understand the hi-level structure of Packfall and its class
 organization, but functions (class methods) that do actual
 computations are written in vanilla C-style code and operate on simple
 C-style data structures (vectors and arrays).
@@ -35,19 +35,19 @@ class requires 2 files, a source code file (\*.cpp) and a header file
 (\*.h).  The derived class must provide certain methods to work as a
 new option.  Depending on how different your new feature is compared
 to existing features, you can either derive from the base class
-itself, or from a derived class that already exists.  Enabling LIGGGHTS(R)-PUBLIC
+itself, or from a derived class that already exists.  Enabling Packfall
 to invoke the new class is as simple as putting the two source
-files in the src dir and re-building LIGGGHTS(R)-PUBLIC.
+files in the src dir and re-building Packfall.
 
 The advantage of C++ and its object-orientation is that all the code
 and variables needed to define the new feature are in the 2 files you
-write, and thus shouldn't make the rest of LIGGGHTS(R)-PUBLIC more complex or
+write, and thus shouldn't make the rest of Packfall more complex or
 cause side-effect bugs.
 
 Here is a concrete example.  Suppose you write 2 files pair\_foo.cpp
 and pair\_foo.h that define a new class PairFoo that computes pairwise
 potentials described in the classic 1997 :ref:`paper <Foo>` by Foo, et al.
-If you wish to invoke those potentials in a LIGGGHTS(R)-PUBLIC input script with a
+If you wish to invoke those potentials in a Packfall input script with a
 command like
 
 
@@ -72,29 +72,29 @@ where "foo" is the style keyword in the pair\_style command, and
 PairFoo is the class name defined in your pair\_foo.cpp and pair\_foo.h
 files.
 
-When you re-build LIGGGHTS(R)-PUBLIC, your new pairwise potential becomes part of
+When you re-build Packfall, your new pairwise potential becomes part of
 the executable and can be invoked with a pair\_style command like the
 example above.  Arguments like 0.1 and 3.5 can be defined and
 processed by your new class.
 
 As illustrated by this pairwise example, many kinds of options are
-referred to in the LIGGGHTS(R)-PUBLIC documentation as the "style" of a particular
+referred to in the Packfall documentation as the "style" of a particular
 command.
 
 The instructions below give the header file for the base class that
 these styles are derived from.  Public variables in that file are ones
 used and set by the derived classes which are also used by the base
-class.  Sometimes they are also used by the rest of LIGGGHTS(R)-PUBLIC.  Virtual
+class.  Sometimes they are also used by the rest of Packfall.  Virtual
 functions in the base class header file which are set = 0 are ones you
 must define in your new derived class to give it the functionality
-LIGGGHTS(R)-PUBLIC expects.  Virtual functions that are not set to 0 are functions
+Packfall expects.  Virtual functions that are not set to 0 are functions
 you can optionally define.
 
 Additionally, new output options can be added directly to the
 thermo.cpp, dump\_custom.cpp, and variable.cpp files as explained
 below.
 
-Here are additional guidelines for modifying LIGGGHTS(R)-PUBLIC and adding new
+Here are additional guidelines for modifying Packfall and adding new
 functionality:
 
 * Think about whether what you want to do would be better as a pre- or
@@ -108,9 +108,9 @@ functionality:
   follow the unit conventions discussed by the :doc:`units <units>`
   command.
 * If you add something you think is truly useful and doesn't impact
-  LIGGGHTS(R)-PUBLIC performance when it isn't used, send an email to the
+  Packfall performance when it isn't used, send an email to the
   `developers <http://lammps.sandia.gov/authors.html>`_.  We might be
-  interested in adding it to the LIGGGHTS(R)-PUBLIC distribution.  See further
+  interested in adding it to the Packfall distribution.  See further
   details on this at the bottom of this page.
 
 
@@ -214,7 +214,7 @@ modify.
    output the custom values.
 
 New :doc:`pair styles <pair_style>`, :doc:`fixes <fix>`, or
-:doc:`computes <compute>` can be added to LIGGGHTS(R)-PUBLIC, as discussed below.
+:doc:`computes <compute>` can be added to Packfall, as discussed below.
 The code for these classes can use the per-atom properties defined by
 fix property/atom.  The Atom class has a find\_custom() method that is
 useful in this context:
@@ -252,7 +252,7 @@ Classes that compute scalar and vector quantities like temperature
 and the pressure tensor, as well as classes that compute per-atom
 quantities like kinetic energy and the centro-symmetry parameter
 are derived from the Compute class.  New styles can be created
-to add new calculations to LIGGGHTS(R)-PUBLIC.
+to add new calculations to Packfall.
 
 Compute\_temp.cpp is a simple example of computing a scalar
 temperature.  Compute\_ke\_atom.cpp is a simple example of computing
@@ -346,17 +346,17 @@ half-dozen or so locations where code will need to be added.
 Fix styles
 ----------
 
-In LIGGGHTS(R)-PUBLIC, a "fix" is any operation that is computed during
+In Packfall, a "fix" is any operation that is computed during
 timestepping that alters some property of the system.  Essentially
 everything that happens during a simulation besides force computation,
 neighbor list construction, and output, is a "fix".  This includes
 time integration (update of coordinates and velocities), force
 constraints or boundary conditions (SHAKE or walls), and diagnostics
 (compute a diffusion coefficient).  New styles can be created to add
-new options to LIGGGHTS(R)-PUBLIC.
+new options to Packfall.
 
 Fix\_setforce.cpp is a simple example of setting forces on atoms to
-prescribed values.  There are dozens of fix options already in LIGGGHTS(R)-PUBLIC;
+prescribed values.  There are dozens of fix options already in Packfall;
 choose one as a template that is similar to what you want to
 implement.
 
@@ -506,14 +506,14 @@ quantities and/or to be summed to the potential energy of the system.
 Input script commands
 ---------------------
 
-New commands can be added to LIGGGHTS(R)-PUBLIC input scripts by adding new
+New commands can be added to Packfall input scripts by adding new
 classes that have a "command" method.  For example, the create\_atoms,
 read\_data, velocity, and run commands are all implemented in this
-fashion.  When such a command is encountered in the LIGGGHTS(R)-PUBLIC input
-script, LIGGGHTS(R)-PUBLIC simply creates a class with the corresponding name,
+fashion.  When such a command is encountered in the Packfall input
+script, Packfall simply creates a class with the corresponding name,
 invokes the "command" method of the class, and passes it the arguments
 from the input script.  The command method can perform whatever
-operations it wishes on LIGGGHTS(R)-PUBLIC data structures.
+operations it wishes on Packfall data structures.
 
 The single method your new class must define is as follows:
 
@@ -534,10 +534,10 @@ Pairwise potentials
 -------------------
 
 Classes that compute pairwise interactions are derived from the Pair
-class.  In LIGGGHTS(R)-PUBLIC, pairwise calculation include manybody potentials
+class.  In Packfall, pairwise calculation include manybody potentials
 such as EAM or Tersoff where particles interact without a static bond
 topology.  New styles can be created to add new pair potentials to
-LIGGGHTS(R)-PUBLIC.
+Packfall.
 
 Here is a brief description of the class methods in pair.h:
 
@@ -573,9 +573,9 @@ Region styles
 -------------
 
 Classes that define geometric regions are derived from the Region
-class.  Regions are used elsewhere in LIGGGHTS(R)-PUBLIC to group atoms, delete
+class.  Regions are used elsewhere in Packfall to group atoms, delete
 atoms to create a void, insert atoms in a specified region, etc.  New
-styles can be created to add new region shapes to LIGGGHTS(R)-PUBLIC.
+styles can be created to add new region shapes to Packfall.
 
 Region\_sphere.cpp is an example of a spherical region.
 
@@ -630,7 +630,7 @@ Variable options
 ----------------
 
 There is one class that computes and stores :doc:`variable <variable>`
-information in LIGGGHTS(R)-PUBLIC; see the file variable.cpp.  The value
+information in Packfall; see the file variable.cpp.  The value
 associated with a variable can be periodically printed to the screen
 via the :doc:`print <print>`, :doc:`fix print <fix_print>`, or
 :doc:`thermo\_style custom <thermo_style>` commands.  Variables of style
@@ -671,18 +671,18 @@ then be accessed by variables) was discussed
 
 .. _mod\_11:
 
-Submitting new features for inclusion in LIGGGHTS(R)-PUBLIC
+Submitting new features for inclusion in Packfall
 -----------------------------------------------------------
 
-We encourage users to submit new features that they add to LIGGGHTS(R)-PUBLIC, especially if
+We encourage users to submit new features that they add to Packfall, especially if
 you think the features will be of interest to other users.  If they
-are broadly useful we may add them as core files to LIGGGHTS(R)-PUBLIC.
+are broadly useful we may add them as core files to Packfall.
 
 The previous sections of this doc page describe how to add new
-features of various kinds to LIGGGHTS(R)-PUBLIC.  Packages are simply collections
+features of various kinds to Packfall.  Packages are simply collections
 of one or more new class files which are invoked as a new "style"
-within a LIGGGHTS(R)-PUBLIC input script.  If designed correctly, these additions
-typically do not require changes to the main core of LIGGGHTS(R)-PUBLIC; they are
+within a Packfall input script.  If designed correctly, these additions
+typically do not require changes to the main core of Packfall; they are
 simply add-on files.
 
 Here is what you need to do to submit a user package or single file
@@ -690,21 +690,21 @@ for our consideration.  Following these steps will save time for both
 you and us.  See existing package files for examples.
 
 * All source files you provide must compile with the most current
-  version of LIGGGHTS(R)-PUBLIC.
-* If you want your file(s) to be added to main LIGGGHTS(R)-PUBLIC or one of its
+  version of Packfall.
+* If you want your file(s) to be added to main Packfall or one of its
   standard packages, then it needs to be written in a style compatible
-  with other LIGGGHTS(R)-PUBLIC source files.  This is so the developers can
+  with other Packfall source files.  This is so the developers can
   understand it and hopefully maintain it.  This basically means that
   the code accesses data structures, performs its operations, and is
-  formatted similar to other LIGGGHTS(R)-PUBLIC source files, including the use of
+  formatted similar to other Packfall source files, including the use of
   the error class for error and warning messages.
-* Your new source files need to have the LIGGGHTS(R)-PUBLIC copyright, GPL notice,
-  and your name at the top, like other LIGGGHTS(R)-PUBLIC source files.  They need
-  to create a class that is inside the LIGGGHTS(R)-PUBLIC namespace.  I.e. they do not need to be
-  in the same stylistic format and syntax as other LIGGGHTS(R)-PUBLIC files, though
+* Your new source files need to have the Packfall copyright, GPL notice,
+  and your name at the top, like other Packfall source files.  They need
+  to create a class that is inside the Packfall namespace.  I.e. they do not need to be
+  in the same stylistic format and syntax as other Packfall files, though
   that would be nice.
 * Finally, you must also send a documentation file for each new command
-  or style you are adding to LIGGGHTS(R)-PUBLIC.  This will be one file for a
+  or style you are adding to Packfall.  This will be one file for a
   single-file feature.  For a package, it might be several files.  These
   are simple text files which we will convert to HTML.  They must be in
   the same format as other \*.txt files in the lammps/doc directory for

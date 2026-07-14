@@ -106,15 +106,10 @@ see the full-size images:
 
 .. raw:: html
 
-   <DIV ALIGN=center>
-
-.. thumbnail:: JPG/dump1.jpg
-
-.. thumbnail:: JPG/dump2.jpg
-
-.. raw:: html
-
-   </DIV>
+   <div align="center">
+     <a href="JPG/dump1.jpg"><img src="JPG/dump1.jpg" alt="dump image 1" width="45%" /></a>
+     <a href="JPG/dump2.jpg"><img src="JPG/dump2.jpg" alt="dump image 2" width="45%" /></a>
+   </div>
 
 Only atoms in the specified group are rendered in the image.  The
 :doc:`dump\_modify region and thresh <dump_modify>` commands can also
@@ -126,7 +121,7 @@ format is created, else a PPM (aka NETPBM) format file is created.
 The JPG and PNG files are binary; PPM has a text mode header followed
 by binary data. JPG images have lossy compression; PNG has lossless
 compression; and PPM files are uncompressed but can be compressed with
-gzip, if LIGGGHTS(R)-PUBLIC has been compiled with -DLAMMPS\_GZIP and a ".gz" suffix
+gzip, if Packfall has been compiled with -DLAMMPS\_GZIP and a ".gz" suffix
 is used.
 
 Similarly, the format of the resulting movie is chosen with the
@@ -136,9 +131,9 @@ Typical examples are: .avi, .mpg, .m4v, .mp4, .mkv, .flv, .mov, .gif
 Additional settings of the movie compression like bitrate and
 framerate can be set using the :doc:`dump\_modify <dump_modify>` command.
 
-To write out JPEG and PNG format files, you must build LIGGGHTS(R)-PUBLIC with
+To write out JPEG and PNG format files, you must build Packfall with
 support for the corresponding JPEG or PNG library. To convert images
-into movies, LIGGGHTS(R)-PUBLIC has to be compiled with the -DLAMMPS\_FFMPEG
+into movies, Packfall has to be compiled with the -DLAMMPS\_FFMPEG
 flag. See :ref:`this section <start_2_4>` of the manual
 for instructions on how to do this.
 
@@ -431,7 +426,7 @@ shading is performed.
 A series of JPG, PNG, or PPM images can be converted into a movie file
 and then played as a movie using commonly available tools. Using dump
 style *movie* automates this step and avoids the intermediate step of
-writing (many) image snapshot file. But LIGGGHTS(R)-PUBLIC has to be compiled with
+writing (many) image snapshot file. But Packfall has to be compiled with
 -DLAMMPS\_FFMPEG and an FFmpeg executable have to be installed.
 
 To manually convert JPG, PNG or PPM files into an animated GIF or MPEG
@@ -514,7 +509,7 @@ Play the movie:
 
 
 See :doc:`Section\_modify <Section_modify>` of the manual for information
-on how to add new compute and fix styles to LIGGGHTS(R)-PUBLIC to calculate
+on how to add new compute and fix styles to Packfall to calculate
 per-atom quantities which could then be output into dump files.
 
 
@@ -526,17 +521,17 @@ Restrictions
 
 
 To write JPG images, you must use the -DLAMMPS\_JPEG switch when
-building LIGGGHTS(R)-PUBLIC and link with a JPEG library. To write PNG images, you
-must use the -DLAMMPS\_PNG switch when building LIGGGHTS(R)-PUBLIC and link with a
+building Packfall and link with a JPEG library. To write PNG images, you
+must use the -DLAMMPS\_PNG switch when building Packfall and link with a
 PNG library.
 
 To write *movie* dumps, you must use the -DLAMMPS\_FFMPEG switch when
-building LIGGGHTS(R)-PUBLIC and have the FFmpeg executable available on the
-machine where LIGGGHTS(R)-PUBLIC is being run.
+building Packfall and have the FFmpeg executable available on the
+machine where Packfall is being run.
 
-See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_2_4>` section of the
+See the :ref:`Making Packfall <start_2_4>` section of the
 documentation for details on how to configure and compile optional in
-LIGGGHTS(R)-PUBLIC.
+Packfall.
 
 Related commands
 """"""""""""""""

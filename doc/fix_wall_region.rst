@@ -53,7 +53,7 @@ region surface will move over time in the corresponding manner.
 .. warning::
 
    As discussed on the :doc:`region <region>` command doc
-   page, regions in LIGGGHTS(R)-PUBLIC do not get wrapped across periodic boundaries.
+   page, regions in Packfall do not get wrapped across periodic boundaries.
    It is up to you to insure that periodic or non-periodic boundaries are
    specified appropriately via the :doc:`boundary <boundary>` command when
    using a region as a wall that bounds particle motion.  This also means
@@ -75,7 +75,7 @@ region surface will move over time in the corresponding manner.
    these features are computed correctly.  Convex points/edges are like
    the corners of a cube as seen by particles exterior to the cube,
    i.e. the points jut into the volume where particles are present.
-   LIGGGHTS(R)-PUBLIC does NOT compute the location of these convex points directly,
+   Packfall does NOT compute the location of these convex points directly,
    and hence wall/particle forces in the cutoff volume around these
    points suffer from inaccuracies.  The basic problem is that the
    outward normal of the surface is not continuous at these points.  This
@@ -150,7 +150,7 @@ interaction is truncated at the *cutoff*
 .. warning::
 
    For all of the styles, you must insure that r is
-   always > 0 for all particles in the group, or LIGGGHTS(R)-PUBLIC will generate an
+   always > 0 for all particles in the group, or Packfall will generate an
    error.  This means you cannot start your simulation with particles on
    the region surface (r = 0) or with particles on the wrong side of the
    region surface (r < 0).  For the *wall/lj93* and *wall/lj126* styles,

@@ -1,7 +1,7 @@
-Python interface to LIGGGHTS(R)-PUBLIC
+Python interface to Packfall
 ======================================
 
-This section describes how to build and use LIGGGHTS(R)-PUBLIC via a Python
+This section describes how to build and use Packfall via a Python
 interface.
 
 
@@ -9,10 +9,10 @@ interface.
 		:local:
 		:depth: 1
    
-The LIGGGHTS(R)-PUBLIC distribution includes the file python/liggghts.py which wraps
-the library interface to LIGGGHTS(R)-PUBLIC.  This file makes it is possible to
-run LIGGGHTS(R)-PUBLIC, invoke LIGGGHTS(R)-PUBLIC commands or give it an input script, extract
-LIGGGHTS(R)-PUBLIC results, an modify internal LIGGGHTS(R)-PUBLIC variables, either from a
+The Packfall distribution includes the file python/Packfall.py which wraps
+the library interface to Packfall.  This file makes it is possible to
+run Packfall, invoke Packfall commands or give it an input script, extract
+Packfall results, an modify internal Packfall variables, either from a
 Python script or interactively from a Python prompt.  You can do the
 former in serial or parallel.  Running Python interactively in
 parallel does not generally work, unless you have a package installed
@@ -20,39 +20,39 @@ that extends your Python to enable multiple instances of Python to
 read what you type.
 
 `Python <http://www.python.org>`_ is a powerful scripting and programming
-language which can be used to wrap software like LIGGGHTS(R)-PUBLIC and other
+language which can be used to wrap software like Packfall and other
 packages.  It can be used to glue multiple pieces of software
 together, e.g. to run a coupled or multiscale model.  See :ref:`Section section <howto_10>` of the manual and the couple
-directory of the distribution for more ideas about coupling LIGGGHTS(R)-PUBLIC to
+directory of the distribution for more ideas about coupling Packfall to
 other codes.  See :ref:`Section\_start 4 <start_5>` about
-how to build LIGGGHTS(R)-PUBLIC as a library, and :ref:`Section\_howto 19 <howto_10>` for a description of the library
+how to build Packfall as a library, and :ref:`Section\_howto 19 <howto_10>` for a description of the library
 interface provided in src/library.cpp and src/library.h and how to
 extend it for your needs.  As described below, that interface is what
 is exposed to Python.  It is designed to be easy to add functions to.
 This can easily extend the Python inteface as well.  See details
 below.
 
-By using the Python interface, LIGGGHTS(R)-PUBLIC can also be coupled with a GUI
+By using the Python interface, Packfall can also be coupled with a GUI
 or other visualization tools that display graphs or animations in real
-time as LIGGGHTS(R)-PUBLIC runs.  Examples of such scripts are inlcluded in the
+time as Packfall runs.  Examples of such scripts are inlcluded in the
 python directory.
 
 Two advantages of using Python are how concise the language is, and
 that it can be run interactively, enabling rapid development and
 debugging of programs.  If you use it to mostly invoke costly
-operations within LIGGGHTS(R)-PUBLIC, such as running a simulation for a
+operations within Packfall, such as running a simulation for a
 reasonable number of timesteps, then the overhead cost of invoking
-LIGGGHTS(R)-PUBLIC thru Python will be negligible.
+Packfall thru Python will be negligible.
 
-Before using LIGGGHTS(R)-PUBLIC from a Python script, you need to do two things.
-You need to build LIGGGHTS(R)-PUBLIC as a dynamic shared library, so it can be
+Before using Packfall from a Python script, you need to do two things.
+You need to build Packfall as a dynamic shared library, so it can be
 loaded by Python.  And you need to tell Python how to find the library
-and the Python wrapper file python/liggghts.py.  Both these steps are
-discussed below.  If you wish to run LIGGGHTS(R)-PUBLIC in parallel from Python,
+and the Python wrapper file python/Packfall.py.  Both these steps are
+discussed below.  If you wish to run Packfall in parallel from Python,
 you also need to extend your Python with MPI.  This is also discussed
 below.
 
-The Python wrapper for LIGGGHTS(R)-PUBLIC uses the amazing and magical (to me)
+The Python wrapper for Packfall uses the amazing and magical (to me)
 "ctypes" package in Python, which auto-generates the interface code
 needed between Python and a set of C interface routines for a library.
 Ctypes is part of standard Python for versions 2.5 and later.  You can
@@ -65,10 +65,10 @@ check which version of Python you have installed, by simply typing
 
 .. _py\_1:
 
-Building LIGGGHTS(R)-PUBLIC as a shared library
+Building Packfall as a shared library
 -----------------------------------------------
 
-Instructions on how to build LIGGGHTS(R)-PUBLIC as a shared library are given in
+Instructions on how to build Packfall as a shared library are given in
 :ref:`Section\_start 5 <start_5>`.  A shared library is one
 that is dynamically loadable, which is what Python requires.  On Linux
 this is a library file that ends in ".so", not ".a".
@@ -83,13 +83,13 @@ From the src directory, type
 
 where foo is the machine target name, such as auto or mpi or serial.
 This should create the file liblmp\_foo.so in the src directory, as
-well as a soft link libliggghts.so, which is what the Python wrapper will
+well as a soft link libpackfall.so, which is what the Python wrapper will
 load by default.  Note that if you are building multiple machine
 versions of the shared library, the soft link is always set to the
 most recently built version.
 
 If this fails, see :ref:`Section\_start 5 <start_5>` for
-more details, especially if your LIGGGHTS(R)-PUBLIC build uses auxiliary libraries
+more details, especially if your Packfall build uses auxiliary libraries
 like MPI or FFTW which may not be built as shared libraries on your
 system.
 
@@ -102,13 +102,13 @@ system.
 Installing the Python wrapper into Python
 -----------------------------------------
 
-For Python to invoke LIGGGHTS(R)-PUBLIC, there are 2 files it needs to know about:
+For Python to invoke Packfall, there are 2 files it needs to know about:
 
-* python/liggghts.py
-* src/libliggghts.so
+* python/Packfall.py
+* src/libpackfall.so
 
-Lammps.py is the Python wrapper on the LIGGGHTS(R)-PUBLIC library interface.
-Libliggghts.so is the shared LIGGGHTS(R)-PUBLIC library that Python loads, as
+Lammps.py is the Python wrapper on the Packfall library interface.
+Libpackfall.so is the shared Packfall library that Python loads, as
 described above.
 
 You can insure Python can find these files in one of two ways:
@@ -123,12 +123,12 @@ this to your ~/.cshrc file, one line for each of the two files:
 
 .. parsed-literal::
 
-   setenv PYTHONPATH $\ *PYTHONPATH*\ :/home/sjplimp/liggghts/python
-   setenv LD_LIBRARY_PATH $*LD_LIBRARY_PATH*:/home/sjplimp/liggghts/src
+   setenv PYTHONPATH $\ *PYTHONPATH*\ :/home/sjplimp/Packfall/python
+   setenv LD_LIBRARY_PATH $*LD_LIBRARY_PATH*:/home/sjplimp/Packfall/src
 
 If you use the python/install.py script, you need to invoke it every
-time you rebuild LIGGGHTS(R)-PUBLIC (as a shared library) or make changes to the
-python/liggghts.py file.
+time you rebuild Packfall (as a shared library) or make changes to the
+python/Packfall.py file.
 
 You can invoke install.py from the python directory as
 
@@ -137,9 +137,9 @@ You can invoke install.py from the python directory as
 
    % python install.py [libdir] [pydir]
 
-The optional libdir is where to copy the LIGGGHTS(R)-PUBLIC shared library to; the
+The optional libdir is where to copy the Packfall shared library to; the
 default is /usr/local/lib.  The optional pydir is where to copy the
-liggghts.py file to; the default is the site-packages directory of the
+Packfall.py file to; the default is the site-packages directory of the
 version of Python that is running the install script.
 
 Note that libdir must be a location that is in your default
@@ -173,7 +173,7 @@ need to prefix this with "sudo".  In this mode you cannot control
 which Python is invoked by root.
 
 Note that if you want Python to be able to load different versions of
-the LIGGGHTS(R)-PUBLIC shared library (see :ref:`this section <py_5>` below), you will
+the Packfall shared library (see :ref:`this section <py_5>` below), you will
 need to manually copy files like liblmp\_auto.so into the appropriate
 system directory.  This is not needed if you set the LD\_LIBRARY\_PATH
 environment variable as described above.
@@ -187,7 +187,7 @@ environment variable as described above.
 Extending Python with MPI to run in parallel
 --------------------------------------------
 
-If you wish to run LIGGGHTS(R)-PUBLIC in parallel from Python, you need to extend
+If you wish to run Packfall in parallel from Python, you need to extend
 your Python with an interface to MPI.  This also allows you to
 make MPI calls directly from Python in your script, if you desire.
 
@@ -212,13 +212,13 @@ believe) creates a new alternate executable (in place of "python"
 itself) as a result.
 
 In principle any of these Python/MPI packages should work to invoke
-LIGGGHTS(R)-PUBLIC in parallel and MPI calls themselves from a Python script which
+Packfall in parallel and MPI calls themselves from a Python script which
 is itself running in parallel.  However, when I downloaded and looked
 at a few of them, their documentation was incomplete and I had trouble
 with their installation.  It's not clear if some of the packages are
 still being actively developed and supported.
 
-The one I recommend, since I have successfully used it with LIGGGHTS(R)-PUBLIC, is
+The one I recommend, since I have successfully used it with Packfall, is
 Pypar.  Pypar requires the ubiquitous `Numpy package <http://numpy.scipy.org>`_ be installed in your Python.  After
 launching python, type
 
@@ -280,16 +280,16 @@ and see one line of output for each processor you run on.
 
 .. warning::
 
-   To use Pypar and LIGGGHTS(R)-PUBLIC in parallel from Python, you
+   To use Pypar and Packfall in parallel from Python, you
    must insure both are using the same version of MPI.  If you only have
    one MPI installed on your system, this is not an issue, but it can be
-   if you have multiple MPIs.  Your LIGGGHTS(R)-PUBLIC build is explicit about which
+   if you have multiple MPIs.  Your Packfall build is explicit about which
    MPI it is using, since you specify the details in your lo-level
    src/MAKE/Makefile.foo file.  Pypar uses the "mpicc" command to find
    information about the MPI it uses to build against.  And it tries to
    load "libmpi.so" from the LD\_LIBRARY\_PATH.  This may or may not find
-   the MPI library that LIGGGHTS(R)-PUBLIC is using.  If you have problems running
-   both Pypar and LIGGGHTS(R)-PUBLIC together, this is an issue you may need to
+   the MPI library that Packfall is using.  If you have problems running
+   both Pypar and Packfall together, this is an issue you may need to
    address, e.g. by moving other MPI installations so that Pypar finds
    the right one.
 
@@ -299,56 +299,56 @@ and see one line of output for each processor you run on.
 
 .. _py\_4:
 
-Testing the Python-LIGGGHTS(R)-PUBLIC interface
+Testing the Python-Packfall interface
 -----------------------------------------------
 
-To test if LIGGGHTS(R)-PUBLIC is callable from Python, launch Python interactively
+To test if Packfall is callable from Python, launch Python interactively
 and type:
 
 
 .. parsed-literal::
 
-   >>> from liggghts import liggghts
-   >>> lig = liggghts()
+   >>> from Packfall import Packfall
+   >>> lig = Packfall()
 
-If you get no errors, you're ready to use LIGGGHTS(R)-PUBLIC from Python.  If the
+If you get no errors, you're ready to use Packfall from Python.  If the
 2nd command fails, the most common error to see is
 
 
 .. parsed-literal::
 
-   OSError: Could not load LIGGGHTS(R)-PUBLIC dynamic library
+   OSError: Could not load Packfall dynamic library
 
-which means Python was unable to load the LIGGGHTS(R)-PUBLIC shared library.  This
-typically occurs if the system can't find the LIGGGHTS(R)-PUBLIC shared library or
+which means Python was unable to load the Packfall shared library.  This
+typically occurs if the system can't find the Packfall shared library or
 one of the auxiliary shared libraries it depends on, or if something
 about the library is incompatible with your Python.  The error message
 should give you an indication of what went wrong.
 
 You can also test the load directly in Python as follows, without
-first importing from the liggghts.py file:
+first importing from the Packfall.py file:
 
 
 .. parsed-literal::
 
    >>> from ctypes import CDLL
-   >>> CDLL("libliggghts.so")
+   >>> CDLL("libpackfall.so")
 
 If an error occurs, carefully go thru the steps in :ref:`Section\_start 5 <start_5>` and above about building a shared
 library and about insuring Python can find the necessary two files
 it needs.
 
-**Test LIGGGHTS(R)-PUBLIC and Python in serial:**
+**Test Packfall and Python in serial:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To run a LIGGGHTS(R)-PUBLIC test in serial, type these lines into Python
+To run a Packfall test in serial, type these lines into Python
 interactively from the bench directory:
 
 
 .. parsed-literal::
 
-   >>> from liggghts import liggghts
-   >>> lig = liggghts()
+   >>> from Packfall import Packfall
+   >>> lig = Packfall()
    >>> lig.file("in.lj")
 
 Or put the same lines in the file test.py and run it as
@@ -367,10 +367,10 @@ typed something like:
 
    lmp_auto < in.lj
 
-**Test LIGGGHTS(R)-PUBLIC and Python in parallel:**
+**Test Packfall and Python in parallel:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To run LIGGGHTS(R)-PUBLIC in parallel, assuming you have installed the
+To run Packfall in parallel, assuming you have installed the
 `Pypar <http://datamining.anu.edu.au/~ole/pypar>`_ package as discussed
 above, create a test.py file containing these lines:
 
@@ -378,8 +378,8 @@ above, create a test.py file containing these lines:
 .. parsed-literal::
 
    import pypar
-   from liggghts import liggghts
-   lig = liggghts()
+   from Packfall import Packfall
+   lig = Packfall()
    lig.file("in.lj")
    print "Proc %d out of %d procs has" % (pypar.rank(),pypar.size()),lig
    pypar.finalize()
@@ -399,11 +399,11 @@ and you should see the same output as if you had typed
    % mpirun -np 4 lmp_auto < in.lj
 
 Note that if you leave out the 3 lines from test.py that specify Pypar
-commands you will instantiate and run LIGGGHTS(R)-PUBLIC independently on each of
+commands you will instantiate and run Packfall independently on each of
 the P processors specified in the mpirun command.  In this case you
-should get 4 sets of output, each showing that a LIGGGHTS(R)-PUBLIC run was made
+should get 4 sets of output, each showing that a Packfall run was made
 on a single processor, instead of one set of output showing that
-LIGGGHTS(R)-PUBLIC ran on 4 processors.  If the 1-processor outputs occur, it
+Packfall ran on 4 processors.  If the 1-processor outputs occur, it
 means that Pypar is not working correctly.
 
 Also note that once you import the PyPar module, Pypar initializes MPI
@@ -415,7 +415,7 @@ correctly.
 **Running Python scripts:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Note that any Python script (not just for LIGGGHTS(R)-PUBLIC) can be invoked in
+Note that any Python script (not just for Packfall) can be invoked in
 one of several ways:
 
 
@@ -454,37 +454,37 @@ Python on a single processor, not in parallel.
 
 .. _py\_5:
 
-Using LIGGGHTS(R)-PUBLIC from Python
+Using Packfall from Python
 ------------------------------------
 
-The Python interface to LIGGGHTS(R)-PUBLIC consists of a Python "liggghts" module,
-the source code for which is in python/liggghts.py, which creates a
-"liggghts" object, with a set of methods that can be invoked on that
+The Python interface to Packfall consists of a Python "Packfall" module,
+the source code for which is in python/Packfall.py, which creates a
+"Packfall" object, with a set of methods that can be invoked on that
 object.  The sample Python code below assumes you have first imported
-the "liggghts" module in your Python script, as follows:
+the "Packfall" module in your Python script, as follows:
 
 
 .. parsed-literal::
 
-   from liggghts import liggghts
+   from Packfall import Packfall
 
-These are the methods defined by the liggghts module.  If you look
+These are the methods defined by the Packfall module.  If you look
 at the file src/library.cpp you will see that they correspond
-one-to-one with calls you can make to the LIGGGHTS(R)-PUBLIC library from a C++ or
+one-to-one with calls you can make to the Packfall library from a C++ or
 C or Fortran program.
 
 
 .. parsed-literal::
 
-   lig = liggghts()           # create a LIGGGHTS(R)-PUBLIC object using the default libliggghts.so library
-   lig = liggghts("auto")     # create a LIGGGHTS(R)-PUBLIC object using the liblmp_auto.so library
-   lig = liggghts("",list)    # ditto, with command-line args, e.g. list = ["-echo","screen"]
-   lig = liggghts("auto",list)
+   lig = Packfall()           # create a Packfall object using the default libpackfall.so library
+   lig = Packfall("auto")     # create a Packfall object using the liblmp_auto.so library
+   lig = Packfall("",list)    # ditto, with command-line args, e.g. list = ["-echo","screen"]
+   lig = Packfall("auto",list)
 
-   lig.close()              # destroy a LIGGGHTS(R)-PUBLIC object
+   lig.close()              # destroy a Packfall object
 
    lig.file(file)           # run an entire input script, file = "in.lj"
-   lig.command(cmd)         # invoke a single LIGGGHTS(R)-PUBLIC command, cmd = "run 100"
+   lig.command(cmd)         # invoke a single Packfall command, cmd = "run 100"
 
    xlo = lig.extract_global(name,type)  # extract a global quantity
                                         # name = "boxxlo", "nlocal", etc
@@ -529,24 +529,24 @@ C or Fortran program.
 
 .. warning::
 
-   Currently, the creation of a LIGGGHTS(R)-PUBLIC object from within
-   liggghts.py does not take an MPI communicator as an argument.  There
-   should be a way to do this, so that the LIGGGHTS(R)-PUBLIC instance runs on a
+   Currently, the creation of a Packfall object from within
+   Packfall.py does not take an MPI communicator as an argument.  There
+   should be a way to do this, so that the Packfall instance runs on a
    subset of processors if desired, but I don't know how to do it from
    Pypar.  So for now, it runs with MPI\_COMM\_WORLD, which is all the
    processors.  If someone figures out how to do this with one or more of
    the Python wrappers for MPI, like Pypar, please let us know and we
    will amend these doc pages.
 
-Note that you can create multiple LIGGGHTS(R)-PUBLIC objects in your Python
+Note that you can create multiple Packfall objects in your Python
 script, and coordinate and run multiple simulations, e.g.
 
 
 .. parsed-literal::
 
-   from liggghts import liggghts
-   lig1 = liggghts()
-   lig2 = liggghts()
+   from Packfall import Packfall
+   lig1 = Packfall()
+   lig2 = Packfall()
    lig1.file("in.file1")
    lig2.file("in.file2")
 
@@ -555,14 +555,14 @@ commands to be invoked.
 
 The extract\_global(), extract\_atom(), extract\_compute(),
 extract\_fix(), and extract\_variable() methods return values or
-pointers to data structures internal to LIGGGHTS(R)-PUBLIC.
+pointers to data structures internal to Packfall.
 
 For extract\_global() see the src/library.cpp file for the list of
 valid names.  New names could easily be added.  A double or integer is
 returned.  You need to specify the appropriate data type via the type
 argument.
 
-For extract\_atom(), a pointer to internal LIGGGHTS(R)-PUBLIC atom-based data is
+For extract\_atom(), a pointer to internal Packfall atom-based data is
 returned, which you can use via normal Python subscripting.  See the
 extract() method in the src/atom.cpp file for a list of valid names.
 Again, new names could easily be added.  A pointer to a vector of
@@ -575,7 +575,7 @@ local data calulated by the compute or fix can be accessed.  What is
 returned depends on whether the compute or fix calculates a scalar or
 vector or array.  For a scalar, a single double value is returned.  If
 the compute or fix calculates a vector or array, a pointer to the
-internal LIGGGHTS(R)-PUBLIC data is returned, which you can use via normal Python
+internal Packfall data is returned, which you can use via normal Python
 subscripting.  The one exception is that for a fix that calculates a
 global vector or array, a single double value from the vector or array
 is returned, indexed by I (vector) or I and J (array).  I,J are
@@ -602,7 +602,7 @@ as specified by type, of length count\*natoms, for the property of all
 the atoms in the simulation specified by name, ordered by count and
 then by atom ID.  The vector can be used via normal Python
 subscripting.  If atom IDs are not consecutively ordered within
-LIGGGHTS(R)-PUBLIC, a None is returned as indication of an error.
+Packfall, a None is returned as indication of an error.
 
 Note that the data structure gather\_atoms("x") returns is different
 from the data structure returned by extract\_atom("x") in four ways.
@@ -612,9 +612,9 @@ Gather\_atoms() orders the atoms by atom ID while extract\_atom() does
 not.  (3) Gathert\_atoms() returns a list of all atoms in the
 simulation; extract\_atoms() returns just the atoms local to each
 processor.  (4) Finally, the gather\_atoms() data structure is a copy
-of the atom coords stored internally in LIGGGHTS(R)-PUBLIC, whereas extract\_atom()
+of the atom coords stored internally in Packfall, whereas extract\_atom()
 returns an array that effectively points directly to the internal
-data.  This means you can change values inside LIGGGHTS(R)-PUBLIC from Python by
+data.  This means you can change values inside Packfall from Python by
 assigning a new values to the extract\_atom() array.  To do this with
 the gather\_atoms() vector, you need to change values in the vector,
 then invoke the scatter\_atoms() method.
@@ -623,7 +623,7 @@ The scatter\_atoms() method takes a vector of ints or doubles as
 specified by type, of length count\*natoms, for the property of all the
 atoms in the simulation specified by name, ordered by bount and then
 by atom ID.  It uses the vector of data to overwrite the corresponding
-properties for each atom inside LIGGGHTS(R)-PUBLIC.  This requires LIGGGHTS(R)-PUBLIC to have
+properties for each atom inside Packfall.  This requires Packfall to have
 its "map" option enabled; see the :doc:`atom\_modify <atom_modify>`
 command for details.  If it is not, or if atom IDs are not
 consecutively ordered, no coordinates are reset.
@@ -655,14 +655,14 @@ gather\_atoms("x",1,3), since it is a ctypes vector of doubles.
 
 
 As noted above, these Python class methods correspond one-to-one with
-the functions in the LIGGGHTS(R)-PUBLIC library interface in src/library.cpp and
+the functions in the Packfall library interface in src/library.cpp and
 library.h.  This means you can extend the Python wrapper via the
 following steps:
 
 * Add a new interface function to src/library.cpp and
   src/library.h.
-* Rebuild LIGGGHTS(R)-PUBLIC as a shared library.
-* Add a wrapper method to python/liggghts.py for this interface
+* Rebuild Packfall as a shared library.
+* Add a wrapper method to python/Packfall.py for this interface
   function.
 * You should now be able to invoke the new interface function from a
   Python script.  Isn't ctypes amazing?
@@ -673,23 +673,23 @@ following steps:
 
 .. _py\_6:
 
-Example Python scripts that use LIGGGHTS(R)-PUBLIC
+Example Python scripts that use Packfall
 --------------------------------------------------
 
 These are the Python scripts included as demos in the python/examples
-directory of the LIGGGHTS(R)-PUBLIC distribution, to illustrate the kinds of
-things that are possible when Python wraps LIGGGHTS(R)-PUBLIC.  If you create your
-own scripts, send them to us and we can include them in the LIGGGHTS(R)-PUBLIC
+directory of the Packfall distribution, to illustrate the kinds of
+things that are possible when Python wraps Packfall.  If you create your
+own scripts, send them to us and we can include them in the Packfall
 distribution.
 
 +---------------------+--------------------------------------------------------------+
-| trivial.py          | read/run a LIGGGHTS(R)-PUBLIC input script thru Python       |
+| trivial.py          | read/run a Packfall input script thru Python                 |
 +---------------------+--------------------------------------------------------------+
-| demo.py             | invoke various LIGGGHTS(R)-PUBLIC library interface routines |
+| demo.py             | invoke various Packfall library interface routines           |
 +---------------------+--------------------------------------------------------------+
 | simple.py           | mimic operation of couple/simple/simple.cpp in Python        |
 +---------------------+--------------------------------------------------------------+
-| gui.py              | GUI go/stop/temperature-slider to control LIGGGHTS(R)-PUBLIC |
+| gui.py              | GUI go/stop/temperature-slider to control Packfall           |
 +---------------------+--------------------------------------------------------------+
 | plot.py             | real-time temeperature plot with GnuPlot via Pizza.py        |
 +---------------------+--------------------------------------------------------------+
@@ -761,18 +761,6 @@ The latter link is to the open-source version.
 
 See the python/README file for instructions on how to run them and the
 source code for individual scripts for comments about what they do.
-
-Here are screenshots of the vizplotgui\_tool.py script in action for
-different visualization package options.  Click to see larger images:
-
-.. thumbnail:: JPG/screenshot_gl.jpg
-
-.. thumbnail:: JPG/screenshot_atomeye.jpg
-
-.. thumbnail:: JPG/screenshot_pymol.jpg
-
-.. thumbnail:: JPG/screenshot_vmd.jpg
-
 
 .. _lws: http://lammps.sandia.gov
 .. _ld: Manual.html

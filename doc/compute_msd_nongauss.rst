@@ -67,7 +67,7 @@ NOTES, which also apply to this compute.
 
 This compute calculates a global vector of length 3, which can be
 accessed by indices 1-3 by any command that uses global vector values
-from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 The vector values are "intensive".  The first vector value will be in
@@ -78,8 +78,8 @@ Restrictions
 """"""""""""
 
 
-This compute is part of the MISC package.  It is only enabled if LIGGGHTS(R)-PUBLIC
-was built with that package.  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info.
+This compute is part of the MISC package.  It is only enabled if Packfall
+was built with that package.  See the :ref:`Making Packfall <start_3>` section for more info.
 
 Related commands
 """"""""""""""""

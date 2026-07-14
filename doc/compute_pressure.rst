@@ -44,7 +44,7 @@ where N is the number of atoms in the system (see discussion of DOF
 below), Kb is the Boltzmann constant, T is the temperature, d is the
 dimensionality of the system (2 or 3 for 2d/3d), V is the system
 volume (or area in 2d), and the second term is the virial, computed
-within LIGGGHTS(R)-PUBLIC for all pairwise as well as 2-body, 3-body, and 4-body,
+within Packfall for all pairwise as well as 2-body, 3-body, and 4-body,
 and long-range interactions.  :doc:`Fixes <fix>` that impose constraints
 (e.g. the :doc:`fix shake <fix_shake>` command) also contribute to the
 virial term.
@@ -79,7 +79,7 @@ degrees-of-freedom divided by d = dimensionality, where the DOF value
 is calcluated by the temperature compute.  See the various :doc:`compute temperature <compute>` styles for details.
 
 A compute of this style with the ID of "thermo\_press" is created when
-LIGGGHTS(R)-PUBLIC starts up, as if this command were in the input script:
+Packfall starts up, as if this command were in the input script:
 
 
 .. parsed-literal::
@@ -98,7 +98,7 @@ where "thermo\_temp" is the ID of a similarly defined compute of style
 This compute calculates a global scalar (the pressure) and a global
 vector of length 6 (pressure tensor), which can be accessed by indices
 1-6.  These values can be used by any command that uses global scalar
-or vector values from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+or vector values from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 The scalar and vector values calculated by this compute are

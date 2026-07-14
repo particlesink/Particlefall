@@ -28,7 +28,7 @@ Description
 """""""""""
 
 This command closes the current input script file, opens the file with
-the specified name, and begins reading LIGGGHTS(R)-PUBLIC commands from that file.
+the specified name, and begins reading Packfall commands from that file.
 Unlike the :doc:`include <include>` command, the original file is not
 returned to, although by using multiple jump commands it is possible
 to chain from file to file or back to the original file.
@@ -85,7 +85,7 @@ time, it will cause the next jump command to be skipped.
 
 If the jump *file* argument is a variable, the jump command can be
 used to cause different processor partitions to run different input
-scripts.  In this example, LIGGGHTS(R)-PUBLIC is run on 40 processors, with 4
+scripts.  In this example, Packfall is run on 40 processors, with 4
 partitions of 10 procs each.  An in.file containing the example
 variable and jump command will cause each partition to run a different
 simulation.
@@ -125,7 +125,7 @@ Restrictions
 
 
 If you jump to a file and it does not contain the specified label,
-LIGGGHTS(R)-PUBLIC will come to the end of the file and exit.
+Packfall will come to the end of the file and exit.
 
 Related commands
 """"""""""""""""

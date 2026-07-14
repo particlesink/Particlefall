@@ -32,7 +32,7 @@ group each timestep.  A limit is imposed on the maximum distance an
 atom can move in one timestep.  This is useful when starting a
 simulation with a configuration containing highly overlapped atoms.
 Normally this would generate huge forces which would blow atoms out of
-the simulation box, causing LIGGGHTS(R)-PUBLIC to stop with an error.
+the simulation box, causing Packfall to stop with an error.
 
 Using this fix can overcome that problem.  Forces on atoms must still
 be computable (which typically means 2 atoms must have a separation

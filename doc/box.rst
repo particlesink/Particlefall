@@ -39,9 +39,9 @@ allows simulation domains to be created with arbitrary tilt factors,
 e.g. via the :doc:`create\_box <create_box>` or
 :doc:`read\_data <read_data>` commands.  Tilt factors determine how
 skewed the triclinic box is; see :ref:`this section <howto_7>` of the manual for a discussion of
-triclinic boxes in LIGGGHTS(R)-PUBLIC.
+triclinic boxes in Packfall.
 
-LIGGGHTS(R)-PUBLIC normally requires that no tilt factor can skew the box more
+Packfall normally requires that no tilt factor can skew the box more
 than half the distance of the parallel box length, which is the 1st
 dimension in the tilt factor (x for xz).  If *tilt* is set to
 *small*\ , which is the default, then an error will be
@@ -49,10 +49,10 @@ generated if a box is created which exceeds this limit.  If *tilt*
 is set to *large*\ , then no limit is enforced.  You can create
 a box with any tilt factors you wish.
 
-Note that if a simulation box has a large tilt factor, LIGGGHTS(R)-PUBLIC will run
+Note that if a simulation box has a large tilt factor, Packfall will run
 less efficiently, due to the large volume of communication needed to
 acquire ghost atoms around a processor's irregular-shaped sub-domain.
-For extreme values of tilt, LIGGGHTS(R)-PUBLIC may also lose atoms and generate an
+For extreme values of tilt, Packfall may also lose atoms and generate an
 error.
 
 Restrictions

@@ -52,7 +52,7 @@ added.  The latter is so that the full range of
 snapshot, just as they can be for multiple snapshots.  The *modify*
 keyword separates the arguments that would normally be passed to the
 *dump* command from those that would be given the *dump\_modify*.  Both
-support optional arguments and thus LIGGGHTS(R)-PUBLIC needs to be able to cleanly
+support optional arguments and thus Packfall needs to be able to cleanly
 separate the two sets of args.
 
 Note that if the specified filename uses wildcard characters "\*" or
@@ -78,7 +78,7 @@ Since dumps are normally written during a :doc:`run <run>` or :doc:`energy minim
 before this command can be used.  Similarly, if the dump requires
 information from a compute, fix, or variable, the information needs to
 have been calculated for the current timestep (e.g. by a prior run),
-else LIGGGHTS(R)-PUBLIC will generate an error message.
+else Packfall will generate an error message.
 
 For example, it is not possible to dump per-atom energy with this
 command before a run has been performed, since no energies and forces

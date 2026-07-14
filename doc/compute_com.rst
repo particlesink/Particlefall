@@ -55,7 +55,7 @@ are the x,y,z coordinates of the center of mass.
 
 This compute calculates a global vector of length 3, which can be
 accessed by indices 1-3 by any command that uses global vector values
-from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 The vector values are "intensive".  The vector values will be in

@@ -90,7 +90,8 @@ This this compute calculates a global vector containing the following informatio
 * **(2)** number of marked particles in region
 * **(3)** total mass of (marked + un-marked) particles in region
 * **(4)** mass of marked particles in region
-See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+
+See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 Restrictions

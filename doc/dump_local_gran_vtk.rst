@@ -182,8 +182,8 @@ The *local/gran/vtk* style does not support writing of gzipped dump files,
 and does not support triclinic simulation boxes.
 
 To be able to use *local/gran/vtk*\ , you have to link to the VTK library,
-please adapt your Makefile accordingly. You must compile LIGGGHTS(R)-PUBLIC with the
--DLAMMPS\_VTK option - see the :ref:`Making LIGGGHTS(R)-PUBLIC <start_2>`
+please adapt your Makefile accordingly. You must compile Packfall with the
+-DLAMMPS\_VTK option - see the :ref:`Making Packfall <start_2>`
 section of the documentation.
 
 The *local/gran/vtk* dump style neither supports buffering nor custom format strings.

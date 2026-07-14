@@ -57,7 +57,7 @@ times to adjust gamma for several atom types.
 
    You should specify gamma in force/velocity units.
    This is not the same as mass/time units, at least for some of the
-   LIGGGHTS(R)-PUBLIC :doc:`units <units>` options like "real" or "metal" that are not
+   Packfall :doc:`units <units>` options like "real" or "metal" that are not
    self-consistent.
 
 In a Brownian dynamics context, gamma = Kb T / D, where Kb =

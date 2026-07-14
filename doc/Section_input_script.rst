@@ -1,8 +1,8 @@
 Input Script
 ============
 
-This section describes how a LIGGGHTS(R)-PUBLIC input script is formatted and the
-input script commands used to define a LIGGGHTS(R)-PUBLIC simulation.
+This section describes how a Packfall input script is formatted and the
+input script commands used to define a Packfall simulation.
 
 
 .. contents:: 
@@ -15,12 +15,12 @@ input script commands used to define a LIGGGHTS(R)-PUBLIC simulation.
 
 .. _inp\_1:
 
-LIGGGHTS(R)-PUBLIC input script
+Packfall input script
 -------------------------------
 
-LIGGGHTS(R)-PUBLIC executes by reading commands from a input script (text file),
-one line at a time.  When the input script ends, LIGGGHTS(R)-PUBLIC exits.  Each
-command causes LIGGGHTS(R)-PUBLIC to take some action.  It may set an internal
+Packfall executes by reading commands from a input script (text file),
+one line at a time.  When the input script ends, Packfall exits.  Each
+command causes Packfall to take some action.  It may set an internal
 variable, read in a file, or run a simulation.  Most commands have
 default settings, which means you only need to use the command if you
 wish to change the default.
@@ -28,7 +28,7 @@ wish to change the default.
 In many cases, the ordering of commands in an input script is not
 important.  However the following rules apply:
 
-(1) LIGGGHTS(R)-PUBLIC does not read your entire input script and then perform a
+(1) Packfall does not read your entire input script and then perform a
 simulation with all the settings.  Rather, the input script is read
 one line at a time and each command takes effect when it is read.
 Thus this sequence of commands:
@@ -66,9 +66,9 @@ is to have the desired effect.  For example, the
 up the simulation box and assigning atoms to processors.  If default
 values are not desired, the :doc:`processors <processors>` and
 :doc:`boundary <boundary>` commands need to be used before read\_data to
-tell LIGGGHTS(R)-PUBLIC how to map processors to the simulation box.
+tell Packfall how to map processors to the simulation box.
 
-Many input script errors are detected by LIGGGHTS(R)-PUBLIC and an ERROR or
+Many input script errors are detected by Packfall and an ERROR or
 WARNING message is printed.  :doc:`This section <Section_errors>` gives
 more information on what errors mean.  The documentation for each
 command lists restrictions on how the command can be used.
@@ -83,11 +83,11 @@ Parsing rules
 -------------
 
 Each non-blank line in the input script is treated as a command.
-LIGGGHTS(R)-PUBLIC commands are case sensitive.  Command names are lower-case, as
+Packfall commands are case sensitive.  Command names are lower-case, as
 are specified command arguments.  Upper case letters may be used in
 file names or user-chosen ID strings.
 
-Here is how each line in the input script is parsed by LIGGGHTS(R)-PUBLIC:
+Here is how each line in the input script is parsed by Packfall:
 
 (1) If the last printable character on the line is a "&" character
 (with no surrounding quotes), the command is assumed to continue on
@@ -193,12 +193,11 @@ substituted for as a variable in (3).
 Input script structure
 -----------------------------------
 
-This section describes the structure of a typical LIGGGHTS(R)-PUBLIC input script.
-The "examples" directory in the LIGGGHTS(R)-PUBLIC distribution contains many
-sample input scripts; the corresponding problems are discussed in
-:doc:`Section\_example <Section_example>`, and animated on the `LIGGGHTS(R)-PUBLIC WWW Site <liws_>`_.
+This section describes the structure of a typical Packfall input script.
+The "examples" directory in the Packfall distribution contains many
+sample input scripts.
 
-A LIGGGHTS(R)-PUBLIC input script typically has 4 parts:
+A Packfall input script typically has 4 parts:
 
 1. Initialization
 2. Atom/particle definition and insertion
@@ -221,7 +220,7 @@ The relevant commands are :doc:`units <units>`,
 :doc:`atom\_style <atom_style>`, :doc:`atom\_modify <atom_modify>`.
 
 If force-field parameters appear in the files that will be read, these
-commands tell LIGGGHTS(R)-PUBLIC what kinds of force fields are being used:
+commands tell Packfall what kinds of force fields are being used:
 :doc:`pair\_style <pair_style>`, :doc:`bond\_style <bond_style>`,
 :doc:`fix wall/gran <fix_wall_gran>` .
 
@@ -230,7 +229,7 @@ Granular walls typically require meshes to be used. See
 
 (2) Atom/particle definition and insertion
 
-There are 3 ways to define atoms in LIGGGHTS(R)-PUBLIC.  Read them in from a data
+There are 3 ways to define atoms in Packfall.  Read them in from a data
 or restart file via the :doc:`read\_data <read_data>` or
 :doc:`read\_restart <read_restart>` commands. Or create atoms on a lattice
 using these commands: :doc:`lattice <lattice>`,
@@ -238,8 +237,7 @@ using these commands: :doc:`lattice <lattice>`,
 :doc:`create\_atoms <create_atoms>`.
 
 However, the most common way to insert granular particles is
-to use one of the fix insert/\* commands: :doc:`fix insert/pack <fix_insert_pack>`,
-"fix insert/stream"stream.html, :doc:`fix insert/rate/region <fix_insert_rate/region>`
+to use one of the fix insert/\* commands e.g.: :doc:`fix insert/pack <fix_insert_pack>`.
 
 Before these insertion commands can be used, particle distributions
 (`fix particledistribution/discrete <fix_particledistribution_discrete.hmtl>`_)
@@ -284,7 +282,7 @@ A simulation is run using the :doc:`run <run>` command.
 An example input script
 -----------------------
 
-This shows an example input script for a LIGGGHTS(R)-PUBLIC simulation.
+This shows an example input script for a Packfall simulation.
 
 
 .. parsed-literal::

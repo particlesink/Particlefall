@@ -54,13 +54,13 @@ Examples
 Description
 """""""""""
 
-Define a lattice for use by other commands.  In LIGGGHTS(R)-PUBLIC, a lattice is
+Define a lattice for use by other commands.  In Packfall, a lattice is
 simply a set of points in space, determined by a unit cell with basis
 atoms, that is replicated infinitely in all dimensions.  The arguments
 of the lattice command can be used to define a wide variety of
 crystallographic lattices.
 
-A lattice is used by LIGGGHTS(R)-PUBLIC in two ways.  First, the
+A lattice is used by Packfall in two ways.  First, the
 :doc:`create\_atoms <create_atoms>` command creates atoms on the lattice
 points inside the simulation box.  Note that the
 :doc:`create\_atoms <create_atoms>` command allows different atom types
@@ -81,7 +81,7 @@ A lattice consists of a unit cell, a set of basis atoms within that
 cell, and a set of transformation parameters (scale, origin, orient)
 that map the unit cell into the simulation box.  The vectors a1,a2,a3
 are the edge vectors of the unit cell.  This is the nomenclature for
-"primitive" vectors in solid-state crystallography, but in LIGGGHTS(R)-PUBLIC the
+"primitive" vectors in solid-state crystallography, but in Packfall the
 unit cell they determine does not have to be a "primitive cell" of
 minimum volume.
 
@@ -152,7 +152,7 @@ spacing of 3.52 Angstroms.  In *cgs* units, the spacing would be 3.52
 cm.
 
 For unit style *lj*\ , the scale argument is the Lennard-Jones reduced
-density, typically written as rho\*.  LIGGGHTS(R)-PUBLIC converts this value into
+density, typically written as rho\*.  Packfall converts this value into
 the multiplicative factor via the formula "factor\^dim = rho/rho\*",
 where rho = N/V with V = the volume of the lattice unit cell and N =
 the number of basis atoms in the unit cell (described below), and dim
@@ -186,7 +186,7 @@ simulation box.
 ----------
 
 
-Several LIGGGHTS(R)-PUBLIC commands have the option to use distance units that are
+Several Packfall commands have the option to use distance units that are
 inferred from "lattice spacing" in the x,y,z box directions.  E.g. the
 :doc:`region <region>` command can create a block of size 10x20x20,
 where 10 means 10 lattice spacings in the x direction.
@@ -196,12 +196,12 @@ be non-zero (use 1.0 for dz in a 2d simulation).  The specified values
 are multiplied by the multiplicative factor described above that is
 associated with the scale factor.  Thus a spacing of 1.0 means one
 unit cell independent of the scale factor.  This option can be useful
-if the spacings LIGGGHTS(R)-PUBLIC computes are inconvenient to use in subsequent
+if the spacings Packfall computes are inconvenient to use in subsequent
 commands, which can be the case for non-orthogonal or rotated
 lattices.
 
 If the *spacing* option is not specified, the lattice spacings are
-computed by LIGGGHTS(R)-PUBLIC in the following way.  A unit cell of the lattice
+computed by Packfall in the following way.  A unit cell of the lattice
 is mapped into the simulation box (scaled, shifted, rotated), so that
 it now has (perhaps) a modified size and orientation.  The lattice
 spacing in X is defined as the difference between the min/max extent
@@ -229,7 +229,7 @@ factor of 3.0 Angstroms, would have a lattice spacing of 3.0 in x and
    create a periodic system.  I.e. atoms may overlap incorrectly at the
    faces of the simulation box.
 
-Regardless of these issues, the values of the lattice spacings LIGGGHTS(R)-PUBLIC
+Regardless of these issues, the values of the lattice spacings Packfall
 calculates are printed out, so their effect in commands that use the
 spacings should be decipherable.
 

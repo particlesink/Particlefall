@@ -40,7 +40,7 @@ Syntax
        *scaled* value = *yes* or *no* = coords in dump file are scaled/unscaled
        *wrapped* value = *yes* or *no* = coords in dump file are wrapped/unwrapped
        *format* values = format of dump file, must be last keyword if used
-         *native* = native LIGGGHTS(R)-PUBLIC dump file
+         *native* = native Packfall dump file
          *xyz* = XYZ file
 
 
@@ -75,7 +75,7 @@ read\_dump command.  This can be done by the
 :doc:`read\_restart <read_restart>` commands.  The read\_dump command can
 reset the simulation box dimensions, as explained below.
 
-Since LIGGGHTS(R)-PUBLIC needs valid radii, the radius field is mandatory
+Since Packfall needs valid radii, the radius field is mandatory
 to be read.
 
 Also note that reading per-atom information from a dump snapshot is
@@ -101,7 +101,7 @@ files via the "%" option in the dump file name.  See the
 The format of the dump file is selected through the *format* keyword.
 If specified, it must be the last keyword used, since all remaining
 arguments are passed on to the dump reader.  The *native* format is
-for native LIGGGHTS(R)-PUBLIC dump files, written with a "dump atom".html or :doc:`dump custom <dump>` command.  The *xyz* format is for generic XYZ
+for native Packfall dump files, written with a "dump atom".html or :doc:`dump custom <dump>` command.  The *xyz* format is for generic XYZ
 formatted dump files,
 
 Support for other dump format readers may be added in the future.
@@ -114,7 +114,7 @@ Global information is first read from the dump file, namely timestep
 and box information.
 
 The dump file is scanned for a snapshot with a time stamp that matches
-the specified *Nstep*\ .  This means the LIGGGHTS(R)-PUBLIC timestep the dump file
+the specified *Nstep*\ .  This means the Packfall timestep the dump file
 snapshot was written on for the *native* format.  However, the *xyz*
 formats do not store the timestep.  For these formats,
 timesteps are numbered logically, in a sequential manner, starting
@@ -180,7 +180,7 @@ assigned consecutively to the atoms as they appear in the dump file,
 starting from 1.  Thus you should insure that order of atoms is
 consistent from snapshot to snapshot in the the XYZ dump file.  See
 the :doc:`dump\_modify sort <dump_modify>` command if the XYZ dump file
-was written by LIGGGHTS(R)-PUBLIC.
+was written by Packfall.
 
 
 ----------
@@ -270,10 +270,10 @@ conditions are applied to remap an atom back into the simulation box.
    flag fields from the dump file but do not also use the dump file box
    parameters.
 
-LIGGGHTS(R)-PUBLIC knows how to compute unscaled and remapped coordinates for the
+Packfall knows how to compute unscaled and remapped coordinates for the
 snapshot column labels discussed above, e.g. *x*\ , *xs*\ , *xu*\ , *xsu*\ .
 If another column label is assigned to the *x* or *y* or *z* field via
-the *label* keyword, e.g. for coordinates output by the :doc:`fix ave/atom <fix_ave_atom>` command, then LIGGGHTS(R)-PUBLIC needs to know whether
+the *label* keyword, e.g. for coordinates output by the :doc:`fix ave/atom <fix_ave_atom>` command, then Packfall needs to know whether
 the coordinate information in the dump file is scaled and/or wrapped.
 This can be set via the *scaled* and *wrapped* keywords.  Note that
 the value of the *scaled* and *wrapped* keywords is ignored for fields
@@ -295,8 +295,8 @@ Restrictions
 """"""""""""
 
 
-To read gzipped dump files, you must compile LIGGGHTS(R)-PUBLIC with the
--DLAMMPS\_GZIP option - see the :ref:`Making LIGGGHTS(R)-PUBLIC <start_2>` section of the documentation.
+To read gzipped dump files, you must compile Packfall with the
+-DLAMMPS\_GZIP option - see the :ref:`Making Packfall <start_2>` section of the documentation.
 
 Related commands
 """"""""""""""""

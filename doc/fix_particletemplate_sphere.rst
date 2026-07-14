@@ -68,7 +68,7 @@ by this command are absolute (length units) or relative (in % of a reference rad
 IMPORTANT NOTE: This setting should not be changed away from the default value (no) unless
 explicity required by another command!
 
-LIGGGHTS(R)-PUBLIC will throw an error if the particle volume is too small compared to machine precision.
+Packfall will throw an error if the particle volume is too small compared to machine precision.
 If you are sure you know what you are doing you can override the default limit of 1e-12.
 
 **Restart, fix\_modify, output, run start/stop, minimize info:**

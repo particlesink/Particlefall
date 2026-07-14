@@ -46,7 +46,7 @@ parameters for the cohesion model are taken from the global definitions.
    boundaries,
    (ii) if two triangles are in contact inside the domain, they are not
    allowed to be in contact through periodic boundaries.
-   Note that these restrictions are not validated by LIGGGHTS(R)-PUBLIC and must be
+   Note that these restrictions are not validated by Packfall and must be
    ensured by the user.
 
 **Restart, fix\_modify, output, run start/stop, minimize info:**

@@ -1,19 +1,17 @@
-How-To for "SUPERQUADRIC" simulations in LIGGGHTS(R)
+How-To for "SUPERQUADRIC" simulations in Packfall
 ====================================================
 
-
-----------
 
 
 Description:
 ------------
 
-This text describes how to perform "SUPERQUADRIC" simulations in LIGGGHTS(R).
+This text describes how to perform "SUPERQUADRIC" simulations in Packfall.
 
 Introduction:
 -------------
 
-"SUPERQUADRIC" simulations allow LIGGGHTS(R) to use superquadric bodies as particles.
+"SUPERQUADRIC" simulations allow Packfall to use superquadric bodies as particles.
 Superquadrics are smooth convex aspherical bodies described by three
 semi-axes and two blockiness parameters. The ellipsoidal case is recovered
 for blockiness values equal to 2.
@@ -25,7 +23,7 @@ Compilation:
 
 
 
-To compile LIGGGHTS(R) with this feature the `boost <boost_>`_ library must be available on the system. On most LINUX-distributions a recent version can be installed via the package managment systems.
+To compile Packfall with this feature the `boost <boost_>`_ library must be available on the system. On most LINUX-distributions a recent version can be installed via the package managment systems.
 
 Before starting the compilation, you have to enable the SUPERQUADRIC model in your Makefile. In case of Makefile.auto you can activate the model by settings the corresponding flag within your *src/MAKE/Makefile.user*\ . Otherwise you have to add following settings manually to your Makefile:
 
@@ -47,7 +45,7 @@ Before starting the compilation, you have to enable the SUPERQUADRIC model in yo
 Detailed description:
 ---------------------
 
-The overall simulation structure stays the same for SUPERQUADRIC simulations as used for standard LIGGGHTS(R) simulations. In order to create a SUPERQUADRIC simulation based on an existing case you have to perform following steps:
+The overall simulation structure stays the same for SUPERQUADRIC simulations as used for standard Packfall simulations. In order to create a SUPERQUADRIC simulation based on an existing case you have to perform following steps:
 
 * Use :doc:`atom\_style superquadric <atom_style>`
 * For contact models (pair\_style gran as well as fix wall/gran) use :doc:`surface superquadric <gran_surface_superquadric>`
@@ -78,12 +76,12 @@ Typical workflow:
 * dump quaternion and shape data for post-processing if visualization of the real body geometry is desired
 
 See also the public example in
-``examples/LIGGGHTS/Tutorials_public/superquadric/in.particle_particle``.
+``examples/Packfall/Tutorials_public/superquadric/in.particle_particle``.
 
 Performance
 -----------
 
-The SUPERQUADRIC model uses the framework of LIGGGHT(R). Therefore, the parallel scalability is linear as LIGGGHTS(R) itself. Compared to standard LIGGGHTS(R), the calculation of contact points is computational expensive for superquadric bodies, which leads to a lower maximum number of particles per processor.
+The SUPERQUADRIC model uses the framework of LIGGGHT(R). Therefore, the parallel scalability is linear as Packfall itself. Compared to standard Packfall, the calculation of contact points is computational expensive for superquadric bodies, which leads to a lower maximum number of particles per processor.
 
 
 ----------

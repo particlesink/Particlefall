@@ -143,7 +143,7 @@ array is the number of pairs.  If a single keyword is specified, a
 local vector is produced.  If two or more keywords are specified, a
 local array is produced where the number of columns = the number of
 keywords.  The vector or array can be accessed by any command that
-uses local values from a compute as input.  See :ref:`this section <4_15>` for an overview of LIGGGHTS(R)-PUBLIC output
+uses local values from a compute as input.  See :ref:`this section <4_15>` for an overview of Packfall output
 options.
 
 For information on the :doc:`units <units>` of the output, see above.
@@ -165,6 +165,7 @@ Default
 
 By default, all of the outputs keywords (except force\_normal, force\_tangential,
  heat flux and delta) are activated,
+ 
 i.e. when no keyword is used, positions velocities, ids, forces, torques, history
 and contact area are output.
 

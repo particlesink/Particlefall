@@ -86,7 +86,7 @@ self-consistent minimization problem (see below).
 
 The *energy* keyword is not allowed if the added field is a constant
 vector (ex,ey,ez), with all components defined as numeric constants
-and not as variables.  This is because LIGGGHTS(R)-PUBLIC can compute the energy
+and not as variables.  This is because Packfall can compute the energy
 for each charged particle directly as E = -x dot qE = -q (x\*ex + y\*ey
 + z\*ez), so that -Grad(E) = F.  Similarly for point-dipole particles
 the energy can be computed as E = -mu dot E = -(mux\*ex + muy\*ey +
@@ -94,13 +94,13 @@ muz\*ez).
 
 The *energy* keyword is optional if the added force is defined with
 one or more variables, and if you are performing dynamics via the
-:doc:`run <run>` command.  If the keyword is not used, LIGGGHTS(R)-PUBLIC will set
+:doc:`run <run>` command.  If the keyword is not used, Packfall will set
 the energy to 0.0, which is typically fine for dynamics.
 
 The *energy* keyword is required if the added force is defined with
 one or more variables, and you are performing energy minimization via
 the "minimize" command for charged particles.  It is not required for
-point-dipoles, but a warning is issued since the minimizer in LIGGGHTS(R)-PUBLIC
+point-dipoles, but a warning is issued since the minimizer in Packfall
 does not rotate dipoles, so you should not expect to be able to
 minimize the orientation of dipoles in an applied electric field.
 

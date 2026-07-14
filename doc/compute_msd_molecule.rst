@@ -44,7 +44,7 @@ issued.
 
 The MSD for a particular molecule is only computed if one or more of
 its atoms are in the specified group.  Normally all atoms in the
-molecule should be in the group, however this is not required.  LIGGGHTS(R)-PUBLIC
+molecule should be in the group, however this is not required.  Packfall
 will warn you if this is not the case.  Only atoms in the group
 contribute to the center-of-mass calculation for the molecule, which
 is used to caculate its initial and current position.
@@ -86,7 +86,7 @@ the specified group.
 This compute calculates a global array where the number of rows =
 Nmolecules and the number of columns = 4 for dx,dy,dz and the total
 displacement.  These values can be accessed by any command that uses
-global array values from a compute as input.  See :ref:`this section <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+global array values from a compute as input.  See :ref:`this section <howto_8>` for an overview of Packfall output
 options.
 
 The array values are "intensive".  The array values will be in

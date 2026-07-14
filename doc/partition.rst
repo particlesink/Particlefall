@@ -13,7 +13,7 @@ Syntax
 
 * style = *yes* or *no*
 * N = partition number (see asterisk form below)
-* command = any LIGGGHTS(R)-PUBLIC command
+* command = any Packfall command
 
 Examples
 """"""""
@@ -42,7 +42,7 @@ such a variable is used in a :doc:`jump <jump>` command.
 
 The "partition" command is another mechanism for having as input
 script operate differently on different partitions.  It is basically a
-prefix on any LIGGGHTS(R)-PUBLIC command.  The commmand will only be invoked on
+prefix on any Packfall command.  The commmand will only be invoked on
 the partition(s) specified by the *style* and *N* arguments.
 
 If the *style* is *yes*\ , the command will be invoked on any partition

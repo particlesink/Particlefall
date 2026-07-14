@@ -118,7 +118,7 @@ result.  I.e. the last 2 columns of thermo output will be the same:
 
 This compute calculates a per-atom array with 6 columns, which can be
 accessed by indices 1-6 by any command that uses per-atom values from
-a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of Packfall output
 options.
 
 The per-atom array values will be in pressure\*volume

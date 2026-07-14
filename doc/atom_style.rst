@@ -115,7 +115,7 @@ of bond types, and the maximum number of bonds that each atom can
 have. For each bond type, the parameters have to be specified via the
 :doc:`bond\_coeff <bond_coeff>` command (see example :doc:`here <bond_gran>` )
 Note that *bond/gran* is an experimental code which is may not be
-available in your release of LIGGGHTS. An example for the sytnax is given below:
+available in your release of Packfall. An example for the sytnax is given below:
 
 
 .. parsed-literal::
@@ -154,7 +154,7 @@ torque, you would need to use "atom\_style hybrid sphere dipole".  When
 a hybrid style is used, atoms store and communicate the union of all
 quantities implied by the individual styles.
 
-LIGGGHTS(R)-PUBLIC can be extended with new atom styles as well as new body
+Packfall can be extended with new atom styles as well as new body
 styles; see :doc:`this section <Section_modify>`.
 
 Restrictions

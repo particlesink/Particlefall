@@ -37,7 +37,7 @@ Examples
 Description
 """""""""""
 
-Read in a data file containing information LIGGGHTS(R)-PUBLIC needs to run a
+Read in a data file containing information Packfall needs to run a
 simulation.  The file can be ASCII text or a gzipped text file
 (detected by a .gz suffix).  This is one of 3 ways to specify initial
 atom coordinates; see the :doc:`read\_restart <read_restart>` and
@@ -111,9 +111,9 @@ The initial simulation box size is determined by the lo/hi settings.
 In any dimension, the system may be periodic or non-periodic; see the
 :doc:`boundary <boundary>` command.
 
-If the *xy xz yz* line does not appear, LIGGGHTS(R)-PUBLIC will set up an
+If the *xy xz yz* line does not appear, Packfall will set up an
 axis-aligned (orthogonal) simulation box.  If the line does appear,
-LIGGGHTS(R)-PUBLIC creates a non-orthogonal simulation domain shaped as a
+Packfall creates a non-orthogonal simulation domain shaped as a
 parallelepiped with triclinic symmetry.  The parallelepiped has its
 "origin" at (xlo,ylo,zlo) and is defined by 3 edge vectors starting
 from the origin given by A = (xhi-xlo,0,0); B = (xy,yhi-ylo,0); C =
@@ -132,7 +132,7 @@ example), then configurations with tilt = ..., -15, -5, 5, 15, 25,
 ... are all geometrically equivalent.
 
 See :ref:`Section\_howto 12 <howto_7>` of the doc pages
-for a geometric description of triclinic boxes, as defined by LIGGGHTS(R)-PUBLIC,
+for a geometric description of triclinic boxes, as defined by Packfall,
 and how to transform these parameters to and from other commonly used
 triclinic representations.
 
@@ -163,21 +163,21 @@ periodic sense) back inside the box.
    equal to" the hi value.  If the non-periodic dimension is of style
    "fixed" (see the :doc:`boundary <boundary>` command), then the atom
    coords must be strictly "less than" the hi value, due to the way
-   LIGGGHTS(R)-PUBLIC assign atoms to processors.  Note that you should not make the
+   Packfall assign atoms to processors.  Note that you should not make the
    lo/hi values radically smaller/larger than the extent of the atoms.
    For example, if your atoms extend from 0 to 50, you should not specify
-   the box bounds as -10000 and 10000.  This is because LIGGGHTS(R)-PUBLIC uses the
+   the box bounds as -10000 and 10000.  This is because Packfall uses the
    specified box size to layout the 3d grid of processors.  A huge
    (mostly empty) box will be sub-optimal for performance when using
    "fixed" boundary conditions (see the :doc:`boundary <boundary>`
    command).  When using "shrink-wrap" boundary conditions (see the
    :doc:`boundary <boundary>` command), a huge (mostly empty) box may cause
-   a parallel simulation to lose atoms the first time that LIGGGHTS(R)-PUBLIC
+   a parallel simulation to lose atoms the first time that Packfall
    shrink-wraps the box around the atoms.
 
 The "extra bond per atom" setting should be used if new bonds will be
 added to the system when a simulation runs, e.g. by using the :doc:`fix bond/create <fix_bond_create>` command.  This will pre-allocate
-space in LIGGGHTS(R)-PUBLIC data structures for storing the new bonds.
+space in Packfall data structures for storing the new bonds.
 
 
 ----------
@@ -214,7 +214,7 @@ Atoms section:
 
 An *Atoms* section must appear in the data file if natoms > 0 in the
 header section.  The atoms can be listed in any order.  These are the
-line formats for each :doc:`atom style <atom_style>` in LIGGGHTS(R)-PUBLIC.  As
+line formats for each :doc:`atom style <atom_style>` in Packfall.  As
 discussed below, each line can optionally have 3 flags (nx,ny,nz)
 appended to it, which indicate which image of a periodic simulation
 box the atom is in.  These may be important to include for some kinds
@@ -329,11 +329,11 @@ integer values: nx,ny,nz.  For periodic dimensions, they specify which
 image of the simulation box the atom is considered to be in.  An image
 of 0 means it is inside the box as defined.  A value of 2 means add 2
 box lengths to get the true value.  A value of -1 means subtract 1 box
-length to get the true value.  LIGGGHTS(R)-PUBLIC updates these flags as atoms
+length to get the true value.  Packfall updates these flags as atoms
 cross periodic boundaries during the simulation.  The flags can be
 output with atom snapshots via the :doc:`dump <dump>` command.
 
-If nx,ny,nz values are not set in the data file, LIGGGHTS(R)-PUBLIC initializes
+If nx,ny,nz values are not set in the data file, Packfall initializes
 them to 0.  If image information is needed for later analysis and they
 are not all initially 0, it's important to set them correctly in the
 data file.  Also, if you plan to use the :doc:`replicate <replicate>`
@@ -475,7 +475,7 @@ right-hand rule) by an angle theta around a unit vector (a,b,c), then
 the quaternion that represents its new orientation is given by
 (cos(theta/2), a\*sin(theta/2), b\*sin(theta/2), c\*sin(theta/2)).  These
 4 components are quatw, quati, quatj, and quatk as specified above.
-LIGGGHTS(R)-PUBLIC normalizes each atom's quaternion in case (a,b,c) is not
+Packfall normalizes each atom's quaternion in case (a,b,c) is not
 specified as a unit vector.
 
 The *Ellipsoids* section must appear after the *Atoms* section.
@@ -747,8 +747,8 @@ Restrictions
 """"""""""""
 
 
-To read gzipped data files, you must compile LIGGGHTS(R)-PUBLIC with the
--DLAMMPS\_GZIP option - see the :ref:`Making LIGGGHTS(R)-PUBLIC <start_2>` section of the documentation.
+To read gzipped data files, you must compile Packfall with the
+-DLAMMPS\_GZIP option - see the :ref:`Making Packfall <start_2>` section of the documentation.
 
 Related commands
 """"""""""""""""

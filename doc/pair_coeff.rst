@@ -38,7 +38,7 @@ by the :doc:`read\_data <read_data>` command or in a restart file.
 
 I and J can be specified in one of two ways.  Explicit numeric values
 can be used for each, as in the 1st example above.  I <= J is
-required.  LIGGGHTS(R)-PUBLIC sets the coefficients for the symmetric J,I
+required.  Packfall sets the coefficients for the symmetric J,I
 interaction to the same values.
 
 A wildcard asterisk can be used in place of or in conjunction with the
@@ -86,13 +86,13 @@ the doc page for the potential.
 
 Many pair styles, typically for many-body potentials, use tabulated
 potential files as input, when specifying the pair\_coeff command.
-Potential files provided with LIGGGHTS(R)-PUBLIC are in the potentials directory
+Potential files provided with Packfall are in the potentials directory
 of the distribution.  For some potentials, such as EAM, other archives
 of suitable files can be found on the Web.  They can be used with
-LIGGGHTS(R)-PUBLIC so long as they are in the format LIGGGHTS(R)-PUBLIC expects, as discussed
+Packfall so long as they are in the format Packfall expects, as discussed
 on the individual doc pages.
 
-When a pair\_coeff command using a potential file is specified, LIGGGHTS(R)-PUBLIC
+When a pair\_coeff command using a potential file is specified, Packfall
 looks for the potential file in 2 places.  First it looks in the
 location specified.  E.g. if the file is specified as "niu3.eam", it
 is looked for in the current working directory.  If it is specified as
@@ -100,7 +100,7 @@ is looked for in the current working directory.  If it is specified as
 directory, assuming it is a sister directory of the current working
 directory.  If the file is not found, it is then looked for in the
 directory specified by the LAMMPS\_POTENTIALS environment variable.
-Thus if this is set to the potentials directory in the LIGGGHTS(R)-PUBLIC distro,
+Thus if this is set to the potentials directory in the Packfall distro,
 then you can use those files from anywhere on your system, without
 copying them into your working directory.  Environment variables are
 set in different ways for different shells.  Here are example settings
@@ -122,7 +122,7 @@ for
 ----------
 
 
-The full list of pair styles defined in LIGGGHTS(R)-PUBLIC is on :ref:`this page <cmd_5>`.
+The full list of pair styles defined in Packfall is on :ref:`this page <cmd_5>`.
 
 Restrictions
 """"""""""""

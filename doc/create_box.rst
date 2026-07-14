@@ -37,11 +37,11 @@ no *region-ID* is specified.
 The argument N is the number of atom types that will be used in the
 simulation.
 
-If the region is not of style *prism*\ , then LIGGGHTS(R)-PUBLIC encloses the region
+If the region is not of style *prism*\ , then Packfall encloses the region
 (block, sphere, etc) with an axis-aligned orthogonal bounding box
 which becomes the simulation domain.
 
-If the region is of style *prism*\ , LIGGGHTS(R)-PUBLIC creates a non-orthogonal
+If the region is of style *prism*\ , Packfall creates a non-orthogonal
 simulation domain shaped as a parallelepiped with triclinic symmetry.
 As defined by the :doc:`region prism <region>` command, the
 parallelepiped has its "origin" at (xlo,ylo,zlo) and is defined by 3
@@ -62,7 +62,7 @@ configurations with tilt = ..., -15, -5, 5, 15, 25, ... are all
 geometrically equivalent.
 
 See :ref:`Section\_howto 12 <howto_7>` of the doc pages
-for a geometric description of triclinic boxes, as defined by LIGGGHTS(R)-PUBLIC,
+for a geometric description of triclinic boxes, as defined by Packfall,
 and how to transform these parameters to and from other commonly used
 triclinic representations.
 
@@ -84,13 +84,13 @@ are initially 0.0.
    of the atoms you eventually plan to create, e.g. via the
    :doc:`create\_atoms <create_atoms>` command.  For example, if your atoms
    extend from 0 to 50, you should not specify the box bounds as -10000
-   and 10000. This is because LIGGGHTS(R)-PUBLIC uses the specified box size to
+   and 10000. This is because Packfall uses the specified box size to
    layout the 3d grid of processors.  A huge (mostly empty) box will be
    sub-optimal for performance when using "fixed" boundary conditions
    (see the :doc:`boundary <boundary>` command).  When using "shrink-wrap"
    boundary conditions (see the :doc:`boundary <boundary>` command), a huge
    (mostly empty) box may cause a parallel simulation to lose atoms the
-   first time that LIGGGHTS(R)-PUBLIC shrink-wraps the box around the atoms.
+   first time that Packfall shrink-wraps the box around the atoms.
 
 Restrictions
 """"""""""""

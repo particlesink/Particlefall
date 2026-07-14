@@ -136,7 +136,7 @@ defined with the *side in* keyword, but would not be part of the
 region if it were defined using the *side out* keyword.  See more
 details on the *side* keyword below.
 
-Normally, regions in LIGGGHTS(R)-PUBLIC are "static", meaning their geometric
+Normally, regions in Packfall are "static", meaning their geometric
 extent does not change with time.  If the *move* or *rotate* keyword
 is used, as described below, the region becomes "dynamic", meaning
 it's location or orientation changes with time.  This may be useful,
@@ -165,7 +165,7 @@ non-zero, then xlo and xhi cannot both be INF, nor can ylo and yhi.
 
 .. warning::
 
-   Regions in LIGGGHTS(R)-PUBLIC do not get wrapped across periodic
+   Regions in Packfall do not get wrapped across periodic
    boundaries, as specified by the :doc:`boundary <boundary>` command.  For
    example, a spherical region that is defined so that it overlaps a
    periodic boundary is not treated as 2 half-spheres, one on either side
@@ -173,7 +173,7 @@ non-zero, then xlo and xhi cannot both be INF, nor can ylo and yhi.
 
 .. warning::
 
-   Regions in LIGGGHTS(R)-PUBLIC are always 3d geometric objects,
+   Regions in Packfall are always 3d geometric objects,
    regardless of whether the :doc:`dimension <dimension>` of a simulation
    is 2d or 3d.  Thus when using regions in a 2d simulation, you should
    be careful to define the region so that its intersection with the 2d
@@ -228,7 +228,7 @@ keywords for the simulation box parameters and timestep and elapsed
 time.  Thus it is easy to specify a time-dependent radius.
 
 See :ref:`Section\_howto 12 <howto_7>` of the doc pages
-for a geometric description of triclinic boxes, as defined by LIGGGHTS(R)-PUBLIC,
+for a geometric description of triclinic boxes, as defined by Packfall,
 and how to transform these parameters to and from other commonly used
 triclinic representations.
 

@@ -159,7 +159,7 @@ the same thing.
 ----------
 
 
-:ref:`This section <cmd_2>` of the manual explains how
+This section of the manual explains how
 occurrences of a variable name in an input script line are replaced by
 the variable's string.  The variable name can be referenced as $x if
 the name "x" is a single character, or as ${LoopVar} if the name
@@ -218,21 +218,21 @@ inclusive, and the string N1 is initially assigned to the variable.
 N1 <= N2 and N2 >= 0 is required.
 
 For the *world* style, one or more strings are specified.  There must
-be one string for each processor partition or "world".  See :ref:`this section <start_7>` of the manual for information on
-running LIGGGHTS(R)-PUBLIC with multiple partitions via the "-partition"
+be one string for each processor partition or "world".  
+See :ref:`this section <start_7>` of the manual for information on
+running Packfall with multiple partitions via the "-partition"
 command-line switch.  This variable command assigns one string to each
 world.  All processors in the world are assigned the same string.  The
 next command cannot be used with *equal* style variables, since there
 is only one value per world.  This style of variable is useful when
 you wish to run different simulations on different partitions, or when
-performing a parallel tempering simulation (see the
-:doc:`temper <temper>` command), to assign different temperatures to
+performing a parallel tempering simulation to assign different temperatures to
 different partitions.
 
 For the *universe* style, one or more strings are specified.  There
 must be at least as many strings as there are processor partitions or
 "worlds".  See :ref:`this page <start_7>` for information
-on running LIGGGHTS(R)-PUBLIC with multiple partitions via the "-partition"
+on running Packfall with multiple partitions via the "-partition"
 command-line switch.  This variable command initially assigns one
 string to each world.  When a :doc:`next <next>` command is encountered
 using this variable, the first processor partition to encounter it, is
@@ -242,7 +242,7 @@ variable strings are consumed.  Thus, this command can be used to run
 one after the other on whatever partition becomes available, until
 they are all finished.  *Universe* style variables are incremented
 using the files "tmp.lammps.variable" and "tmp.lammps.variable.lock"
-which you will see in your directory during such a LIGGGHTS(R)-PUBLIC run.
+which you will see in your directory during such a Packfall run.
 
 The *uloop* style is identical to the *universe* style except that the
 strings are the integers from 1 to N.  This allows generation of long
@@ -259,7 +259,7 @@ For the *getenv* style, a single string is assigned to the variable
 which should be the name of an environment variable.  When the
 variable is evaluated, it returns the value of the environment
 variable, or an empty string if it not defined.  This style of
-variable can be used to adapt the behavior of LIGGGHTS(R)-PUBLIC input scripts via
+variable can be used to adapt the behavior of Packfall input scripts via
 environment variable settings, or to retrieve information that has
 been previously stored with the :doc:`shell putenv <shell>` command.
 Note that because environment variable settings are stored by the
@@ -371,13 +371,13 @@ references to other variables.
 +--------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Math functions     | sqrt(x), exp(x), ln(x), log(x), abs(x), sin(x), cos(x), tan(x), asin(x), acos(x), atan(x), atan2(y,x), random(x,y,z), normal(x,y,z), ceil(x), floor(x), round(x), ramp(x,y), stagger(x,y), logfreq(x,y,z), stride(x,y,z), vdisplace(x,y), swiggle(x,y,z), cwiggle(x,y,z) |
 +--------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Group functions    | count(ID), mass(ID), charge(ID), xcm(ID,dim),                  vcm(ID,dim), fcm(ID,dim), bound(ID,dir), 		 gyration(ID), ke(ID), angmom(ID,dim), torque(ID,dim), 		 inertia(ID,dimdim), omega(ID,dim)                                                                    |
+| Group functions    | count(ID), mass(ID), charge(ID), xcm(ID,dim), vcm(ID,dim), fcm(ID,dim), bound(ID,dir), gyration(ID), ke(ID), angmom(ID,dim), torque(ID,dim), inertia(ID,dimdim), omega(ID,dim)                                                                                           |
 +--------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Region functions   | count(ID,IDR), mass(ID,IDR), charge(ID,IDR), 		  xcm(ID,dim,IDR), vcm(ID,dim,IDR), fcm(ID,dim,IDR), 		  bound(ID,dir,IDR), gyration(ID,IDR), ke(ID,IDR), 		  angmom(ID,dim,IDR), torque(ID,dim,IDR),                   inertia(ID,dimdim,IDR), omega(ID,dim,IDR)         |
+| Region functions   | count(ID,IDR), mass(ID,IDR), charge(ID,IDR), xcm(ID,dim,IDR), vcm(ID,dim,IDR), fcm(ID,dim,IDR), bound(ID,dir,IDR), gyration(ID,IDR), ke(ID,IDR), angmom(ID,dim,IDR), torque(ID,dim,IDR), inertia(ID,dimdim,IDR), omega(ID,dim,IDR)                                       |
 +--------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Special functions  | sum(x), min(x), max(x), ave(x), trap(x), gmask(x), rmask(x), grmask(x,y), next(x)                                                                                                                                                                                        |
 +--------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Atom values        | id[i], mass[i], type[i], x[i], y[i], z[i],              vx[i], vy[i], vz[i], fx[i], fy[i], fz[i], omegax[i], omegay[i], omegaz[z], tqx[i], tqy[i], tqz[i], r[i], density[i]                                                                                              |
+| Atom values        | id[i], mass[i], type[i], x[i], y[i], z[i], vx[i], vy[i], vz[i], fx[i], fy[i], fz[i], omegax[i], omegay[i], omegaz[z], tqx[i], tqy[i], tqz[i], r[i], density[i]                                                                                                           |
 +--------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Atom vectors       | id, mass, type, x, y, z, vx, vy, vz, fx, fy, fz, omegax, omegay, omegaz, r, density                                                                                                                                                                                      |
 +--------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -868,9 +868,8 @@ There is a difference between referencing a variable with a leading $
 sign (e.g. $x or ${abc}) versus with a leading "v\_" (e.g. v\_x or
 v\_abc).  The former can be used in any input script command, including
 a variable command.  The input script parser evaluates the reference
-variable immediately and substitutes its value into the command.  As
-explained in :ref:`Section commands 3.2 <3_2>` for
-"Parsing rules", you can also use un-named "immediate" variables for
+variable immediately and substitutes its value into the command.  You 
+can also use un-named "immediate" variables for
 this purpose.  An variable reference such as
 $((xlo+xhi)/2+sqrt(v\_area)) evaluates the string between the
 parenthesis as an equal-style variable.
@@ -927,9 +926,8 @@ quotes if it contains variables preceeded by $ signs.  For example,
 
    variable vratio equal "${vfinal}/${v0}"
 
-This is because the quotes prevent variable substitution (see :ref:`this section <cmd_2>` on parsing input script
-commands), and thus an error will occur when the formula for "vratio"
-is evaluated later.
+This is because the quotes prevent variable substitution, and thus 
+an error will occur when the formula for "vratio" is evaluated later.
 
 
 ----------
@@ -937,7 +935,7 @@ is evaluated later.
 
 **Variable Accuracy:**
 
-Obviously, LIGGGHTS(R)-PUBLIC attempts to evaluate variables containing formulas
+Obviously, Packfall attempts to evaluate variables containing formulas
 (\ *equal* and *atom* style variables) accurately whenever the
 evaluation is performed.  Depending on what is included in the
 formula, this may require invoking a :doc:`compute <compute>`, either
@@ -948,7 +946,7 @@ the pressure or energy of the system, then these quantities need to be
 tallied during the evaluation of the interatomic potentials (pair,
 bond, etc) on timesteps that the variable will need the values.
 
-LIGGGHTS(R)-PUBLIC keeps track of all of this during a :doc:`run <run>` or :doc:`energy minimization <minimize>`.  An error will be generated if you
+Packfall keeps track of all of this during a :doc:`run <run>` or :doc:`energy minimization <minimize>`.  An error will be generated if you
 attempt to evaluate a variable on timesteps when it cannot produce
 accurate values.  For example, if a :doc:`thermo\_style custom <thermo_style>` command prints a variable which accesses
 values stored by a :doc:`fix ave/time <fix_ave_time>` command and the
@@ -958,7 +956,7 @@ averaging frequency used in the fix command, then an error will occur.
 An input script can also request variables be evaluated before or
 after or in between runs, e.g. by including them in a
 :doc:`print <print>` command.  In this case, if a compute is needed to
-evaluate a variable (either directly or indirectly), LIGGGHTS(R)-PUBLIC will not
+evaluate a variable (either directly or indirectly), Packfall will not
 invoke the compute, but it will use a value previously calculated by
 the compute, and can do this only if it is current.  Fixes will always
 provide a quantity needed by a variable, but the quantity may or may
@@ -969,9 +967,9 @@ references to a compute or fix, and these values were calculated on
 the last timestep of a preceeding run, then they will be accessed and
 used by the variable and the result will be accurate.
 
-(2) LIGGGHTS(R)-PUBLIC may not be able to evaluate the variable and will generate
+(2) Packfall may not be able to evaluate the variable and will generate
 an error message stating so.  For example, if the variable requires a
-quantity from a :doc:`compute <compute>` that is not current, LIGGGHTS(R)-PUBLIC
+quantity from a :doc:`compute <compute>` that is not current, Packfall
 will generate an error.  This means, for example, that such a variable
 cannot be evaluated before the first run has occurred.  Likewise, in
 between runs, such a variable cannot be accessed unless it was
@@ -1019,13 +1017,11 @@ Unlike computes, :doc:`fixes <fix>` will never generate an error if
 their values are accessed by a variable in between runs.  They always
 return some value to the variable.  However, the value may not be what
 you expect if the fix has not yet calculated the quantity of interest
-or it is not current.  For example, the :doc:`fix indent <fix_indent>`
-command stores the force on the indenter.  But this is not computed
-until a run is performed.  Thus if a variable attempts to print this
+or it is not current. Thus if a variable attempts to print this
 value before the first run, zeroes will be output.  Again, performing
 a 0-timestep run before printing the variable has the desired effect.
 
-(3) The variable may be evaluated incorrectly and LIGGGHTS(R)-PUBLIC may have no
+(3) The variable may be evaluated incorrectly and Packfall may have no
 way to detect this has occurred.  Consider the following sequence of
 commands:
 
@@ -1044,7 +1040,7 @@ potential defined by the :doc:`pair\_style <pair_style>` and
 evaluated on the final timestep and stored by the :doc:`compute pe <compute_pe>` compute (this is done by the
 :doc:`thermo\_style <thermo_style>` command).  Then a pair coefficient is
 changed, altering the potential energy of the system.  When the
-potential energy is printed via the "e" variable, LIGGGHTS(R)-PUBLIC will use the
+potential energy is printed via the "e" variable, Packfall will use the
 potential energy value stored by the :doc:`compute pe <compute_pe>`
 compute, thinking it is current.  There are many other commands which
 could alter the state of the system between runs, causing a variable
@@ -1086,7 +1082,7 @@ Related commands
 """"""""""""""""
 
 :doc:`next <next>`, :doc:`jump <jump>`, :doc:`include <include>`,
-:doc:`temper <temper>`, :doc:`fix print <fix_print>`, :doc:`print <print>`
+:doc:`fix print <fix_print>`, :doc:`print <print>`
 
 **Default:** none
 

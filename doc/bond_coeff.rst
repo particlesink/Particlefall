@@ -68,12 +68,12 @@ corresponds to the 1st example above would be listed as
 ----------
 
 
-Here is an alphabetic list of bond styles defined in LIGGGHTS(R)-PUBLIC.  Click on
+Here is an alphabetic list of bond styles defined in Packfall.  Click on
 the style to display the formula it computes and coefficients
 specified by the associated :doc:`bond\_coeff <bond_coeff>` command.
 
 Note that here are also additional bond styles submitted by users
-which are included in the LIGGGHTS(R)-PUBLIC distribution.  The list of these with
+which are included in the Packfall distribution.  The list of these with
 links to the individual styles are given in the bond section of :ref:`this page <cmd_5>`.
 
 * :doc:`bond\_style none <bond_none>` - turn off bonded interactions

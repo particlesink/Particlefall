@@ -24,8 +24,6 @@ Examples
    read_restart poly.\*.%
 
 
-.. parsed-literal::
-
 
 Description
 """""""""""
@@ -42,7 +40,7 @@ Several things can prevent exact restarts due to round-off effects, in
 which case the trajectories in the 2 runs will slowly diverge.  These
 include running on a different number of processors or changing
 certain settings such as those set by the :doc:`newton <newton>` or
-:doc:`processors <processors>` commands.  LIGGGHTS(R)-PUBLIC will issue a warning in
+:doc:`processors <processors>` commands.  Packfall will issue a warning in
 these cases.
 
 Certain fixes will not restart exactly, though they should provide
@@ -57,7 +55,7 @@ different than if the run had continued.  These pair styles include
 :doc:`granular pair styles <pair_gran>`.
 
 If a restarted run is immediately different than the run which
-produced the restart file, it could be a LIGGGHTS(R)-PUBLIC bug, so consider
+produced the restart file, it could be a Packfall bug, so consider
 :ref:`reporting it <err_2>` if you think the behavior is
 wrong.
 
@@ -76,20 +74,20 @@ you want your script to continue a run from where it left off.  See
 the :doc:`run <run>` command and its "upto" option for how to specify
 the run command so it doesn't need to be changed either.
 
-If a "%" character appears in the restart filename, LIGGGHTS(R)-PUBLIC expects a
+If a "%" character appears in the restart filename, Packfall expects a
 set of multiple files to exist.  The :doc:`restart <restart>` and
 :doc:`write\_restart <write_restart>` commands explain how such sets are
 created.  Read\_restart will first read a filename where "%" is
-replaced by "base".  This file tells LIGGGHTS(R)-PUBLIC how many processors
+replaced by "base".  This file tells Packfall how many processors
 created the set and how many files are in it.  Read\_restart then reads
 the additional files.  For example, if the restart file was specified
 as save.% when it was written, then read\_restart reads the files
 save.base, save.0, save.1, ... save.P-1, where P is the number of
 processors that created the restart file.  The processors in the
-current LIGGGHTS(R)-PUBLIC simulation share the work of reading these files; each
+current Packfall simulation share the work of reading these files; each
 reads a roughly equal subset of the files.  The number of processors
 which created the set can be different the number of processors in the
-current LIGGGHTS(R)-PUBLIC simulation.  This can be a fast mode of input on
+current Packfall simulation.  This can be a fast mode of input on
 parallel machines that support parallel I/O.
 
 
@@ -122,7 +120,7 @@ which is written to the restart file.  This allows the fix to continue
 on with its calculations in a restarted simulation.  To re-enable such
 a fix, the fix command in the new input script must use the same
 fix-ID and group-ID as was used in the input script that wrote the
-restart file.  If a match is found, LIGGGHTS(R)-PUBLIC prints a message indicating
+restart file.  If a match is found, Packfall prints a message indicating
 that the fix is being re-enabled.  If no match is found before the
 first run or minimization is performed by the new script, the "state"
 information for the saved fix is discarded.  See the doc pages for

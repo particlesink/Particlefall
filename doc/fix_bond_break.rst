@@ -76,7 +76,7 @@ broken.  The *fraction* setting must be a value between 0.0 and 1.0.
 A uniform random number between 0.0 and 1.0 is generated and the
 eligible bond is only broken if the random number < fraction.
 
-When a bond is broken, data structures within LIGGGHTS(R)-PUBLIC that store bond
+When a bond is broken, data structures within Packfall that store bond
 topology are updated to reflect the breakage.  This can also affect
 subsequent computation of pairwise interactions involving the atoms in
 the bond.  See the Restriction section below for additional
@@ -127,15 +127,15 @@ Restrictions
 """"""""""""
 
 
-This fix is part of the MC package.  It is only enabled if LIGGGHTS(R)-PUBLIC was
-built with that package.  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info.
+This fix is part of the MC package.  It is only enabled if Packfall was
+built with that package.  See the :ref:`Making Packfall <start_3>` section for more info.
 
 Currently, there are 2 restrictions for using this fix.  We may relax
 these in the future if there are new models that would be enabled by
 it.
 
 When a bond is broken, you might wish to turn off angle and dihedral
-interactions that include that bond.  However, LIGGGHTS(R)-PUBLIC does not check
+interactions that include that bond.  However, Packfall does not check
 for these angles and dihedrals, even if your simulation defines an
 :doc:`angle\_style <angle_style>` or
 :doc:`dihedral\_style <dihedral_style>`.

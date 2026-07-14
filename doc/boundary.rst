@@ -72,7 +72,7 @@ increases.  These tilted planes are shrink-wrapped around the atoms to
 determine the x extent of the box.
 
 See :ref:`Section\_howto 12 <howto_7>` of the doc pages
-for a geometric description of triclinic boxes, as defined by LIGGGHTS(R)-PUBLIC,
+for a geometric description of triclinic boxes, as defined by Packfall,
 and how to transform these parameters to and from other commonly used
 triclinic representations.
 

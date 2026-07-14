@@ -13,11 +13,11 @@ Syntax
 
 * boolean = a Boolean expression evaluated as TRUE or FALSE (see below)
 * then = required word
-* t1,t2,...,tN = one or more LIGGGHTS(R)-PUBLIC commands to execute if condition is met, each enclosed in quotes
+* t1,t2,...,tN = one or more Packfall commands to execute if condition is met, each enclosed in quotes
 * elif = optional word, can appear multiple times
-* f1,f2,...,fN = one or more LIGGGHTS(R)-PUBLIC commands to execute if elif condition is met, each enclosed in quotes (optional arguments)
+* f1,f2,...,fN = one or more Packfall commands to execute if elif condition is met, each enclosed in quotes (optional arguments)
 * else = optional argument
-* e1,e2,...,eN = one or more LIGGGHTS(R)-PUBLIC commands to execute if no condition is met, each enclosed in quotes (optional arguments)
+* e1,e2,...,eN = one or more Packfall commands to execute if no condition is met, each enclosed in quotes (optional arguments)
 
 Examples
 """"""""
@@ -59,7 +59,7 @@ Boolean expression is FALSE, then no commands are executed.
 
 The syntax for Boolean expressions is described below.
 
-Each command (t1, f1, e1, etc) can be any valid LIGGGHTS(R)-PUBLIC input script
+Each command (t1, f1, e1, etc) can be any valid Packfall input script
 command, except an :doc:`include <include>` command, which is not
 allowed.  If the command is more than one word, it must enclosed in
 quotes, so it will be treated as a single argument, as in the examples
@@ -88,8 +88,8 @@ can be spread across many lines, though it is still a single command:
      "minimize 0.001 0.001 1000 10000"
 
 Note that if one of the commands to execute is :doc:`quit <quit>` (of an
-invalid LIGGGHTS(R)-PUBLIC command such as "blah"), as in the first example above,
-then executing the command will cause LIGGGHTS(R)-PUBLIC to halt.
+invalid Packfall command such as "blah"), as in the first example above,
+then executing the command will cause Packfall to halt.
 
 Note that by jumping to a label in the same input script, the if
 command can be used to break out of a loop.  See the :doc:`variable delete <variable>` command for info on how to delete the associated

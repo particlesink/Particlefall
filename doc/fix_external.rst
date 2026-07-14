@@ -38,9 +38,9 @@ Examples
 Description
 """""""""""
 
-This fix allows external programs that are running LIGGGHTS(R)-PUBLIC through its
+This fix allows external programs that are running Packfall through its
 :ref:`library interface <howto_19>` to modify certain
-LIGGGHTS(R)-PUBLIC properties on specific timesteps, similar to the way other
+Packfall properties on specific timesteps, similar to the way other
 fixes do.  The external driver can be a :ref:`C/C++ or Fortran program <howto_19>` or a :doc:`Python script <Section_python>`.
 
 
@@ -65,7 +65,7 @@ The callback function "foo" is invoked by the fix as:
 The arguments are as follows:
 
 * ptr = pointer provided by and simply passed back to external driver
-* timestep = current LIGGGHTS(R)-PUBLIC timestep
+* timestep = current Packfall timestep
 * nlocal = # of atoms on this processor
 * ids = list of atom IDs on this processor
 * x = coordinates of atoms on this processor
@@ -78,7 +78,7 @@ Fexternal are the forces returned by the driver program.
 
 The fix has a set\_callback() method which the external driver can call
 to pass a pointer to its foo() function.  See the
-couple/lammps\_quest/lmpqst.cpp file in the LIGGGHTS(R)-PUBLIC distribution for an
+couple/lammps\_quest/lmpqst.cpp file in the Packfall distribution for an
 example of how this is done.  This sample application performs
 classical MD using quantum forces computed by a density functional
 code `Quest <quest_>`_.
@@ -110,8 +110,8 @@ fx, fy, fz components of force.
 It is up to the external program to set the values in this array to
 the desired quantities, as often as desired.  For example, the driver
 program might perform an MD run in stages of 1000 timesteps each.  In
-between calls to the LIGGGHTS(R)-PUBLIC :doc:`run <run>` command, it could retrieve
-atom coordinates from LIGGGHTS(R)-PUBLIC, compute forces, set values in fexternal,
+between calls to the Packfall :doc:`run <run>` command, it could retrieve
+atom coordinates from Packfall, compute forces, set values in fexternal,
 etc.
 
 

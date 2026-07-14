@@ -229,7 +229,7 @@ the right-hand rule) by an angle theta around a unit rotation vector
 (a,b,c), then the quaternion that represents its new orientation is
 given by (cos(theta/2), a\*sin(theta/2), b\*sin(theta/2),
 c\*sin(theta/2)).  The theta and a,b,c values are the arguments to the
-*quat* keyword.  LIGGGHTS(R)-PUBLIC normalizes the quaternion in case (a,b,c) was
+*quat* keyword.  Packfall normalizes the quaternion in case (a,b,c) was
 not specified as a unit vector.  For 2d systems, the a,b,c values are
 ignored, since a rotation vector of (0,0,1) is the only valid choice.
 
@@ -327,7 +327,7 @@ Keyword *image* sets which image of the simulation box the atom is
 considered to be in.  An image of 0 means it is inside the box as
 defined.  A value of 2 means add 2 box lengths to get the true value.
 A value of -1 means subtract 1 box length to get the true value.
-LIGGGHTS(R)-PUBLIC updates these flags as atoms cross periodic boundaries during
+Packfall updates these flags as atoms cross periodic boundaries during
 the simulation.  The flags can be output with atom snapshots via the
 :doc:`dump <dump>` command.  If a value of NULL is specified for any of
 nx,ny,nz, then the current image value for that dimension is
@@ -342,7 +342,7 @@ coefficient is about to be measured via the :doc:`compute msd <compute_msd>` com
 image flags of two atoms in a bond to the same value if the bond
 straddles a periodic boundary (rather they should be different by +/-
 1).  This will not affect the dynamics of a simulation, but may mess
-up analysis of the trajectories if a LIGGGHTS(R)-PUBLIC diagnostic or your own
+up analysis of the trajectories if a Packfall diagnostic or your own
 analysis relies on the image flags to unwrap a molecule which
 straddles the periodic box.
 

@@ -1,3 +1,5 @@
+:orphan:
+
 Commands
 ========
 
@@ -13,9 +15,9 @@ input script commands used to define a simulation.
 
 
 
-.. _cmd\_1:
+.. _cmd\_1_lammps:
 
-.. _comm:
+.. _comm_lammps:
 
 List of all commands
 --------------------------------------------

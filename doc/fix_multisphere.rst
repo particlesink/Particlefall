@@ -88,9 +88,9 @@ particle motion.
 Information about this fix is written to :doc:`binary restart files <restart>`.  This means you can restart a simulation
 using multisphere particles.
 
-:doc:`fix\_modify <fix_modify>` can be used to manipulate the fflag and tflag switches
- of multispheres. They can be initially defined in the 
+:doc:`fix\_modify <fix_modify>` can be used to manipulate the fflag and tflag switches of multispheres. They can be initially defined in the 
 :doc:`fix\_particletemplate\_multisphere <fix_particletemplate_multisphere>` command.
+
 The fix\_modify manipulates all multispheres, not only the initially defined f/tflags from the template.
 
 

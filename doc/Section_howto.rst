@@ -1,27 +1,20 @@
 How-to discussions
 ==================
 
-This section describes how to perform common tasks using LIGGGHTS(R)-PUBLIC.
+This section describes how to perform common tasks using Packfall.
 
 
 .. contents:: 
 		:local:
 		:depth: 1
    
-The example input scripts included in the LIGGGHTS(R)-PUBLIC distribution and
-highlighted in :doc:`Section\_example <Section_example>` also show how to
-setup and run various kinds of simulations.
-
-
-
-
 
 .. _howto\_1:
 
 Restarting a simulation
 -----------------------
 
-There are 3 ways to continue a long LIGGGHTS(R)-PUBLIC simulation.  Multiple
+There are 3 ways to continue a long Packfall simulation.  Multiple
 :doc:`run <run>` commands can be used in the same input script.  Each
 run will continue from where the previous run left off.  Or binary
 restart files can be saved to disk using the :doc:`restart <restart>`
@@ -54,7 +47,7 @@ Then, the "read\_data"read\_data.html command can be used to restart the
 simulation.
 
 :doc:`reset\_timestep <reset_timestep>` command can be used to tell
-LIGGGHTS(R)-PUBLIC the current timestep.
+Packfall the current timestep.
 
 
 ----------
@@ -91,12 +84,12 @@ defined fix to insure that the z-components of velocities and forces
 are zeroed out every timestep.  The reason to make it the last fix is
 so that any forces induced by other fixes will be zeroed out.
 
-Many of the example input scripts included in the LIGGGHTS(R)-PUBLIC distribution
+Many of the example input scripts included in the Packfall distribution
 are for 2d models.
 
 .. warning::
 
-   Some models in LIGGGHTS(R)-PUBLIC treat particles as finite-size
+   Some models in Packfall treat particles as finite-size
    spheres, as opposed to point particles.  In 2d, the particles will
    still be spheres, not disks, meaning their moment of inertia will be
    the same as in 3d.
@@ -134,7 +127,7 @@ would run 5 successive simulations of the same system for a total of
 
 If you wish to run totally different simulations, one after the other,
 the :doc:`clear <clear>` command can be used in between them to
-re-initialize LIGGGHTS(R)-PUBLIC.  For example, this script
+re-initialize Packfall.  For example, this script
 
 
 .. parsed-literal::
@@ -190,11 +183,11 @@ and storing the output in different log and dump files, for example
    jump in.polymer
 
 All of the above examples work whether you are running on 1 or
-multiple processors, but assumed you are running LIGGGHTS(R)-PUBLIC on a single
-partition of processors.  LIGGGHTS(R)-PUBLIC can be run on multiple partitions via
+multiple processors, but assumed you are running Packfall on a single
+partition of processors.  Packfall can be run on multiple partitions via
 the "-partition" command-line switch as described in :ref:`this section <start_7>` of the manual.
 
-In the last 2 examples, if LIGGGHTS(R)-PUBLIC were run on 3 partitions, the same
+In the last 2 examples, if Packfall were run on 3 partitions, the same
 scripts could be used if the "index" and "loop" variables were
 replaced with *universe*\ -style variables, as described in the
 :doc:`variable <variable>` command.  Also, the "next t" and "next a"
@@ -242,7 +235,6 @@ can be found here:
 These commands implement fix options specific to granular systems:
 
 * :doc:`fix freeze <fix_freeze>`
-* :doc:`fix pour <fix_pour>`
 * :doc:`fix viscous <fix_viscous>`
 * :doc:`fix wall/gran <fix_wall_gran>`
 
@@ -265,38 +257,38 @@ computations between frozen atoms by using this command:
 
 .. _howto\_5:
 
-Coupling LIGGGHTS(R)-PUBLIC to other codes
+Coupling Packfall to other codes
 ------------------------------------------
 
-LIGGGHTS(R)-PUBLIC is designed to allow it to be coupled to other codes.  For
+Packfall is designed to allow it to be coupled to other codes.  For
 example, a quantum mechanics code might compute forces on a subset of
-atoms and pass those forces to LIGGGHTS(R)-PUBLIC.  Or a continuum finite element
+atoms and pass those forces to Packfall.  Or a continuum finite element
 (FE) simulation might use atom positions as boundary conditions on FE
 nodal points, compute a FE solution, and return interpolated forces on
 MD atoms.
 
-LIGGGHTS(R)-PUBLIC can be coupled to other codes in at least 3 ways.  Each has
+Packfall can be coupled to other codes in at least 3 ways.  Each has
 advantages and disadvantages, which you'll have to think about in the
 context of your application.
 
 (1) Define a new :doc:`fix <fix>` command that calls the other code.  In
-this scenario, LIGGGHTS(R)-PUBLIC is the driver code.  During its timestepping,
+this scenario, Packfall is the driver code.  During its timestepping,
 the fix is invoked, and can make library calls to the other code,
-which has been linked to LIGGGHTS(R)-PUBLIC as a library.  This is the way the
+which has been linked to Packfall as a library.  This is the way the
 `POEMS <poems_>`_ package that performs constrained rigid-body motion on
-groups of atoms is hooked to LIGGGHTS(R)-PUBLIC.  See the
+groups of atoms is hooked to Packfall.  See the
 :doc:`fix\_poems <fix_poems>` command for more details.  See :doc:`this section <Section_modify>` of the documentation for info on how to add
-a new fix to LIGGGHTS(R)-PUBLIC.
+a new fix to Packfall.
 
 .. _poems: http://www.rpi.edu/~anderk5/lab
 
 
 
-(2) Define a new LIGGGHTS(R)-PUBLIC command that calls the other code.  This is
-conceptually similar to method (1), but in this case LIGGGHTS(R)-PUBLIC and the
+(2) Define a new Packfall command that calls the other code.  This is
+conceptually similar to method (1), but in this case Packfall and the
 other code are on a more equal footing.  Note that now the other code
-is not called during the timestepping of a LIGGGHTS(R)-PUBLIC run, but between
-runs.  The LIGGGHTS(R)-PUBLIC input script can be used to alternate LIGGGHTS(R)-PUBLIC runs
+is not called during the timestepping of a Packfall run, but between
+runs.  The Packfall input script can be used to alternate Packfall runs
 with calls to the other code, invoked via the new command.  The
 :doc:`run <run>` command facilitates this with its *every* option, which
 makes it easy to run a few steps, invoke the command, run a few steps,
@@ -306,28 +298,28 @@ In this scenario, the other code can be called as a library, as in
 (1), or it could be a stand-alone code, invoked by a system() call
 made by the command (assuming your parallel machine allows one or more
 processors to start up another program).  In the latter case the
-stand-alone code could communicate with LIGGGHTS(R)-PUBLIC thru files that the
+stand-alone code could communicate with Packfall thru files that the
 command writes and reads.
 
 See :doc:`Section\_modify <Section_modify>` of the documentation for how
-to add a new command to LIGGGHTS(R)-PUBLIC.
+to add a new command to Packfall.
 
-(3) Use LIGGGHTS(R)-PUBLIC as a library called by another code.  In this case the
-other code is the driver and calls LIGGGHTS(R)-PUBLIC as needed.  Or a wrapper
-code could link and call both LIGGGHTS(R)-PUBLIC and another code as libraries.
+(3) Use Packfall as a library called by another code.  In this case the
+other code is the driver and calls Packfall as needed.  Or a wrapper
+code could link and call both Packfall and another code as libraries.
 Again, the :doc:`run <run>` command has options that allow it to be
 invoked with minimal overhead (no setup or clean-up) if you wish to do
 multiple short runs, driven by another program.
 
-Examples of driver codes that call LIGGGHTS(R)-PUBLIC as a library are included in
-the examples/COUPLE directory of the LIGGGHTS(R)-PUBLIC distribution; see
+Examples of driver codes that call Packfall as a library are included in
+the examples/COUPLE directory of the Packfall distribution; see
 examples/COUPLE/README for more details:
 
-* simple: simple driver programs in C++ and C which invoke LIGGGHTS(R)-PUBLIC as a
+* simple: simple driver programs in C++ and C which invoke Packfall as a
   library
-* lammps\_quest: coupling of LIGGGHTS(R)-PUBLIC and `Quest <quest_>`_, to run classical
+* lammps\_quest: coupling of Packfall and `Quest <quest_>`_, to run classical
   MD with quantum forces calculated by a density functional code
-* lammps\_spparks: coupling of LIGGGHTS(R)-PUBLIC and `SPPARKS <spparks_>`_, to couple
+* lammps\_spparks: coupling of Packfall and `SPPARKS <spparks_>`_, to couple
   a kinetic Monte Carlo model for grain growth using MD to calculate
   strain induced across grain boundaries
 
@@ -340,32 +332,30 @@ examples/COUPLE/README for more details:
 
 
 :ref:`This section <start_5>` of the documentation
-describes how to build LIGGGHTS(R)-PUBLIC as a library.  Once this is done, you
-can interface with LIGGGHTS(R)-PUBLIC either via C++, C, Fortran, or Python (or
+describes how to build Packfall as a library.  Once this is done, you
+can interface with Packfall either via C++, C, Fortran, or Python (or
 any other language that supports a vanilla C-like interface).  For
 example, from C++ you could create one (or more) "instances" of
-LIGGGHTS(R)-PUBLIC, pass it an input script to process, or execute individual
-commands, all by invoking the correct class methods in LIGGGHTS(R)-PUBLIC.  From C
+Packfall, pass it an input script to process, or execute individual
+commands, all by invoking the correct class methods in Packfall.  From C
 or Fortran you can make function calls to do the same things.  See
 :doc:`Section\_python <Section_python>` of the manual for a description
-of the Python wrapper provided with LIGGGHTS(R)-PUBLIC that operates through the
-LIGGGHTS(R)-PUBLIC library interface.
+of the Python wrapper provided with Packfall that operates through the
+Packfall library interface.
 
 The files src/library.cpp and library.h contain the C-style interface
-to LIGGGHTS(R)-PUBLIC.  See :ref:`Section\_howto 19 <howto_19>` of the
-manual for a description of the interface and how to extend it for
-your needs.
+to Packfall.
 
 Note that the lammps\_open() function that creates an instance of
-LIGGGHTS(R)-PUBLIC takes an MPI communicator as an argument.  This means that
-instance of LIGGGHTS(R)-PUBLIC will run on the set of processors in the
-communicator.  Thus the calling code can run LIGGGHTS(R)-PUBLIC on all or a subset
+Packfall takes an MPI communicator as an argument.  This means that
+instance of Packfall will run on the set of processors in the
+communicator.  Thus the calling code can run Packfall on all or a subset
 of processors.  For example, a wrapper script might decide to
-alternate between LIGGGHTS(R)-PUBLIC and another code, allowing them both to run
+alternate between Packfall and another code, allowing them both to run
 on all the processors.  Or it might allocate half the processors to
-LIGGGHTS(R)-PUBLIC and half to the other code and run both codes simultaneously
+Packfall and half to the other code and run both codes simultaneously
 before syncing them up periodically.  Or it might instantiate multiple
-instances of LIGGGHTS(R)-PUBLIC to perform different calculations.
+instances of Packfall to perform different calculations.
 
 
 ----------
@@ -373,17 +363,17 @@ instances of LIGGGHTS(R)-PUBLIC to perform different calculations.
 
 .. _howto\_6:
 
-Visualizing LIGGGHTS(R)-PUBLIC snapshots
+Visualizing Packfall snapshots
 ----------------------------------------
 
-LIGGGHTS(R)-PUBLIC itself does not do visualization, but snapshots from LIGGGHTS(R)-PUBLIC
+Packfall itself does not do visualization, but snapshots from Packfall
 simulations can be visualized (and analyzed) in a variety of ways.
 
-LIGGGHTS(R)-PUBLIC snapshots are created by the :doc:`dump <dump>` command which can
-create files in several formats.  The native LIGGGHTS(R)-PUBLIC dump format is a
+Packfall snapshots are created by the :doc:`dump <dump>` command which can
+create files in several formats.  The native Packfall dump format is a
 text file (see "dump atom" or "dump custom").
 
-A Python-based toolkit (LPP) distributed by our group can read native LIGGGHTS(R)-PUBLIC
+A Python-based toolkit (LPP) distributed by our group can read native Packfall
 dump files, including custom dump files with additional columns of
 user-specified atom information, and convert them to VTK file formats
 that can be read with Paraview.
@@ -400,7 +390,7 @@ VTK natively.
 Triclinic (non-orthogonal) simulation boxes
 -------------------------------------------
 
-By default, LIGGGHTS(R)-PUBLIC uses an orthogonal simulation box to encompass the
+By default, Packfall uses an orthogonal simulation box to encompass the
 particles.  The :doc:`boundary <boundary>` command sets the boundary
 conditions of the box (periodic, non-periodic, etc).  The orthogonal
 box has its "origin" at (xlo,ylo,zlo) and is defined by 3 edge vectors
@@ -409,11 +399,11 @@ starting from the origin given by **a** = (xhi-xlo,0,0); **b** =
 (xlo,xhi,ylo,yhi,zlo,zhi) are defined at the time the simulation box
 is created, e.g. by the :doc:`create\_box <create_box>` or
 :doc:`read\_data <read_data>` or :doc:`read\_restart <read_restart>`
-commands.  Additionally, LIGGGHTS(R)-PUBLIC defines box size parameters lx,ly,lz
+commands.  Additionally, Packfall defines box size parameters lx,ly,lz
 where lx = xhi-xlo, and similarly in the y and z dimensions.  The 6
 parameters, as well as lx,ly,lz, can be output via the :doc:`thermo\_style custom <thermo_style>` command.
 
-LIGGGHTS(R)-PUBLIC also allows simulations to be performed in triclinic
+Packfall also allows simulations to be performed in triclinic
 (non-orthogonal) simulation boxes shaped as a parallelepiped with
 triclinic symmetry.  The parallelepiped has its "origin" at
 (xlo,ylo,zlo) and is defined by 3 edge vectors starting from the
@@ -421,7 +411,7 @@ origin given by **a** = (xhi-xlo,0,0); **b** = (xy,yhi-ylo,0); **c** =
 (xz,yz,zhi-zlo).  *xy,xz,yz* can be 0.0 or positive or negative values
 and are called "tilt factors" because they are the amount of
 displacement applied to faces of an originally orthogonal box to
-transform it into the parallelepiped.  In LIGGGHTS(R)-PUBLIC the triclinic
+transform it into the parallelepiped.  In Packfall the triclinic
 simulation box edge vectors **a**\ , **b**\ , and **c** cannot be arbitrary
 vectors.  As indicated, **a** must lie on the positive x axis.  **b** must
 lie in the xy plane, with strictly positive y component. **c** may have
@@ -435,7 +425,7 @@ vectors so that they conform to the restrictions.
 For example, assume that the 3 vectors **A**\ ,\ **B**\ ,\ **C** are the edge
 vectors of a general parallelepiped, where there is no restriction on
 **A**\ ,\ **B**\ ,\ **C** other than they form a complete right-handed basis i.e.
-**A** x **B** . **C** > 0.  The equivalent LIGGGHTS(R)-PUBLIC **a**\ ,\ **b**\ ,\ **c** are a linear
+**A** x **B** . **C** > 0.  The equivalent Packfall **a**\ ,\ **b**\ ,\ **c** are a linear
 rotation of **A**\ , **B**\ , and **C** and can be computed as follows:
 
 .. image:: Eqs/transform.jpg
@@ -463,7 +453,7 @@ The transformation is given by the following equation:
    :align: center
 
 where *V* is the volume of the box, **X** is the original vector quantity and
-**x** is the vector in the LIGGGHTS(R)-PUBLIC basis.
+**x** is the vector in the Packfall basis.
 
 There is no requirement that a triclinic box be periodic in any
 dimension, though it typically should be in at least the 2nd dimension
@@ -493,13 +483,13 @@ will become non-orthogonal, e.g. due to the :doc:`fix npt <fix_nh>` or
 :doc:`change\_box <change_box>` command to convert a simulation box from
 orthogonal to triclinic and vice versa.
 
-As with orthogonal boxes, LIGGGHTS(R)-PUBLIC defines triclinic box size parameters
+As with orthogonal boxes, Packfall defines triclinic box size parameters
 lx,ly,lz where lx = xhi-xlo, and similarly in the y and z dimensions.
 The 9 parameters, as well as lx,ly,lz, can be output via the
 :doc:`thermo\_style custom <thermo_style>` command.
 
 To avoid extremely tilted boxes (which would be computationally
-inefficient), LIGGGHTS(R)-PUBLIC normally requires that no tilt factor can skew
+inefficient), Packfall normally requires that no tilt factor can skew
 the box more than half the distance of the parallel box length, which
 is the 1st dimension in the tilt factor (x for xz).  This is required
 both when the simulation box is created, e.g. via the
@@ -529,10 +519,10 @@ skewing the box more than half the distance of the parallel box length
 can be overridden via the :doc:`box <box>` command.  Setting the *tilt*
 keyword to *large* allows any tilt factors to be specified.
 
-Note that if a simulation box has a large tilt factor, LIGGGHTS(R)-PUBLIC will run
+Note that if a simulation box has a large tilt factor, Packfall will run
 less efficiently, due to the large volume of communication needed to
 acquire ghost atoms around a processor's irregular-shaped sub-domain.
-For extreme values of tilt, LIGGGHTS(R)-PUBLIC may also lose atoms and generate an
+For extreme values of tilt, Packfall may also lose atoms and generate an
 error.
 
 Triclinic crystal structures are often defined using three lattice
@@ -540,7 +530,7 @@ constants *a*\ , *b*\ , and *c*\ , and three angles *alpha*\ , *beta* and
 *gamma*\ . Note that in this nomenclature, the a, b, and c lattice
 constants are the scalar lengths of the edge vectors **a**\ , **b**\ , and **c**
 defined above.  The relationship between these 6 quantities
-(a,b,c,alpha,beta,gamma) and the LIGGGHTS(R)-PUBLIC box sizes (lx,ly,lz) =
+(a,b,c,alpha,beta,gamma) and the Packfall box sizes (lx,ly,lz) =
 (xhi-xlo,yhi-ylo,zhi-zlo) and tilt factors (xy,xz,yz) is as follows:
 
 .. image:: Eqs/box.jpg
@@ -595,10 +585,10 @@ MIN(0.0,xy,xz,xy+xz).
 
 .. _howto\_8:
 
-Output from LIGGGHTS(R)-PUBLIC (thermo, dumps, computes, fixes, variables)
+Output from Packfall (thermo, dumps, computes, fixes, variables)
 --------------------------------------------------------------------------
 
-There are four basic kinds of LIGGGHTS(R)-PUBLIC output:
+There are four basic kinds of Packfall output:
 
 * :doc:`Thermodynamic output <thermo_style>`, which is a list
   of quantities printed every few timesteps to the screen and logfile.
@@ -614,22 +604,22 @@ restart files.  It can generate any number of dump files and fix
 output files, depending on what :doc:`dump <dump>` and :doc:`fix <fix>`
 commands you specify.
 
-As discussed below, LIGGGHTS(R)-PUBLIC gives you a variety of ways to determine
+As discussed below, Packfall gives you a variety of ways to determine
 what quantities are computed and printed when the thermodynamics,
 dump, or fix commands listed above perform output.  Throughout this
-discussion, note that users can also :doc:`add their own computes and fixes to LIGGGHTS(R)-PUBLIC <Section_modify>` which can then generate values that can
+discussion, note that users can also :doc:`add their own computes and fixes to Packfall <Section_modify>` which can then generate values that can
 then be output with these commands.
 
-The following sub-sections discuss different LIGGGHTS(R)-PUBLIC command related
+The following sub-sections discuss different Packfall command related
 to output and the kind of data they operate on and produce:
 
 * :ref:`Global/per-atom/local data <global>`
 * :ref:`Scalar/vector/array data <scalar>`
 * :ref:`Thermodynamic output <thermo>`
 * :ref:`Dump file output <dump>`
-* :ref:`Fixes that write output files <fixoutput>`
+* :ref:`Fixes that write output files <fixoutput1>`
 * :ref:`Computes that process output quantities <computeoutput>`
-* :ref:`Fixes that process output quantities <fixoutput>`
+* :ref:`Fixes that process output quantities <fixoutput2>`
 * :ref:`Computes that generate values to output <compute>`
 * :ref:`Fixes that generate values to output <fix>`
 * :ref:`Variables that generate values to output <variable>`
@@ -732,7 +722,7 @@ provides the values to be output.  In each case, the compute or fix
 must generate local values for input to the :doc:`dump local <dump>`
 command.
 
-.. _fixoutput:
+.. _fixoutput1:
 
 Fixes that write output files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -819,7 +809,7 @@ variable) and sums the quantities on a per-molecule basis.  It
 produces a global vector or array as output values which can be used
 as input to other output commands.
 
-.. _fixoutput:
+.. _fixoutput2:
 
 Fixes that process output quantities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -845,7 +835,7 @@ The output of this fix can be used as input to other output commands.
 Computes that generate values to output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Every :doc:`compute <compute>` in LIGGGHTS(R)-PUBLIC produces either global or
+Every :doc:`compute <compute>` in Packfall produces either global or
 per-atom or local values.  The values can be scalars or vectors or
 arrays of data.  These values can be output using the other commands
 described in this section.  The doc page for each compute command
@@ -858,7 +848,7 @@ without the word "atom" or "local" produce global values.
 Fixes that generate values to output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Some :doc:`fixes <fix>` in LIGGGHTS(R)-PUBLIC produces either global or per-atom or
+Some :doc:`fixes <fix>` in Packfall produces either global or per-atom or
 local values which can be accessed by other commands.  The values can
 be scalars or vectors or arrays of data.  These values can be output
 using the other commands described in this section.  The doc page for
@@ -884,7 +874,7 @@ Summary table of output options and data flow between commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This table summarizes the various commands that can be used for
-generating output from LIGGGHTS(R)-PUBLIC.  Each command produces output data of
+generating output from Packfall.  Each command produces output data of
 some kind and/or writes data to a file.  Most of the commands can take
 data from other commands as input.  Thus you can link many of these
 commands together in pipeline form, where data produced by one command
@@ -953,7 +943,7 @@ Walls
 Walls are typically used to bound particle motion,
 i.e. to serve as a boundary condition.
 
-Walls in LIGGGHTS(R)-PUBLIC for granular simulations are
+Walls in Packfall for granular simulations are
 typically defined using :doc:`fix wall/gran <fix_wall_gran>`.
 This command can define two types of
 walls: primitive and mesh. Mesh walls are defined using a
@@ -1012,21 +1002,21 @@ rotate.
 
 .. _howto\_10:
 
-Library interface to LIGGGHTS(R)-PUBLIC
+Library interface to Packfall
 ---------------------------------------
 
-As described in :ref:`Section\_start 5 <start_5>`, LIGGGHTS(R)-PUBLIC
+As described in :ref:`Section\_start 5 <start_5>`, Packfall
 can be built as a library, so that it can be called by another code,
 used in a :ref:`coupled manner <howto_10>` with other
 codes, or driven through a :doc:`Python interface <Section_python>`.
 
-All of these methodologies use a C-style interface to LIGGGHTS(R)-PUBLIC that is
+All of these methodologies use a C-style interface to Packfall that is
 provided in the files src/library.cpp and src/library.h.  The
 functions therein have a C-style argument list, but contain C++ code
-you could write yourself in a C++ application that was invoking LIGGGHTS(R)-PUBLIC
+you could write yourself in a C++ application that was invoking Packfall
 directly.  The C++ code in the functions illustrates how to invoke
-internal LIGGGHTS(R)-PUBLIC operations.  Note that LIGGGHTS(R)-PUBLIC classes are defined
-within a LIGGGHTS(R)-PUBLIC namespace (LAMMPS\_NS) if you use them from another C++
+internal Packfall operations.  Note that Packfall classes are defined
+within a Packfall namespace (LAMMPS\_NS) if you use them from another C++
 application.
 
 Library.cpp contains these 4 functions:
@@ -1039,33 +1029,33 @@ Library.cpp contains these 4 functions:
    void lammps_file(void \*, char \*);
    char \*lammps_command(void \*, char \*);
 
-The lammps\_open() function is used to initialize LIGGGHTS(R)-PUBLIC, passing in a
-list of strings as if they were :ref:`command-line arguments <start_7>` when LIGGGHTS(R)-PUBLIC is run in
+The lammps\_open() function is used to initialize Packfall, passing in a
+list of strings as if they were :ref:`command-line arguments <start_7>` when Packfall is run in
 stand-alone mode from the command line, and a MPI communicator for
-LIGGGHTS(R)-PUBLIC to run under.  It returns a ptr to the LIGGGHTS(R)-PUBLIC object that is
+Packfall to run under.  It returns a ptr to the Packfall object that is
 created, and which is used in subsequent library calls.  The
 lammps\_open() function can be called multiple times, to create
-multiple instances of LIGGGHTS(R)-PUBLIC.
+multiple instances of Packfall.
 
-LIGGGHTS(R)-PUBLIC will run on the set of processors in the communicator.  This
-means the calling code can run LIGGGHTS(R)-PUBLIC on all or a subset of
+Packfall will run on the set of processors in the communicator.  This
+means the calling code can run Packfall on all or a subset of
 processors.  For example, a wrapper script might decide to alternate
-between LIGGGHTS(R)-PUBLIC and another code, allowing them both to run on all the
-processors.  Or it might allocate half the processors to LIGGGHTS(R)-PUBLIC and
+between Packfall and another code, allowing them both to run on all the
+processors.  Or it might allocate half the processors to Packfall and
 half to the other code and run both codes simultaneously before
 syncing them up periodically.  Or it might instantiate multiple
-instances of LIGGGHTS(R)-PUBLIC to perform different calculations.
+instances of Packfall to perform different calculations.
 
-The lammps\_close() function is used to shut down an instance of LIGGGHTS(R)-PUBLIC
+The lammps\_close() function is used to shut down an instance of Packfall
 and free all its memory.
 
 The lammps\_file() and lammps\_command() functions are used to pass a
-file or string to LIGGGHTS(R)-PUBLIC as if it were an input script or single
+file or string to Packfall as if it were an input script or single
 command in an input script.  Thus the calling code can read or
-generate a series of LIGGGHTS(R)-PUBLIC commands one line at a time and pass it
+generate a series of Packfall commands one line at a time and pass it
 thru the library interface to setup a problem and then run it,
 interleaving the lammps\_command() calls with other calls to extract
-information from LIGGGHTS(R)-PUBLIC, perform its own operations, or call another
+information from Packfall, perform its own operations, or call another
 code's library.
 
 Other useful functions are also included in library.cpp.  For example:
@@ -1082,20 +1072,20 @@ Other useful functions are also included in library.cpp.  For example:
    void lammps_get_coords(void \*, double \*)
    void lammps_put_coords(void \*, double \*)
 
-These can extract various global or per-atom quantities from LIGGGHTS(R)-PUBLIC as
+These can extract various global or per-atom quantities from Packfall as
 well as values calculated by a compute, fix, or variable.  The "get"
 and "put" operations can retrieve and reset atom coordinates.
 See the library.cpp file and its associated header file library.h for
 details.
 
 The key idea of the library interface is that you can write any
-functions you wish to define how your code talks to LIGGGHTS(R)-PUBLIC and add
+functions you wish to define how your code talks to Packfall and add
 them to src/library.cpp and src/library.h, as well as to the :doc:`Python interface <Section_python>`.  The routines you add can access or
-change any LIGGGHTS(R)-PUBLIC data you wish.  The examples/COUPLE and python
+change any Packfall data you wish.  The examples/COUPLE and python
 directories have example C++ and C and Python codes which show how a
-driver code can link to LIGGGHTS(R)-PUBLIC as a library, run LIGGGHTS(R)-PUBLIC on a subset of
-processors, grab data from LIGGGHTS(R)-PUBLIC, change it, and put it back into
-LIGGGHTS(R)-PUBLIC.
+driver code can link to Packfall as a library, run Packfall on a subset of
+processors, grab data from Packfall, change it, and put it back into
+Packfall.
 
 
 

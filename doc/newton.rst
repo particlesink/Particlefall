@@ -43,7 +43,7 @@ that if a bond, angle, dihedral, or improper interaction contains
 atoms on 2 or more processors, the interaction is computed by each
 processor.
 
-LIGGGHTS(R)-PUBLIC should produce the same answers for any newton flag settings,
+Packfall should produce the same answers for any newton flag settings,
 except for round-off issues.
 
 With :doc:`run\_style <run_style>` *respa* and only bonded interactions

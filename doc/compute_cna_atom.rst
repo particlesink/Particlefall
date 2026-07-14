@@ -33,7 +33,7 @@ the CNA pattern is a useful measure of the local crystal structure
 around an atom.  The CNA methodology is described in :ref:`(Faken) <Faken>`
 and :ref:`(Tsuzuki) <Tsuzuki>`.
 
-Currently, there are five kinds of CNA patterns LIGGGHTS(R)-PUBLIC recognizes:
+Currently, there are five kinds of CNA patterns Packfall recognizes:
 
 * fcc = 1
 * hcp = 2
@@ -59,7 +59,7 @@ where a is the lattice constant for the crystal structure concerned
 and in the HCP case, x = (c/a) / 1.633, where 1.633 is the ideal c/a
 for HCP crystals.
 
-Also note that since the CNA calculation in LIGGGHTS(R)-PUBLIC uses the neighbors
+Also note that since the CNA calculation in Packfall uses the neighbors
 of an owned atom to find the nearest neighbors of a ghost atom, the
 following relation should also be satisfied:
 
@@ -68,7 +68,7 @@ following relation should also be satisfied:
 
 where Rc is the cutoff distance of the potential, Rs is the skin
 distance as specified by the :doc:`neighbor <neighbor>` command, and
-cutoff is the argument used with the compute cna/atom command.  LIGGGHTS(R)-PUBLIC
+cutoff is the argument used with the compute cna/atom command.  Packfall
 will issue a warning if this is not the case.
 
 The neighbor list needed to compute this quantity is constructed each
@@ -82,7 +82,7 @@ too frequently or to have multiple compute/dump commands, each with a
 This compute calculates a per-atom vector, which can be accessed by
 any command that uses per-atom values from a compute as input.  See
 :ref:`Section\_howto 15 <howto_8>` for an overview of
-LIGGGHTS(R)-PUBLIC output options.
+Packfall output options.
 
 The per-atom vector values will be a number from 0 to 5, as explained
 above.

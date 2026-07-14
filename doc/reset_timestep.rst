@@ -45,7 +45,7 @@ All insertion commands are typically using such operations.
 
 Various fixes use the current timestep to calculate related
 quantities.  If the timestep is reset, this may produce unexpected
-behavior, but LIGGGHTS(R)-PUBLIC allows the fixes to be defined even if the
+behavior, but Packfall allows the fixes to be defined even if the
 timestep is reset.
 
 Resetting the timestep clears flags for :doc:`computes <compute>` that

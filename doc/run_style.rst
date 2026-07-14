@@ -55,7 +55,7 @@ Description
 """""""""""
 
 Choose the style of time integrator used for molecular dynamics
-simulations performed by LIGGGHTS(R)-PUBLIC.
+simulations performed by Packfall.
 
 The *verlet* style is a standard velocity-Verlet integrator.
 
@@ -75,7 +75,7 @@ parameters must be specified.
 The :doc:`timestep <timestep>` command sets the timestep for the
 outermost rRESPA level.  Thus if the example command above for a
 4-level rRESPA had an outer timestep of 4.0 fmsec, the inner timestep
-would be 8x smaller or 0.5 fmsec.  All other LIGGGHTS(R)-PUBLIC commands that
+would be 8x smaller or 0.5 fmsec.  All other Packfall commands that
 specify number of timesteps (e.g. :doc:`neigh\_modify <neigh_modify>`
 parameters, :doc:`dump <dump>` every N timesteps, etc) refer to the
 outermost timesteps.

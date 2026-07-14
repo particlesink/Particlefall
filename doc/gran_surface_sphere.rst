@@ -14,7 +14,7 @@ Description
 
 This is the default surface model for a particle, it 
 prepresents a smooth (non-rough) sphere.
-It is the default surface model for all LIGGGHTS(R)-PUBLIC
+It is the default surface model for all Packfall
 simulations. In case of a multi-sphere simulation,
 this surface model is applied to all spheres within
 one rigid body.
@@ -28,7 +28,7 @@ statistically equivalent dynamics and system state.
 .. note::
 
    :doc:`Coarsegraining <coarsegraining>` may or 
-   may not be available in LIGGGHTS(R)-PUBLIC.
+   may not be available in Packfall.
 
 Restrictions
 """"""""""""

@@ -103,7 +103,7 @@ superquadrics, initial orientation is controlled by the insertion fix, e.g.
 ``orientation random``, ``orientation template``, or
 ``orientation constant q1 q2 q3 q4``.
 
-LIGGGHTS(R)-PUBLIC will throw an error if the particle volume is too small compared to machine precision.
+Packfall will throw an error if the particle volume is too small compared to machine precision.
 If you are sure you know what you are doing you can override the default limit of 1e-12.
 
 This model is used in the framework of SUPERQUADRIC simulations. For more information see also the :doc:`SUPERQUADRIC guide <superquadric_simulations>`.

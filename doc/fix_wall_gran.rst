@@ -84,7 +84,7 @@ All particles in the group interact with the wall when they are close enough
 to touch it. The equation for the force between the wall and particles
 touching it is the same as the corresponding equation on the
 :doc:`pair\_style granular <pair_gran>` doc page, in the limit of one of the
- two particles going to infinite radius and mass (flat wall).
+two particles going to infinite radius and mass (flat wall).
 
 You must choose the models matching the pair style used, otherwise
 an error is created. As with :doc:`pair\_style granular <pair_gran>`, you have
@@ -152,7 +152,7 @@ is the id of the fix wall/gran command.
 between particle and wall. In general this keyword will be set automatically if a 
 :doc:`continuum/weighted <fix_continuum_weighted>` fix is used. It needs to be set 
 explicitly only if a new wall is created after the such a fix is specified.
-This functionality may not be available in your version of LIGGGHTS.
+This functionality may not be available in your version of Packfall.
 
 The effect of keyword *rolling\_friction*, *cohesion*\ , *tangential\_damping*,
 *viscous* and *absolute\_damping* is explanted in :doc:`pair gran <pair_gran>`

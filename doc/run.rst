@@ -24,7 +24,7 @@ run N keyword values ...
        *post* value = *no* or *yes*
        *every* values = M c1 c2 ...
          M = break the run into M-timestep segments and invoke one or more commands between each segment
-         c1,c2,...,cN = one or more LIGGGHTS(R)-PUBLIC commands, each enclosed in quotes
+         c1,c2,...,cN = one or more Packfall commands, each enclosed in quotes
          c1 = NULL means no command will be invoked
 
 
@@ -92,17 +92,17 @@ keywords.
 The *pre* and *post* keywords can be used to streamline the setup,
 clean-up, and associated output to the screen that happens before and
 after a run.  This can be useful if you wish to do many short runs in
-succession (e.g. LIGGGHTS(R)-PUBLIC is being called as a library which is doing
-other computations between successive short LIGGGHTS(R)-PUBLIC runs).
+succession (e.g. Packfall is being called as a library which is doing
+other computations between successive short Packfall runs).
 
-By default (pre and post = yes), LIGGGHTS(R)-PUBLIC creates neighbor lists,
+By default (pre and post = yes), Packfall creates neighbor lists,
 computes forces, and imposes fix constraints before every run.  And
 after every run it gathers and prints timings statistics.  If a run is
 just a continuation of a previous run (i.e. no settings are changed),
 the initial computation is not necessary; the old neighbor list is
 still valid as are the forces.  So if *pre* is specified as "no" then
 the initial setup is skipped, except for printing thermodynamic info.
-Note that if *pre* is set to "no" for the very 1st run LIGGGHTS(R)-PUBLIC
+Note that if *pre* is set to "no" for the very 1st run Packfall
 performs, then it is overridden, since the initial setup computations
 must be done.
 
@@ -111,19 +111,19 @@ must be done.
    If your input script changes settings between 2 runs
    (e.g. adds a :doc:`fix <fix>` or :doc:`dump <dump>` or
    :doc:`compute <compute>` or changes a :doc:`neighbor <neigh_modify>` list
-   parameter), then the initial setup must be performed.  LIGGGHTS(R)-PUBLIC does not
+   parameter), then the initial setup must be performed.  Packfall does not
    check for this, but it would be an error to use the *pre no* option in
    this case.
 
 If *post* is specified as "no", the full timing summary is skipped;
 only a one-line summary timing is printed.
 
-The *every* keyword provides a means of breaking a LIGGGHTS(R)-PUBLIC run into a
-series of shorter runs.  Optionally, one or more LIGGGHTS(R)-PUBLIC commands (c1,
+The *every* keyword provides a means of breaking a Packfall run into a
+series of shorter runs.  Optionally, one or more Packfall commands (c1,
 c2, ..., cN) will be executed in between the short runs.  If used, the
 *every* keyword must be the last keyword, since it has a variable
 number of arguments.  Each of the trailing arguments is a single
-LIGGGHTS(R)-PUBLIC command, and each command should be enclosed in quotes, so that
+Packfall command, and each command should be enclosed in quotes, so that
 the entire command will be treated as a single argument.  This will
 also prevent any variables in the command from being evaluated until
 it is executed multiple times during the run.  Note that if a command
@@ -135,11 +135,11 @@ The *every* keyword is a means to avoid listing a long series of runs
 and interleaving commands in your input script.  For example, a
 :doc:`print <print>` command could be invoked or a :doc:`fix <fix>` could
 be redefined, e.g. to reset a thermostat temperature.  Or this could
-be useful for invoking a command you have added to LIGGGHTS(R)-PUBLIC that wraps
+be useful for invoking a command you have added to Packfall that wraps
 some other code (e.g. as a library) to perform a computation
-periodically during a long LIGGGHTS(R)-PUBLIC run.  See :doc:`this section <Section_modify>` of the documentation for info about how
-to add new commands to LIGGGHTS(R)-PUBLIC.  See :ref:`this section <howto_10>` of the documentation for ideas
-about how to couple LIGGGHTS(R)-PUBLIC to other codes.
+periodically during a long Packfall run.  See :doc:`this section <Section_modify>` of the documentation for info about how
+to add new commands to Packfall.  See :ref:`this section <howto_10>` of the documentation for ideas
+about how to couple Packfall to other codes.
 
 With the *every* option, N total steps are simulated, in shorter runs
 of M steps each.  After each M-length run, the specified commands are
@@ -201,7 +201,7 @@ skipped for intermediate runs.
 Unfortunately this will not currently work.  The run command simply
 executes each command one at a time each time it pauses, then
 continues the run.  You can replace the jump command with a simple
-:doc:`quit <quit>` command and cause LIGGGHTS(R)-PUBLIC to exit during the
+:doc:`quit <quit>` command and cause Packfall to exit during the
 middle of a run when the condition is met.
 
 Restrictions

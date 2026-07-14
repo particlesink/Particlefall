@@ -99,16 +99,16 @@ and 1.0.  A uniform random number between 0.0 and 1.0 is generated and
 the eligible bond is only created if the random number < fraction.
 
 Any bond that is created is assigned a bond type of *bondtype*\ .  Data
-structures within LIGGGHTS(R)-PUBLIC that store bond topology are updated to
+structures within Packfall that store bond topology are updated to
 reflect the new bond.  This can also affect subsequent computation of
 pairwise interactions involving the atoms in the bond.  See the
 Restriction section below for additional information.
 
 .. warning::
 
-   To create a new bond, the internal LIGGGHTS(R)-PUBLIC data
+   To create a new bond, the internal Packfall data
    structures that store this information must have space for it.  When
-   LIGGGHTS(R)-PUBLIC is initialized from a data file, the list of bonds is scanned
+   Packfall is initialized from a data file, the list of bonds is scanned
    and the maximum number of bonds per atom is tallied.  If some atom
    will acquire more bonds than this limit as this fix operates, then the
    "extra bonds per atom" parameter in the data file header must be set
@@ -121,7 +121,7 @@ Restriction section below for additional information.
 
 .. warning::
 
-   LIGGGHTS(R)-PUBLIC also maintains a data structure that stores a
+   Packfall also maintains a data structure that stores a
    list of 1st, 2nd, and 3rd neighbors of each atom (in the bond topology
    of the system) for use in weighting pairwise interactions for bonded
    atoms.  Adding a bond adds a single entry to this list.  The "extra"
@@ -183,15 +183,15 @@ Restrictions
 """"""""""""
 
 
-This fix is part of the MC package.  It is only enabled if LIGGGHTS(R)-PUBLIC was
-built with that package.  See the :ref:`Making LIGGGHTS(R)-PUBLIC <start_3>` section for more info.
+This fix is part of the MC package.  It is only enabled if Packfall was
+built with that package.  See the :ref:`Making Packfall <start_3>` section for more info.
 
 Currently, there are 2 restrictions for using this fix.  We may relax
 these in the future if there are new models that would be enabled by
 it.
 
 When a bond is created, you might wish to induce new angle and
-dihedral interactions that include that bond.  However, LIGGGHTS(R)-PUBLIC does
+dihedral interactions that include that bond.  However, Packfall does
 not create these angles and dihedrals, even if your simulation defines
 an :doc:`angle\_style <angle_style>` or
 :doc:`dihedral\_style <dihedral_style>`.

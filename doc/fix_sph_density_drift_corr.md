@@ -1,6 +1,3 @@
-[LIGGGHTS(R)-TUG WWW Site](http://www.cfdem.com),
-[LIGGGHTS(R)-TUG Commands](Section_commands.html#comm)
-
 fix sph/density/drift/corr command
 ===============
 * * *
@@ -31,11 +28,6 @@ Examples
 ```
 fix driftcorr all sph/density/drift/corr density 1000 coeff 10 after 5000
 ```
-
-* * *
-LIGGGHTS(R)-TUG vs. LIGGGHTS(R)-TUG Info
----------------------
-This command is not available in LIGGGHTS(R)-TUG.
 
 * * *
 Description

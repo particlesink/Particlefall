@@ -1,6 +1,3 @@
-[LIGGGHTS(R)-TUG WWW Site](http://www.cfdem.com),
-[LIGGGHTS(R)-TUG Commands](Section_commands.html#comm)
-
 fix wall/sph/general/gap  command
 ===============
 * * *
@@ -54,11 +51,6 @@ fix sphMeshWall1 all wall/sph/general/gap mesh n_meshes 1 meshes cad1 r0 0.0005 
 fix sphMeshWall2 all wall/sph/general/gap mesh n_meshes 2 meshes cad2a cad2b r0 0.0005 D 0.1 gap 0
 fix sphMeshWall3 all wall/sph/general/gap mesh n_meshes 1 meshes cad3 r0 0.0005 D 0.1 gap 0.0006
 ```
-
-* * *
-LIGGGHTS(R)-TUG vs. LIGGGHTS(R)-TUG Info
----------------------
-This command is not available in LIGGGHTS(R)-TUG.
 
 * * *
 Description

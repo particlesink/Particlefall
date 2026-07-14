@@ -29,7 +29,7 @@ Description
 """""""""""
 
 Print out information about the current internal state of the running
-LIGGGHTS(R)-PUBLIC process. This can be helpful when debugging or validating
+Packfall process. This can be helpful when debugging or validating
 complex input scripts.  Several output categories are available and
 one or more output category may be requested.
 
@@ -74,7 +74,7 @@ available.
 The *time* category prints the accumulated CPU and wall time for the
 process that writes output (usually MPI rank 0).
 
-The *configuration* command prints some information about the LIGGGHTS(R)-PUBLIC
+The *configuration* command prints some information about the Packfall
 version and architection and OS it is run on. Where supported, also
 information about the memory consumption provided by the OS is
 reported.

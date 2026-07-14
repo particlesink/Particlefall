@@ -37,7 +37,7 @@ Examples
 
    fix 3 hg heat/gran/conduction initial_temperature 273.15
 
-**LIGGGHTS(R)-PUBLIC vs. LAMMPS info:**
+**Packfall vs. LAMMPS info:**
 
 This command is not available in LAMMPS.
 
@@ -125,7 +125,7 @@ statistically equivalent dynamics and system state.
 .. note::
 
    :doc:`Coarsegraining <coarsegraining>` may or 
-   may not be available in LIGGGHTS(R)-PUBLIC.
+   may not be available in Packfall.
 
 **Output info:**
 

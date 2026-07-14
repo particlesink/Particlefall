@@ -25,8 +25,8 @@ Description
 """""""""""
 
 This command deletes all atoms, restores all settings to their default
-values, and frees all memory allocated by LIGGGHTS(R)-PUBLIC.  Once a clear
-command has been executed, it is as if LIGGGHTS(R)-PUBLIC were starting over, with
+values, and frees all memory allocated by Packfall.  Once a clear
+command has been executed, it is as if Packfall were starting over, with
 only the exceptions noted below.  This command enables multiple jobs
 to be run sequentially from one input script.
 

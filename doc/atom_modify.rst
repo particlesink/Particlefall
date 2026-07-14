@@ -54,7 +54,7 @@ processors running the simulation.
 The *first* keyword allows a :doc:`group <group>` to be specified whose
 atoms will be maintained as the first atoms in each processor's list
 of owned atoms.  This in only useful when the specified group is a
-small fraction of all the atoms, and there are other operations LIGGGHTS(R)-PUBLIC
+small fraction of all the atoms, and there are other operations Packfall
 is performing that will be sped-up significantly by being able to loop
 over the smaller set of atoms.  Otherwise the reordering required by
 this option will be a net slow-down.  The :doc:`neigh\_modify include <neigh_modify>` and :doc:`communicate group <communicate>`

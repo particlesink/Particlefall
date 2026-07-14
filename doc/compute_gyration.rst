@@ -60,7 +60,7 @@ the vector are ordered xx, yy, zz, xy, xz, yz.
 This compute calculates a global scalar (Rg) and a global vector of
 length 6 (Rg tensor), which can be accessed by indices 1-6.  These
 values can be used by any command that uses a global scalar value or
-vector values from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of LIGGGHTS(R)-PUBLIC output
+vector values from a compute as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of Packfall output
 options.
 
 The scalar and vector values calculated by this compute are

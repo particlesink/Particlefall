@@ -175,7 +175,7 @@ For orthogonal simulation boxes, the bins are also layers, pencils, or
 boxes aligned with the xyz coordinate axes.  For triclinic
 (non-orthogonal) simulation boxes, the bins are so that they are
 parallel to the tilted faces of the simulation box.  See :ref:`this section <howto_7>` of the manual for a discussion of
-the geometry of triclinic boxes in LIGGGHTS(R)-PUBLIC.  As described there, a
+the geometry of triclinic boxes in Packfall.  As described there, a
 tilted simulation box has edge vectors a,b,c.  In that nomenclature,
 bins in the x dimension have faces with normals in the "b" cross "c"
 direction.  Bins in y have faces normal to the "a" cross "c"
@@ -206,7 +206,7 @@ previously defined in the input script.  If no bracketed integer is
 appended, the per-atom vector calculated by the compute is used.  If a
 bracketed integer is appended, the Ith column of the per-atom array
 calculated by the compute is used.  Users can also write code for
-their own compute styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+their own compute styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "f\_", a fix ID must follow which has been
 previously defined in the input script.  If no bracketed integer is
@@ -215,7 +215,7 @@ bracketed integer is appended, the Ith column of the per-atom array
 calculated by the fix is used.  Note that some fixes only produce
 their values on certain timesteps, which must be compatible with
 *Nevery*\ , else an error results.  Users can also write code for their
-own fix styles and :doc:`add them to LIGGGHTS(R)-PUBLIC <Section_modify>`.
+own fix styles and :doc:`add them to Packfall <Section_modify>`.
 
 If a value begins with "v\_", a variable name must follow which has
 been previously defined in the input script.  Variables of style
@@ -297,7 +297,7 @@ The *file* keyword allows a filename to be specified.  Every *Nfreq*
 timesteps, a section of bin info will be written to a text file in the
 following format.  A line with the timestep and number of bin is
 written. Output of this line can be supressed with the *write\_ts* keyword.
- Then one line per bin is written, containing the bin ID
+Then one line per bin is written, containing the bin ID
 (1-N), the coordinate of the center of the bin, the number of atoms
 in the bin, and one or more calculated values.  The number of values
 in each line corresponds to the number of values specified in the fix
@@ -313,7 +313,7 @@ output.  This option can only be used with the *ave running* setting.
 
 The *title1* and *title2* and *title3* keywords allow specification of
 the strings that will be printed as the first 3 lines of the output
-file, assuming the *file* keyword was used.  LIGGGHTS(R)-PUBLIC uses default
+file, assuming the *file* keyword was used.  Packfall uses default
 values for each of these, so they do not need to be specified.
 If either of them is specified as "", then the line is omitted
 

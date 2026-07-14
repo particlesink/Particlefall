@@ -83,7 +83,7 @@ too frequently or to have multiple compute/dump commands, each with a
 This compute calculates a per-atom vector, which can be accessed by
 any command that uses per-atom values from a compute as input.  See
 :ref:`Section\_howto 15 <howto_8>` for an overview of
-LIGGGHTS(R)-PUBLIC output options.
+Packfall output options.
 
 The per-atom vector values are unitless values >= 0.0.  Their
 magnitude depends on the lattice style due to the number of

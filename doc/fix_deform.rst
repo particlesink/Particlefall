@@ -272,7 +272,7 @@ value < 0.0 to compress the box.
 
 The variable *name2* must also be an :doc:`equal-style variable <variable>` and should calculate the rate of box length
 change, in units of distance/time, i.e. the time-derivative of the
-*name1* variable.  This quantity is used internally by LIGGGHTS(R)-PUBLIC to reset
+*name1* variable.  This quantity is used internally by Packfall to reset
 atom velocities when they cross periodic boundaries.  It is computed
 internally for the other styles, but you must provide it when using an
 arbitrary variable.
@@ -423,7 +423,7 @@ following the definition of fix deform.
 
 The variable *name2* must also be an :doc:`equal-style variable <variable>` and should calculate the rate of tilt change,
 in units of distance/time, i.e. the time-derivative of the *name1*
-variable.  This quantity is used internally by LIGGGHTS(R)-PUBLIC to reset atom
+variable.  This quantity is used internally by Packfall to reset atom
 velocities when they cross periodic boundaries.  It is computed
 internally for the other styles, but you must provide it when using an
 arbitrary variable.
@@ -446,7 +446,7 @@ assume that the current timestep = 0.
 
 
 All of the tilt styles change the xy, xz, yz tilt factors during a
-simulation.  In LIGGGHTS(R)-PUBLIC, tilt factors (xy,xz,yz) for triclinic boxes
+simulation.  In Packfall, tilt factors (xy,xz,yz) for triclinic boxes
 are normally bounded by half the distance of the parallel box length.
 See the discussion of the *flip* keyword below, to allow this bound to
 be exceeded, if desired.
@@ -516,7 +516,7 @@ box without explicit remapping of their coordinates.
    matches the changing box size/shape.  Thus atom coordinates should NOT
    be remapped by fix deform, but velocities SHOULD be when atoms cross
    periodic boundaries, since that is consistent with maintaining the
-   velocity profile already created by fix nvt/sllod.  LIGGGHTS(R)-PUBLIC will warn
+   velocity profile already created by fix nvt/sllod.  Packfall will warn
    you if the *remap* setting is not consistent with fix nvt/sllod.
 
 .. warning::
@@ -556,9 +556,9 @@ above.  If the *flip* value is set to *yes*\ , the bound is enforced by
 flipping the box when it is exceeded.  If the *flip* value is set to
 *no*\ , the tilt will continue to change without flipping.  Note that if
 you apply large deformations, this means the box shape can tilt
-dramatically LIGGGHTS(R)-PUBLIC will run less efficiently, due to the large volume
+dramatically Packfall will run less efficiently, due to the large volume
 of communication needed to acquire ghost atoms around a processor's
-irregular-shaped sub-domain.  For extreme values of tilt, LIGGGHTS(R)-PUBLIC may
+irregular-shaped sub-domain.  For extreme values of tilt, Packfall may
 also lose atoms and generate an error.
 
 The *units* keyword determines the meaning of the distance units used

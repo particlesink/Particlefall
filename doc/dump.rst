@@ -226,7 +226,7 @@ meaning of the 6 character flags for "xx yy zz" is the same as above.
 
 Note that the first two numbers on each line are now xlo\_bound instead
 of xlo, etc, since they repesent a bounding box.  See :ref:`this section <howto_7>` of the doc pages for a geometric
-description of triclinic boxes, as defined by LIGGGHTS(R)-PUBLIC, simple formulas
+description of triclinic boxes, as defined by Packfall, simple formulas
 for how the 6 bounding box extents (xlo\_bound,xhi\_bound,etc) are
 calculated from the triclinic parameters, and how to transform those
 parameters to and from other commonly used triclinic representations.
@@ -349,7 +349,7 @@ all point variables will be interpolated to the triangle faces. For the value
 and finally for *original* no interpolation will take place and cell and point
 variables are written to cells and points, respectively. Keywords *aedges* and
 *acorners* dump the number of active edges/corners per face.  Keyword *nneighs*
-dumps the number of face neighbors LIGGGHTS(R)-PUBLIC has recognized for each face.
+dumps the number of face neighbors Packfall has recognized for each face.
 
 *mesh/vtm* is similar to *mesh/vtk* but only the arguments are different. The
 former requires the use of the keyword *meshes* which has to be followed either
@@ -400,7 +400,7 @@ first timestep of a run will also not be written unless the
 The specified filename determines how the dump file(s) is written.
 The default is to write one large text file, which is opened when the
 dump command is invoked and closed when an :doc:`undump <undump>`
-command is used or when LIGGGHTS(R)-PUBLIC exits.
+command is used or when Packfall exits.
 
 Dump filenames can contain two wildcard characters.  If a "\*"
 character appears in the filename, then one file per snapshot is
@@ -417,7 +417,7 @@ with the processor ID from 0 to P-1.  For example, tmp.dump.% becomes
 tmp.dump.0, tmp.dump.1, ... tmp.dump.P-1, etc.  This creates smaller
 files and can be a fast mode of output on parallel machines that
 support parallel I/O for output. This option is not available for the
- *xyz* style.
+*xyz* style.
 
 By default, P = the number of processors meaning one file per
 processor, but P can be set to a smaller value via the *nfile* or
@@ -536,7 +536,7 @@ attributes.  For periodic dimensions, they specify which image of the
 simulation box the atom is considered to be in.  An image of 0 means
 it is inside the box as defined.  A value of 2 means add 2 box lengths
 to get the true value.  A value of -1 means subtract 1 box length to
-get the true value.  LIGGGHTS(R)-PUBLIC updates these flags as atoms cross
+get the true value.  Packfall updates these flags as atoms cross
 periodic boundaries during the simulation.
 
 The *mux*\ , *muy*\ , *muz* attributes are specific to dipolar systems
@@ -605,7 +605,7 @@ this is a very general means of creating quantities to output to a
 dump file.
 
 See :doc:`Section\_modify <Section_modify>` of the manual for information
-on how to add new compute and fix styles to LIGGGHTS(R)-PUBLIC to calculate
+on how to add new compute and fix styles to Packfall to calculate
 per-atom quantities which could then be output into dump files.
 
 
@@ -616,7 +616,7 @@ Restrictions
 """"""""""""
 
 
-To write gzipped dump files, you must compile LIGGGHTS(R)-PUBLIC with the
+To write gzipped dump files, you must compile Packfall with the
 -DLAMMPS\_GZIP option - see the :ref:`Making LAMMPS <start_2>` section of the documentation.
 
 To be able to use *atom/vtk*\ , you have to link to VTK libraries,

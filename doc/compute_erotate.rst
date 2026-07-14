@@ -39,7 +39,7 @@ respective child computes.
 This compute calculates a global scalar (the rotational kinetic energy).  This
 value can be used by any command that uses a global scalar value from a compute
 as input.  See :ref:`Section\_howto 15 <howto_8>` for an overview of
-LIGGGHTS(R)-PUBLIC output options.
+Packfall output options.
 
 The scalar value calculated by this compute is "extensive".  The
 scalar value will be in energy :doc:`units <units>`.
