@@ -41,11 +41,13 @@ E.g. "peptide" refers to the examples/peptide directory.
 The "Library" column lists an external library which must be built
 first and which Packfall links to when it is built.  If it is listed as
 lib/package, then the code for the library is under the lib directory
-of the Packfall distribution.  See the lib/package/README file for info
-on how to build the library.  If it is not listed as lib/package, then
-it is a third-party library not included in the Packfall distribution.
-See the src/package/README or src/package/Makefile.lammps file for
-info on where to download the library.  :ref:`Section start <start_3_3>` of the manual also gives details
+of the Packfall distribution.  In the current Packfall tree, `lib/poems`
+is the only retained in-tree auxiliary library.  See the corresponding
+`lib/package/README` file for build details.  If a library is not listed
+as `lib/package`, then it is a third-party dependency not included in the
+Packfall distribution.  See the `src/package/README` or
+`src/package/Makefile.lammps` file for info on where to download the
+library.  :ref:`Section start <start_3_3>` of the manual also gives details
 on how to build Packfall with both kinds of auxiliary libraries.
 
 

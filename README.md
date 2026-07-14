@@ -13,6 +13,10 @@ make msys2
 
 Both entry points compile `src/*.cpp` directly, generate the required style headers via `src/Make.sh`, and write artifacts under `build/linux` or `build/msys2`.
 
+The historical upstream `lib/*` package-library workflow is not used by the
+supported Packfall build, with the exception of the retained `lib/poems`
+library that backs the in-tree `POEMS` package.
+
 The default build is single-process and uses the bundled MPI shim in `src/STUBS`. Real MPI is optional and must be enabled explicitly:
 
 ```sh
