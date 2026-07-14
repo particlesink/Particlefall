@@ -1,0 +1,68 @@
+# Demonstrate superquadric contact against a triangulated mesh wall.
+#
+# This example reuses the closed cylinder STL from the neighboring
+# mesh_inclusion_insert tutorial and inserts superquadrics inside it.
+
+echo both
+
+atom_style      superquadric
+atom_modify     map array
+boundary        m m m
+newton          off
+communicate     single vel yes
+units           si
+
+region          domain block -0.06 0.06 -0.06 0.06 -0.01 0.16 units box
+create_box      1 domain
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+variable        dt equal 1e-5
+variable        nStepsRun equal 0.25/${dt}
+variable        writeOutEvery equal 0.01/${dt}
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+fix             m5 all property/global coefficientRollingFriction peratomtypepair 1 0.005
+fix             m6 all property/global characteristicVelocity scalar 1.0
+fix             m7 all property/global coefficientRollingViscousDamping peratomtypepair 1 0.0
+
+pair_style      gran model hertz tangential history rolling_friction epsd2 surface superquadric
+pair_coeff      * *
+timestep        ${dt}
+
+fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
+
+fix             cyl_mesh all mesh/surface file ../mesh_inclusion_insert/meshes/cylinder_closed.stl type 1 scale 1.0
+fix             cyl_wall all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric mesh n_meshes 1 meshes cyl_mesh
+
+fix             pts1 all particletemplate/superquadric 15485863 atom_type 1 density constant 2500 &
+                shape constant 0.0020 0.0020 0.0060 blockiness constant 8.0 2.0
+fix             pts2 all particletemplate/superquadric 15485867 atom_type 1 density constant 2500 &
+                size uniform 0.0035 0.0055 blockiness constant 2.0 2.0
+fix             pdd1 all particledistribution/discrete 32452843 2 pts1 0.6 pts2 0.4
+
+region          insreg block -0.030 0.030 -0.030 0.030 0.05 0.11 units box
+fix             ins all insert/pack seed 49979687 distributiontemplate pdd1 &
+                insert_every once overlapcheck yes all_in yes maxattempt 100 &
+                region insreg particles_in_region 24 inside cyl_mesh 1 1 0 &
+                vel constant 0.0 0.0 -0.05 orientation random omega constant 0.0 0.0 0.0
+
+fix             integr all nve/superquadric integration_scheme 1
+
+compute         erot all erotate/superquadric
+thermo_style    custom step atoms ke c_erot
+thermo          1000
+thermo_modify   lost ignore norm no
+
+shell           mkdir -p post
+dump            dmp all custom/vtk ${writeOutEvery} post/mesh_wall_*.superq.vtp type mass x y z id vx vy vz &
+                fx fy fz omegax omegay omegaz radius shapex shapey shapez quat1 quat2 quat3 quat4 &
+                blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
+
+run             1
+unfix           ins
+run             ${nStepsRun} upto

@@ -1,0 +1,80 @@
+# Compare the three insertion orientation modes for superquadrics:
+#   - orientation template
+#   - orientation random
+#   - orientation constant q1 q2 q3 q4
+#
+# The template pose is the identity quaternion, so the long axis of the
+# particle remains aligned with the global z-axis. The three insertion
+# regions are separated in x so the orientation differences are easy to see.
+
+echo both
+
+atom_style      superquadric
+atom_modify     map array
+boundary        m m m
+newton          off
+communicate     single vel yes
+units           si
+
+region          reg block -0.06 0.06 -0.03 0.03 0.0 0.08 units box
+region          reg_left block -0.055 -0.02 -0.02 0.02 0.015 0.055 units box
+region          reg_mid block -0.017 0.017 -0.02 0.02 0.015 0.055 units box
+region          reg_right block 0.02 0.055 -0.02 0.02 0.015 0.055 units box
+create_box      1 reg
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+variable        dt equal 1e-5
+variable        q0 equal cos(45.0*PI/360.0)
+variable        qx equal sin(45.0*PI/360.0)
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+fix             m5 all property/global coefficientRollingFriction peratomtypepair 1 0.01
+fix             m6 all property/global characteristicVelocity scalar 1.0
+fix             m7 all property/global coefficientRollingViscousDamping peratomtypepair 1 0.0
+
+pair_style      gran model hertz tangential history rolling_friction epsd2 surface superquadric
+pair_coeff      * *
+timestep        ${dt}
+
+fix             xlo all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 xplane -0.06
+fix             xhi all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 xplane 0.06
+fix             ylo all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 yplane -0.03
+fix             yhi all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 yplane 0.03
+fix             zlo all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 zplane 0.0
+fix             zhi all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 zplane 0.08
+
+fix             pts1 all particletemplate/superquadric 15485863 atom_type 1 density constant 2500 &
+                shape constant 0.002 0.002 0.008 blockiness constant 8.0 2.0
+fix             pdd1 all particledistribution/discrete 32452843 1 pts1 1.0
+
+fix             ins_template all insert/pack seed 49979687 distributiontemplate pdd1 &
+                insert_every once overlapcheck yes all_in no maxattempt 100 &
+                vel constant 0.0 0.0 0.0 orientation template omega constant 0.0 0.0 0.0 &
+                region reg_left particles_in_region 8
+fix             ins_random all insert/pack seed 49979699 distributiontemplate pdd1 &
+                insert_every once overlapcheck yes all_in no maxattempt 100 &
+                vel constant 0.0 0.0 0.0 orientation random omega constant 0.0 0.0 0.0 &
+                region reg_mid particles_in_region 8
+fix             ins_constant all insert/pack seed 49979711 distributiontemplate pdd1 &
+                insert_every once overlapcheck yes all_in no maxattempt 100 &
+                vel constant 0.0 0.0 0.0 orientation constant ${q0} ${qx} 0.0 0.0 omega constant 0.0 0.0 0.0 &
+                region reg_right particles_in_region 8
+
+fix             integr all nve/superquadric integration_scheme 1
+
+thermo_style    custom step atoms
+thermo          1
+thermo_modify   lost ignore norm no
+
+shell           mkdir -p post
+dump            dmp all custom/vtk 1 post/orientation_modes_*.superq.vtp type mass x y z id vx vy vz &
+                fx fy fz omegax omegay omegaz radius shapex shapey shapez quat1 quat2 quat3 quat4 &
+                blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
+
+run             1
+

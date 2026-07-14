@@ -1,0 +1,52 @@
+# Minimal SPH-DEM bridge scaffold example.
+#
+# This is a first coupling bridge, not a production-ready multiphase model.
+# It demonstrates:
+# - `atom_style hybrid sphere sph`
+# - separate SPH and DEM integrators
+# - `fix couple/sphdem` momentum transfer from fluid to solid
+
+echo            both
+
+atom_style      hybrid sphere sph
+atom_modify     map array sort 0 0
+communicate     single vel yes
+
+boundary        f f f
+newton          off
+units           si
+
+region          reg block 0.0 0.06 0.0 0.02 0.0 0.02 units box
+create_box      2 reg
+
+create_atoms    1 single 0.020 0.010 0.010 units box
+create_atoms    1 single 0.030 0.010 0.010 units box
+create_atoms    2 single 0.025 0.010 0.010 units box
+
+group           fluid type 1
+group           solid type 2
+
+mass            1 0.001
+set             group fluid diameter 0.010
+set             group fluid density 1000.0
+set             group fluid meso_rho 1000.0
+
+set             group solid diameter 0.010
+set             group solid density 2500.0
+
+velocity        fluid set 1.0 0.0 0.0 sum no units box
+velocity        solid set 0.0 0.0 0.0 sum no units box
+
+timestep        1.0e-4
+
+fix             integrFluid fluid nve/sph
+fix             integrSolid solid nve/sphere
+fix             bridge all couple/sphdem fluid solid cubicspline 0.020 0.010
+
+compute         vfluid fluid reduce ave vx
+compute         vsolid solid reduce ave vx
+
+thermo_style    custom step atoms f_bridge[1] f_bridge[2] f_bridge[3] f_bridge[4] c_vfluid c_vsolid
+thermo          10
+
+run             50

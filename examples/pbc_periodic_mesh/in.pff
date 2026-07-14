@@ -1,0 +1,59 @@
+echo            both
+
+atom_style      granular
+atom_modify     map array
+communicate     single vel yes
+
+boundary        p f f
+newton          off
+units           si
+
+region          domain block -0.05 0.05 -0.02 0.02 -0.02 0.02 units box
+create_box      1 domain
+
+neighbor        0.001 bin
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+
+pair_style      gran model hertz tangential history
+pair_coeff      * *
+timestep        1.0e-4
+
+# A thin floor mesh. Its x span is larger than the simulation box, so the mesh
+# intentionally overhangs the periodic x limits.
+fix             floor_mesh all mesh/surface generate box 0.12 0.04 0.002 1 type 1 move 0.0 0.0 -0.011
+fix             floor_wall all wall/gran model hertz tangential history mesh n_meshes 1 meshes floor_mesh
+fix             ylo all wall/gran model hertz tangential history primitive type 1 yplane -0.02
+fix             yhi all wall/gran model hertz tangential history primitive type 1 yplane 0.02
+fix             zlo all wall/gran model hertz tangential history primitive type 1 zplane -0.02
+fix             zhi all wall/gran model hertz tangential history primitive type 1 zplane 0.02
+
+# Two particles straddle the periodic seam in x and are already within contact
+# range via the minimum-image convention. A third particle moves in +x so the
+# wrap itself is easy to spot in the dumps.
+create_atoms    1 single 0.0461 0.000 0.000 units box
+create_atoms    1 single -0.0461 0.000 0.000 units box
+create_atoms    1 single 0.0300 0.006 0.000 units box
+set             group all diameter 0.008
+set             group all density 2500.0
+group           seam id 1 2
+group           wrap id 3
+velocity        all set 0.0 0.0 0.0 sum no units box
+velocity        wrap set 0.08 0.0 0.0 sum no units box
+
+fix             integr all nve/sphere
+
+thermo_style    custom step atoms ke
+thermo          100
+thermo_modify   lost warn norm no
+
+dump            dmp all custom/vtk 100 pff_particles_*.vtk id type x y z vx vy vz fx fy fz radius
+dump            dmpmesh all mesh/stl 200 pff_mesh_*.stl floor_mesh
+dump_modify     dmp first yes
+dump_modify     dmpmesh first yes
+
+run             1000

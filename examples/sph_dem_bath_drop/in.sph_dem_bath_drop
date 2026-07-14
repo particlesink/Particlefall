@@ -1,0 +1,144 @@
+# SPH-DEM bath-drop tutorial with a higher-resolution laterally periodic bath.
+#
+# This tutorial is tuned for the current embedded-sampler `fix couple/sphdem`
+# bridge rather than for raw speed. Compared with the original prototype it uses:
+# - a finer SPH lattice
+# - a deeper bath
+# - a smaller timestep
+# - a tighter bridge support radius
+#
+# It is still not a validated benchmark, but it is a much better development
+# case for inspecting partial immersion, buoyancy onset, and rebound behavior.
+
+echo            both
+
+variable        h equal 0.010 # smoothing length
+variable        lat equal ${h}/1.2 # spacing
+variable        skin equal 0.25*${h}
+variable        eta equal 0.01*${h}*${h}
+
+atom_style      hybrid sphere sph
+atom_modify     map array sort 0 0
+communicate     single vel yes
+
+# Use periodic side boundaries so the bath does not artificially drain or pin
+# against lateral SPH walls. Keep z fixed and bound it with SPH top/bottom
+# planes instead.
+boundary        p p f
+newton          off
+units           si
+
+lattice         sc ${lat}
+
+region          reg block 0.0 0.10 0.0 0.06 0.0 0.14 units box
+create_box      2 reg
+
+# SPH bath only. The DEM particle is added after this bath has settled.
+# This column is deliberately deeper than the earlier prototype so the body
+# experiences a more meaningful immersion path before interacting with the floor.
+region          bath block 0.010 0.090 0.010 0.050 0.015 0.080 units box
+create_atoms    1 region bath
+
+group           fluid type 1
+
+mass            * 0.001
+set             group fluid diameter ${lat}
+set             group fluid density 1000.0
+set             group fluid meso_rho 1000.0
+
+velocity        fluid set 0.0 0.0 0.0 sum no units box
+
+neighbor        ${skin} bin
+
+fix             m1 all property/global speedOfSound peratomtype 20.0 20.0
+fix             m2 all property/global sl peratomtype ${h} ${h}
+fix             m3 all property/global artViscAlpha peratomtype 4.1666e-3 4.1666e-3
+fix             m4 all property/global artViscBeta peratomtype 0.0 0.0
+fix             m5 all property/global artViscEta scalar ${eta}
+fix             m6 all property/global tensCorrEpsilon scalar 0.2
+fix             m7 all property/global tensCorrDeltaP peratomtype ${lat} ${lat}
+
+pair_style      hybrid sph/artVisc/tensCorr cubicspline ${h} artVisc tensCorr
+pair_coeff      1 1 sph/artVisc/tensCorr
+pair_coeff      1 2 none
+pair_coeff      2 2 none
+
+fix             density fluid sph/density/continuity
+fix             corr fluid sph/density/corr shepard every 20
+fix             pressure fluid sph/pressure Tait 60000.0 1000.0 7.0
+
+# Contain the SPH column only in z. Lateral directions are periodic.
+fix             fluidWalls fluid wall/sph zplane 0.006 0.120 ${lat} 5.0
+
+timestep        2.5e-6
+fix             integrFluid fluid nve/sph
+fix             gravFluid fluid gravity 9.81 vector 0.0 0.0 -1.0
+
+set             group fluid sphkernel cubicspline
+
+thermo_style    custom step atoms ke
+thermo          1000
+thermo_modify   lost warn norm no
+
+dump            dmpFluid fluid custom/vtk 1000 stage1_bath_fluid_*.vtk id type x y z vx vy vz fx fy fz p rho radius
+dump_modify     dmpFluid first yes
+
+# Stage 1: settle the SPH bath first.
+run             40000
+
+undump          dmpFluid
+
+# Create the DEM particle only after the bath is in place. This avoids
+# contaminating the settling stage and gives a cleaner release condition.
+create_atoms    2 single 0.050 0.030 0.105 units box
+group           solid type 2
+
+set             group solid diameter 0.010
+set             group solid density 900.0
+velocity        solid set 0.0 0.0 0.0 sum no units box
+
+compute         solid_z solid reduce ave z
+compute         solid_vz solid reduce ave vz
+
+# Stage 2: release the DEM particle and enable SPH-DEM coupling.
+fix             integrSolid solid nve/sphere
+fix             gravSolid solid gravity 9.81 vector 0.0 0.0 -1.0
+# This tree does not actually ship fix wall/reflect even though a doc page
+# exists for it, so use a soft planar floor via wall/region instead.
+region          solidFloorReg block -1.0 1.0 -1.0 1.0 -1.0 0.0 side out units box
+fix             solidFloor solid wall/region solidFloorReg harmonic 5000.0 0.0 0.010
+# Use a tighter bridge support than the earlier prototype so the body does not
+# "feel" the free surface too far in advance.
+fix             bridge all couple/sphdem fluid solid cubicspline 0.012 0.040
+
+dump            dmpFluid fluid custom/vtk 1000 stage2_bath_fluid_*.vtk id type x y z vx vy vz fx fy fz p rho radius &
+                f_bridge[1] f_bridge[2] f_bridge[3] &
+                f_bridge[4] f_bridge[5] f_bridge[6] &
+                f_bridge[7] f_bridge[8] f_bridge[9] &
+                f_bridge[10] f_bridge[11] f_bridge[12] &
+                f_bridge[13] f_bridge[14] f_bridge[15] &
+                f_bridge[16] f_bridge[17] f_bridge[18]
+dump            dmpSolid solid custom/vtk 1000 stage2_bath_solid_*.vtk id type x y z vx vy vz fx fy fz radius &
+                f_bridge[1] f_bridge[2] f_bridge[3] &
+                f_bridge[4] f_bridge[5] f_bridge[6] &
+                f_bridge[7] f_bridge[8] f_bridge[9] &
+                f_bridge[10] f_bridge[11] f_bridge[12] &
+                f_bridge[13] f_bridge[14] f_bridge[15] &
+                f_bridge[16] f_bridge[17] f_bridge[18]
+dump_modify     dmpFluid first yes
+dump_modify     dmpSolid first yes
+
+variable        coupled_particles equal f_bridge[1]
+variable        pressure_force_z equal f_bridge[7]
+variable        porosity_sum equal f_bridge[8]
+variable        buoyancy_force_z equal f_bridge[11]
+variable        solid_z_pos equal c_solid_z
+variable        solid_vz_mean equal c_solid_vz
+variable        step_now equal step
+
+fix             metricCoupled all print 1000 "step=${step_now} coupled=${coupled_particles} solid_z=${solid_z_pos} solid_vz=${solid_vz_mean} bridge_pressure_fz=${pressure_force_z} bridge_buoyancy_fz=${buoyancy_force_z} porosity=${porosity_sum}" screen yes
+
+thermo_style    custom step atoms ke c_solid_z c_solid_vz f_bridge[1] f_bridge[7] f_bridge[8] f_bridge[11]
+thermo_modify   lost warn norm no
+
+run             80000

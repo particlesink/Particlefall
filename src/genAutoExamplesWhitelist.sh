@@ -24,7 +24,7 @@ usage: $PN [-o outputfile] [-s LIGGGHTS src directory path] [-i] [-v] [-f] [-a] 
     -v: verbose
 
 Example:
-    $PN ../examples/LIGGGHTS"
+    $PN ../examples"
     exit 1
 }
 
