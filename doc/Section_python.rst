@@ -78,15 +78,18 @@ From the src directory, type
 
 .. parsed-literal::
 
-   make makeshlib
-   make -f Makefile.shlib foo
+   make -f Makefile.linux shlib
 
-where foo is the machine target name, such as auto or mpi or serial.
-This should create the file liblmp\_foo.so in the src directory, as
-well as a soft link libpackfall.so, which is what the Python wrapper will
-load by default.  Note that if you are building multiple machine
-versions of the shared library, the soft link is always set to the
-most recently built version.
+or on Windows/MSYS2:
+
+.. parsed-literal::
+
+   make -f Makefile.msys2 shlib
+
+This creates the shared library under the corresponding build directory,
+such as ``build/linux/libpackfall.so`` or ``build/msys2/libpackfall.dll``.
+The Python wrapper loads ``libpackfall`` from the usual shared-library
+search path.
 
 If this fails, see :ref:`Section\_start 5 <start_5>` for
 more details, especially if your Packfall build uses auxiliary libraries
@@ -284,8 +287,9 @@ and see one line of output for each processor you run on.
    must insure both are using the same version of MPI.  If you only have
    one MPI installed on your system, this is not an issue, but it can be
    if you have multiple MPIs.  Your Packfall build is explicit about which
-   MPI it is using, since you specify the details in your lo-level
-   src/MAKE/Makefile.foo file.  Pypar uses the "mpicc" command to find
+   MPI it is using, since you choose whether to build with the MPI shim
+   or a real MPI wrapper compiler in the active Packfall makefile.
+   Pypar uses the "mpicc" command to find
    information about the MPI it uses to build against.  And it tries to
    load "libmpi.so" from the LD\_LIBRARY\_PATH.  This may or may not find
    the MPI library that Packfall is using.  If you have problems running

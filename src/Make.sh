@@ -1,9 +1,5 @@
-# Make.sh = update Makefile.lib, Makefile.shlib, Makefile.list
-#           or style_*.h files
+# Make.sh = update generated style headers
 # Syntax: sh Make.sh style
-#         sh Make.sh Makefile.lib
-#         sh Make.sh Makefile.shlib
-#         sh Make.sh Makefile.list
 
 # function to create one style_*.h file
 # must whack *.d files that depend on style_*.h file,
@@ -13,19 +9,19 @@ style () {
   # create the runtime version banner used by the supported Packfall builds
   builddate=`date +%Y-%m-%d-%H:%M:%S`
   wai=`whoami`
-  vers=`cat version_liggghts.txt`
-  bra=`cat version_liggghts_branch.txt`
+  vers=`cat version_packfall.txt`
+  bra=`cat version_packfall_branch.txt`
 
   if [ -d .git ]; then
     githash=`git log -1 --format="%H"`
-    echo "#define LIGGGHTS_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_liggghts.h
+    echo "#define PACKFALL_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_packfall.h
   elif [ -d ../.git ]; then
     cd ..    
     githash=`git log -1 --format="%H"`
     cd src
-    echo "#define LIGGGHTS_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_liggghts.h
+    echo "#define PACKFALL_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit $githash\"" > version_packfall.h
   else
-    echo "#define LIGGGHTS_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit unknown\"" > version_liggghts.h
+    echo "#define PACKFALL_VERSION \"Packfall $bra $vers, compiled $builddate by $wai, git commit unknown\"" > version_packfall.h
   fi;
 
   list=`grep -sl $1 $2*.h`

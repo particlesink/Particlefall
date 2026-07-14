@@ -25,14 +25,20 @@ Compilation:
 
 To compile Packfall with this feature the `boost <boost_>`_ library must be available on the system. On most LINUX-distributions a recent version can be installed via the package managment systems.
 
-Before starting the compilation, you have to enable the SUPERQUADRIC model in your Makefile. In case of Makefile.auto you can activate the model by settings the corresponding flag within your *src/MAKE/Makefile.user*\ . Otherwise you have to add following settings manually to your Makefile:
+Before starting the compilation, enable the SUPERQUADRIC model in the
+active Packfall makefile by setting ``ENABLE_SUPERQUADRICS=1``. You can
+do this on the command line, for example:
 
 
 .. parsed-literal::
 
-       LMP_INC += -DSUPERQUADRIC_ACTIVE_FLAG -DNONSPHERICAL_ACTIVE_FLAG
-       (in case of a non-system-wide boost installation)
-       EXTRA_INC += -IPath/to/your/Boost/include
+       make linux ENABLE_SUPERQUADRICS=1
+
+If Boost is installed in a non-standard location, add its include path:
+
+.. parsed-literal::
+
+       make linux ENABLE_SUPERQUADRICS=1 EXTRA_CPPFLAGS=-IPath/to/your/Boost/include
 
 .. note::
 

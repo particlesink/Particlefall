@@ -25,18 +25,12 @@ USE_MPI ?= 0
 MPICXX ?= mpic++
 SERIAL_CXX ?= g++
 
-ENABLE_VTK ?= 1
-ENABLE_XDR ?= 1
+# Feature toggles:
+#   ENABLE_GZIP=1 enables reading/writing .gz files via the gzip executable.
 ENABLE_GZIP ?= 0
 ENABLE_SUPERQUADRICS ?= 0
 
-FEATURE_DEFS :=
-ifeq ($(ENABLE_VTK),1)
-FEATURE_DEFS += -DLAMMPS_VTK
-endif
-ifeq ($(ENABLE_XDR),1)
-FEATURE_DEFS += -DLAMMPS_XDR
-endif
+FEATURE_DEFS := -DLAMMPS_VTK
 ifeq ($(ENABLE_GZIP),1)
 FEATURE_DEFS += -DLAMMPS_GZIP
 endif
@@ -99,8 +93,6 @@ print-config:
 	@echo "CXXFLAGS=$(CXXFLAGS)"
 	@echo "LDFLAGS=$(LDFLAGS)"
 	@echo "LDLIBS=$(LDLIBS)"
-	@echo "ENABLE_VTK=$(ENABLE_VTK)"
-	@echo "ENABLE_XDR=$(ENABLE_XDR)"
 	@echo "ENABLE_GZIP=$(ENABLE_GZIP)"
 	@echo "ENABLE_SUPERQUADRICS=$(ENABLE_SUPERQUADRICS)"
 

@@ -55,7 +55,7 @@
 #include <stdio.h>
 #include "universe.h"
 #include "version.h"
-#include "version_liggghts.h" 
+#include "version_packfall.h" 
 #include "error.h"
 #include "force.h"
 #include "memory.h"
@@ -70,10 +70,10 @@ using namespace LAMMPS_NS;
 
 Universe::Universe(LAMMPS *lmp, MPI_Comm communicator) : Pointers(lmp)
 {
-  version = new char[strlen(LAMMPS_VERSION)+strlen(LIGGGHTS_VERSION)+100]; 
+  version = new char[strlen(LAMMPS_VERSION)+strlen(PACKFALL_VERSION)+100]; 
 
-  //sprintf(version,"Version %s based on LAMMPS %s",LIGGGHTS_VERSION,LAMMPS_VERSION); 
-  sprintf(version,"Version %s",LIGGGHTS_VERSION); 
+  //sprintf(version,"Version %s based on LAMMPS %s",PACKFALL_VERSION,LAMMPS_VERSION); 
+  sprintf(version,"Version %s",PACKFALL_VERSION); 
 
   uworld = uorig = communicator;
   MPI_Comm_rank(uworld,&me);

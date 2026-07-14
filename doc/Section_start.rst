@@ -137,18 +137,17 @@ To build Packfall as a static library (\*.a file on Linux), type
 
 .. parsed-literal::
 
-   make -f Makefile.msys2 lib 
-   make -f Makefile.msys2 shlib
+   make linux lib
 
-where foo is the machine name (if you normally compile with \*auto\* then use
-this option).  This kind of library is typically used to statically link a
-driver application to Packfall, so that you can insure all dependencies
-are satisfied at compile time.  Note that inclusion or exclusion of any
-desired optional packages should be done before typing "make makelib".  The
-first "make" command will create a current Makefile.lib with all the file
-names in your src dir.  The second "make" command will use it to build
-Packfall as a static library, using the ARCHIVE and ARFLAGS settings in
-src/MAKE/Makefile.foo.  
+or on Windows/MSYS2:
+
+.. parsed-literal::
+
+   make msys2 lib
+
+This kind of library is typically used to statically link a driver
+application to Packfall, so that you can insure all dependencies are
+satisfied at compile time.
 
 **Shared library:**
 ^^^^^^^^^^^^^^^^^^^
@@ -159,20 +158,18 @@ dynamically loaded, e.g. from Python, type
 
 .. parsed-literal::
 
-   make makeshlib
-   make -f Makefile.shlib foo
+   make linux shlib
 
-where foo is the machine name (if you normally compile with \*auto\* then use
-this option). This kind of library is required when wrapping Packfall
-with Python; see :doc:`Section\_python <Section_python>` for details.  Again,
-note that inclusion or exclusion of any desired optional packages should be
-done before typing "make makelib".  The first "make" command will create a
-current Makefile.shlib with all the file names in your src dir.  The second
-"make" command will use it to build Packfall as a shared library, using
-the SHFLAGS and SHLIBFLAGS settings in src/MAKE/Makefile.foo.  The build
-will create the file libpackfall.so which another application can link to
-dyamically.  It will also create a soft link libpackfall.so, which the Python
-wrapper uses by default.
+or on Windows/MSYS2:
+
+.. parsed-literal::
+
+   make msys2 shlib
+
+This kind of library is required when wrapping Packfall with Python;
+see :doc:`Section\_python <Section_python>` for details. On Linux, the build
+creates ``libpackfall.so``. On Windows/MSYS2, it creates ``libpackfall.dll``
+and its import library.
 
 Note that for a shared library to be usable by a calling program, all
 the auxiliary libraries it depends on must also exist as shared

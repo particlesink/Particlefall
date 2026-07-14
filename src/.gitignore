@@ -1,7 +1,7 @@
 Obj*/*
 style_*
 lmp_*
-version_liggghts.h
+version_packfall.h
 .*.sw?
 debug_make_auto
 liblmp_*
@@ -15,4 +15,3 @@ STUBS/libmpi_stubs.a
 STUBS/mpi.o
 MAKE/auto_backup/*
 build/
-
