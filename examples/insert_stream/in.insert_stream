@@ -59,5 +59,5 @@ dump		dmp all custom/vtk 800 post/stream_*.vtk id type type x y z ix iy iz vx vy
 
 #insert particles
 run		100000
-write_restart post/liggghts.restart
+write_restart post/packfall.restart
 
