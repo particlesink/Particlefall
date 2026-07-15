@@ -1,0 +1,18 @@
+{
+  "terminal.integrated.profiles.windows": {
+    "MSYS2 MinGW64": {
+      "path": "C:\\apps\\msys64\\usr\\bin\\bash.exe",
+      "args": [
+        "--login",
+        "-i"
+      ],
+      "env": {
+        "CHERE_INVOKING": "1",
+        "MSYSTEM": "MINGW64",
+        "MSYS2_PATH_TYPE": "inherit"
+      },
+      "overrideName": true
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "MSYS2 MinGW64"
+}

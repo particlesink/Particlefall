@@ -1,0 +1,17 @@
+build/
+*.o
+restart*
+*.log
+log.*
+*.pyc
+__pycache__/
+.pytest_cache/
+build_model_generation.log
+tests/artifacts/
+tests/__pycache__/
+examples/**/post/*.vtk
+examples/**/post/*.vtp
+examples/**/post/*.txt
+examples/**/*.vtk
+examples/**/*.vtp
+examples/**/log.liggghts
