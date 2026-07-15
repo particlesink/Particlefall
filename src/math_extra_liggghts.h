@@ -50,6 +50,7 @@
 #include "error.h"
 #include "vector_liggghts.h"
 #include "math_extra.h"
+#include "math_const.h"
 #include "random_park.h"
 #include "ctype.h"
 
@@ -591,6 +592,8 @@ void MathExtraLiggghts::calcBaryTriCoords(double *ap, double *edgeVec0, double *
 
 void MathExtraLiggghts::random_unit_quat(LAMMPS_NS::RanPark *random,double *quat)
 {
+    using namespace LAMMPS_NS::MathConst;
+
     double u1 = random->uniform();
     double u2 = random->uniform();
     double u3 = random->uniform();
@@ -598,10 +601,10 @@ void MathExtraLiggghts::random_unit_quat(LAMMPS_NS::RanPark *random,double *quat
     double h1 = ::sqrt(1.-u1);
     double h2 = ::sqrt(u1);
 
-    quat[0] = h1 * ::sin(2.*M_PI*u2);
-    quat[1] = h1 * ::cos(2.*M_PI*u2);
-    quat[2] = h2 * ::sin(2.*M_PI*u3);
-    quat[3] = h2 * ::cos(2.*M_PI*u3);
+    quat[0] = h1 * ::sin(MY_2PI*u2);
+    quat[1] = h1 * ::cos(MY_2PI*u2);
+    quat[2] = h2 * ::sin(MY_2PI*u3);
+    quat[3] = h2 * ::cos(MY_2PI*u3);
 }
 
 /* ----------------------------------------------------------------------

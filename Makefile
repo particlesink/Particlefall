@@ -1,5 +1,8 @@
 .PHONY: all help linux msys2 doc html clean clean-linux clean-msys2 clean-doc
 
+STD ?= -std=gnu++17
+export STD
+
 ifeq ($(OS),Windows_NT)
 DEFAULT_TARGET := msys2
 else
