@@ -6,6 +6,7 @@ TARGET ?= packfall
 BUILD_DIR ?= ../build/linux
 OBJ_DIR := $(BUILD_DIR)/obj
 DEP_DIR := $(BUILD_DIR)/dep
+STUB_DIR := $(BUILD_DIR)/stubs
 EXE := $(BUILD_DIR)/$(TARGET)
 STATIC_LIB := $(BUILD_DIR)/lib$(TARGET).a
 SHARED_LIB := $(BUILD_DIR)/lib$(TARGET).so
@@ -52,9 +53,9 @@ CXX := $(SERIAL_CXX)
 LINK := $(SERIAL_CXX)
 MPI_MODE := stubs
 MPI_CPPFLAGS += -ISTUBS
-MPI_LDFLAGS += -LSTUBS
+MPI_LDFLAGS += -L$(STUB_DIR)
 MPI_LDLIBS += -lmpi_stubs
-STUB_TARGET := STUBS/libmpi_stubs.a
+STUB_TARGET := $(STUB_DIR)/libmpi_stubs.a
 endif
 
 CPPFLAGS += -I. $(FEATURE_DEFS) $(MPI_CPPFLAGS) $(EXTRA_CPPFLAGS)
@@ -101,9 +102,9 @@ headers: $(HEADER_STAMP)
 stubs: $(STUB_TARGET)
 
 $(STUB_TARGET):
-	@cd STUBS && rm -f libmpi_stubs.a mpi.o
-	@cd STUBS && $(SERIAL_CXX) -O -c mpi.c -o mpi.o
-	@cd STUBS && $(AR) rs libmpi_stubs.a mpi.o
+	@mkdir -p $(STUB_DIR)
+	$(SERIAL_CXX) -O -c STUBS/mpi.c -o $(STUB_DIR)/mpi.o
+	$(AR) rs $@ $(STUB_DIR)/mpi.o
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
@@ -114,25 +115,28 @@ $(OBJ_DIR):
 $(DEP_DIR):
 	@mkdir -p $(DEP_DIR)
 
+$(STUB_DIR):
+	@mkdir -p $(STUB_DIR)
+
 $(HEADER_STAMP): | $(BUILD_DIR)
 	@bash Make.sh style
 	@bash Make.sh models
 	@touch $@
 
-$(EXE): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
+$(EXE): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR) $(STUB_DIR)
 $(EXE): $(OBJ)
 	$(LINK) $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS) -o $@
 
-$(STATIC_LIB): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
+$(STATIC_LIB): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR) $(STUB_DIR)
 $(STATIC_LIB): $(LIB_OBJ)
 	$(AR) rs $@ $(LIB_OBJ)
 
 $(SHARED_LIB): CXXFLAGS += $(PICFLAGS)
-$(SHARED_LIB): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR)
+$(SHARED_LIB): $(HEADER_STAMP) $(STUB_TARGET) | $(BUILD_DIR) $(OBJ_DIR) $(DEP_DIR) $(STUB_DIR)
 $(SHARED_LIB): $(LIB_OBJ)
 	$(LINK) $(CXXFLAGS) $(SHLIBFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LDLIBS) -o $@
 
-$(OBJ_DIR)/%.o: %.cpp $(HEADER_STAMP) $(STUB_TARGET) | $(OBJ_DIR) $(DEP_DIR)
+$(OBJ_DIR)/%.o: %.cpp $(HEADER_STAMP) $(STUB_TARGET) | $(OBJ_DIR) $(DEP_DIR) $(STUB_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MMD -MF $(DEP_DIR)/$*.d -c $< -o $@
 
 clean:
