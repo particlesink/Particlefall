@@ -1,0 +1,61 @@
+echo both
+
+atom_style      superquadric
+atom_modify     map array
+boundary        m m m
+newton          off
+communicate     single vel yes
+units           si
+
+region          reg block -0.03 0.03 -0.03 0.03 0.0 0.05 units box
+create_box      1 reg
+
+create_atoms    1 single -0.008 0.0 0.030
+create_atoms    1 single  0.008 0.0 0.034
+set             atom 1 shape 0.0020 0.0020 0.0060 blockiness 8.0 2.0 density 2500 quat/random 24691
+set             atom 2 shape 0.0025 0.0025 0.0040 blockiness 2.0 2.0 density 2500 quat_direct 1.0 0.0 0.0 0.0
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+fix             m5 all property/global coefficientRollingFriction peratomtypepair 1 0.005
+fix             m6 all property/global characteristicVelocity scalar 1.0
+fix             m7 all property/global coefficientRollingViscousDamping peratomtypepair 1 0.0
+
+pair_style      gran model hertz tangential history rolling_friction epsd2 surface superquadric
+pair_coeff      * *
+timestep        1.0e-5
+
+fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
+fix             zlo all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 zplane 0.0
+
+run             0
+variable        natoms_before equal atoms
+print           "TEST_METRIC natoms_before=${natoms_before}"
+
+write_restart   state.restart
+
+clear
+
+read_restart    state.restart
+newton          off
+communicate     single vel yes
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+fix             m5 all property/global coefficientRollingFriction peratomtypepair 1 0.005
+fix             m6 all property/global characteristicVelocity scalar 1.0
+fix             m7 all property/global coefficientRollingViscousDamping peratomtypepair 1 0.0
+fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
+fix             zlo all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 zplane 0.0
+
+run             0
+variable        natoms_after equal atoms
+print           "TEST_METRIC natoms_after=${natoms_after}"

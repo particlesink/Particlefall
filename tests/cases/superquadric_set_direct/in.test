@@ -1,0 +1,46 @@
+echo both
+
+atom_style      superquadric
+atom_modify     map array
+boundary        m m m
+newton          off
+communicate     single vel yes
+units           si
+
+region          reg block -0.04 0.04 -0.02 0.02 0.0 0.06 units box
+create_box      1 reg
+
+create_atoms    1 single -0.028 0.0 0.035
+create_atoms    1 single -0.012 0.0 0.035
+create_atoms    1 single  0.004 0.0 0.035
+create_atoms    1 single  0.020 0.0 0.035
+
+set             atom 1 shape 0.0020 0.0020 0.0080 blockiness 8.0 2.0 density 2500 quat/random 24691
+set             atom 2 shape 0.0025 0.0025 0.0040 blockiness 2.0 2.0 density 2500 quat_direct 1.0 0.0 0.0 0.0
+set             atom 3 shape 0.0020 0.0030 0.0060 blockiness 4.0 4.0 density 2500 quat 45.0 1.0 0.0 0.0
+set             atom 4 shape 0.0015 0.0015 0.0070 blockiness 10.0 2.0 density 2500 quat/random 24697
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+fix             m5 all property/global coefficientRollingFriction peratomtypepair 1 0.005
+fix             m6 all property/global characteristicVelocity scalar 1.0
+fix             m7 all property/global coefficientRollingViscousDamping peratomtypepair 1 0.0
+
+pair_style      gran model hertz tangential history rolling_friction epsd2 surface superquadric
+pair_coeff      * *
+timestep        1.0e-5
+
+dump            dmp all custom/vtk 1 set_direct_*.superq.vtp type mass x y z id vx vy vz &
+                fx fy fz omegax omegay omegaz radius shapex shapey shapez quat1 quat2 quat3 quat4 &
+                blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
+
+run             0
+
+variable        natoms equal atoms
+print           "TEST_METRIC natoms=${natoms}"
+

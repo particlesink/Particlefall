@@ -1,0 +1,35 @@
+echo both
+
+atom_style      sph
+atom_modify     map array sort 0 0
+communicate     single vel yes
+boundary        f f f
+newton          off
+units           si
+
+region          reg block 0.0 0.04 0.0 0.04 0.0 0.04 units box
+create_box      1 reg
+create_atoms    1 single 0.010 0.010 0.010
+create_atoms    1 single 0.020 0.010 0.010
+mass            1 0.001
+
+neighbor        0.003 bin
+
+fix             m1 all property/global sl peratomtype 0.012
+
+pair_style      sph/morris/tensCorr cubicspline 0.012 newton 0.001 tensCorr 0.2 0.010
+pair_coeff      * *
+
+fix             density all sph/density/summation
+fix             pressure all sph/pressure absolut 1000.0
+
+timestep        1.0e-5
+fix             integr all nve/sph
+set             group all sphkernel cubicspline
+
+run             1
+
+variable        natoms equal atoms
+variable        final_step equal step
+print           "TEST_METRIC natoms=${natoms}"
+print           "TEST_METRIC final_step=${final_step}"

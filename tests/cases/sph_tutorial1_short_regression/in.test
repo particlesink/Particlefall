@@ -1,0 +1,70 @@
+atom_style      sph
+atom_modify     map array sort 0 0
+communicate     single vel yes
+
+boundary        f f f
+newton          off
+units           si
+
+variable        h equal 0.012
+variable        lat equal ${h}/1.2
+variable        lathalf equal 0.5*${h}/1.2
+variable        wallpos equal 0.06+${lathalf}
+variable        skin equal 0.25*${h}
+variable        eta equal 0.01*${h}*${h}
+
+region          reg block 0.0 0.12 0.0 0.06 0.0 0.12 units box
+create_box      1 reg
+
+create_atoms    1 single 0.020 0.020 0.020 units box
+create_atoms    1 single 0.030 0.020 0.020 units box
+create_atoms    1 single 0.020 0.030 0.020 units box
+create_atoms    1 single 0.030 0.030 0.020 units box
+
+mass            1 0.001
+neighbor        ${skin} bin
+
+fix             m1 all property/global speedOfSound peratomtype 20.0
+fix             m2 all property/global sl peratomtype ${h}
+fix             m3 all property/global artViscAlpha peratomtype 4.1666e-3
+fix             m4 all property/global artViscBeta peratomtype 0.0
+fix             m5 all property/global artViscEta scalar ${eta}
+fix             m6 all property/global tensCorrEpsilon scalar 0.2
+fix             m7 all property/global tensCorrDeltaP peratomtype ${lat}
+
+pair_style      sph/artVisc/tensCorr cubicspline ${h} artVisc tensCorr
+pair_coeff      * *
+
+fix             density all sph/density/continuity
+fix             corr all sph/density/corr shepard every 5
+set             group all meso_rho 1000.0
+fix             pressure all sph/pressure Tait 60000.0 1000.0 7.0
+
+region          boxw block 0.0 0.12 0.0 0.06 0.0 0.12 units box
+fix             boxwall_reg all wall/region/sph boxw ${lat} 5.0
+fix             wall all wall/sph xplane ${wallpos} NULL ${lathalf} 1.0
+
+timestep        1.0e-5
+fix             integr all nve/sph
+fix             gravi all gravity 9.81 vector 0.0 0.0 -1.0
+
+set             group all sphkernel cubicspline
+
+dump            dmp all custom/vtk 20 post/sph_reg_*.vtk id type x y z vx vy vz p rho
+thermo_style    custom step atoms ke
+thermo          20
+thermo_modify   lost ignore norm no
+
+run             20
+
+variable        natoms equal atoms
+variable        step_after_wall equal step
+print           "TEST_METRIC natoms=${natoms}"
+print           "TEST_METRIC step_after_wall=${step_after_wall}"
+
+unfix           wall
+
+run             5
+
+variable        final_step equal step
+print           "TEST_METRIC final_step=${final_step}"

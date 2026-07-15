@@ -1,0 +1,42 @@
+echo both
+
+atom_style      sphere
+atom_modify     map array
+boundary        m m m
+newton          off
+communicate     single vel yes
+units           si
+
+region          reg block -0.03 0.03 -0.03 0.03 0.0 0.05 units box
+create_box      1 reg
+
+create_atoms    1 single -0.008 0.0 0.030
+create_atoms    1 single  0.008 0.0 0.036
+set             atom 1 diameter 0.008 density 2500
+set             atom 2 diameter 0.008 density 2500
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+
+pair_style      gran model hertz tangential history
+pair_coeff      * *
+timestep        1.0e-5
+
+fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
+fix             zlo all wall/gran model hertz tangential history primitive type 1 zplane 0.0
+fix             xlo all wall/gran model hertz tangential history primitive type 1 xplane -0.03
+fix             xhi all wall/gran model hertz tangential history primitive type 1 xplane 0.03
+fix             ylo all wall/gran model hertz tangential history primitive type 1 yplane -0.03
+fix             yhi all wall/gran model hertz tangential history primitive type 1 yplane 0.03
+fix             integr all nve/sphere
+
+run             10
+
+variable        natoms equal atoms
+print           "TEST_METRIC natoms=${natoms}"
+

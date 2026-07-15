@@ -1,0 +1,21 @@
+echo both
+
+atom_style      atomic
+atom_modify     sort 0 0.0
+boundary        m m m
+units           si
+
+region          reg block -0.01 0.01 -0.01 0.01 -0.01 0.01 units box
+create_box      1 reg
+mass            1 1.0
+timestep        1.0e-5
+
+run             25
+variable        step_from_steps equal step
+print           "TEST_METRIC step_from_steps=${step_from_steps}"
+
+reset_timestep  0
+
+run             2.5e-4 sec
+variable        step_from_seconds equal step
+print           "TEST_METRIC step_from_seconds=${step_from_seconds}"

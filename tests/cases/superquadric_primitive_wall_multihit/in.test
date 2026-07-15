@@ -1,0 +1,42 @@
+echo both
+
+atom_style      superquadric
+atom_modify     map array
+boundary        m m m
+newton          off
+communicate     single vel yes
+units           si
+
+region          reg block -0.03 0.03 -0.03 0.03 0.0 0.06 units box
+create_box      1 reg
+
+create_atoms    1 single -0.020 0.0 0.0045
+create_atoms    1 single  0.025 0.0 0.0200
+set             atom 1 shape 0.0020 0.0020 0.0060 blockiness 8.0 2.0 density 2500 quat_direct 1.0 0.0 0.0 0.0
+set             atom 2 shape 0.0020 0.0020 0.0060 blockiness 8.0 2.0 density 2500 quat_direct 1.0 0.0 0.0 0.0
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+fix             m5 all property/global coefficientRollingFriction peratomtypepair 1 0.005
+fix             m6 all property/global characteristicVelocity scalar 1.0
+fix             m7 all property/global coefficientRollingViscousDamping peratomtypepair 1 0.0
+
+pair_style      gran model hertz tangential history rolling_friction epsd2 surface superquadric
+pair_coeff      * *
+timestep        1.0e-5
+
+fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
+fix             zlo all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 zplane 0.0
+fix             xhi all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 xplane 0.03
+fix             ylo all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric primitive type 1 yplane -0.03
+fix             integr all nve/superquadric integration_scheme 1
+
+run             1
+
+variable        natoms equal atoms
+print           "TEST_METRIC natoms=${natoms}"

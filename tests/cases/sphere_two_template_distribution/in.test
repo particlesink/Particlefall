@@ -1,0 +1,40 @@
+echo both
+
+atom_style      granular
+atom_modify     map array
+boundary        m m m
+newton          off
+communicate     single vel yes
+units           si
+
+region          reg block -0.03 0.03 -0.03 0.03 0.0 0.06 units box
+region          insreg block -0.02 0.02 -0.02 0.02 0.025 0.045 units box
+create_box      1 reg
+
+neighbor        0.002 bin
+neigh_modify    delay 0
+
+fix             m1 all property/global youngsModulus peratomtype 1.e7
+fix             m2 all property/global poissonsRatio peratomtype 0.30
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.2
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+
+pair_style      gran model hertz tangential history
+pair_coeff      * *
+timestep        1.0e-5
+
+fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
+fix             zlo all wall/gran model hertz tangential history primitive type 1 zplane 0.0
+
+fix             pts_small all particletemplate/sphere 15485863 atom_type 1 density constant 2500 radius constant 0.002
+fix             pts_large all particletemplate/sphere 15485867 atom_type 1 density constant 2500 radius constant 0.003
+fix             pdd_mix all particledistribution/discrete 32452843 2 pts_small 0.5 pts_large 0.5
+fix             ins1 all insert/pack seed 49979687 distributiontemplate pdd_mix insert_every once &
+                overlapcheck yes all_in no maxattempt 100 vel constant 0.0 0.0 0.0 &
+                region insreg particles_in_region 2
+fix             integr all nve/sphere
+
+run             1
+
+variable        natoms equal atoms
+print           "TEST_METRIC natoms=${natoms}"

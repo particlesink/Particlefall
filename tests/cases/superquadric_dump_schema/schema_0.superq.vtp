@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<VTKFile type="PolyData" version="0.1" byte_order="LittleEndian">
+  <PolyData>
+    <Piece NumberOfPoints="1" NumberOfVerts="1" NumberOfLines="0" NumberOfStrips="0" NumberOfPolys="0">
+      <PointData>
+        <DataArray type="Int32" Name="id" format="ascii">
+          1 
+        </DataArray>
+        <DataArray type="Int32" Name="type" format="ascii">
+          1 
+        </DataArray>
+        <DataArray type="Float64" Name="mass" format="ascii">
+          5.4302045356561298e-04 
+        </DataArray>
+        <DataArray type="Float64" Name="v" NumberOfComponents="3" format="ascii">
+          0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="f" NumberOfComponents="3" format="ascii">
+          0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="radius" format="ascii">
+          6.7088747528926199e-03 
+        </DataArray>
+        <DataArray type="Float64" Name="omega" NumberOfComponents="3" format="ascii">
+          0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="angmom" NumberOfComponents="3" format="ascii">
+          0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="tq" NumberOfComponents="3" format="ascii">
+          0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="shapex" format="ascii">
+          2.0000000000000000e-03 
+        </DataArray>
+        <DataArray type="Float64" Name="shapey" format="ascii">
+          3.0000000000000001e-03 
+        </DataArray>
+        <DataArray type="Float64" Name="shapez" format="ascii">
+          6.0000000000000001e-03 
+        </DataArray>
+        <DataArray type="Float64" Name="TENSOR" NumberOfComponents="9" format="ascii">
+          1.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00 1.0000000000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="blockiness1" format="ascii">
+          8.0000000000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="blockiness2" format="ascii">
+          2.0000000000000000e+00 
+        </DataArray>
+      </PointData>
+      <CellData>
+      </CellData>
+      <Points>
+        <DataArray type="Float64" NumberOfComponents="3" format="ascii">
+          0.0000000000000000e+00 0.0000000000000000e+00 2.0000000000000000e-02 
+        </DataArray>
+      </Points>
+      <Verts>
+        <DataArray type="Int32" Name="connectivity" format="ascii">
+          0 
+        </DataArray>
+        <DataArray type="Int32" Name="offsets" format="ascii">
+          1 
+        </DataArray>
+      </Verts>
+      <Lines>
+        <DataArray type="Int32" Name="connectivity" format="ascii">
+          
+        </DataArray>
+        <DataArray type="Int32" Name="offsets" format="ascii">
+          
+        </DataArray>
+      </Lines>
+      <Polys>
+        <DataArray type="Int32" Name="connectivity" format="ascii">
+          
+        </DataArray>
+        <DataArray type="Int32" Name="offsets" format="ascii">
+          
+        </DataArray>
+      </Polys>
+    </Piece>
+  </PolyData>
+</VTKFile>

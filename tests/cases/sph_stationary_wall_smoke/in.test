@@ -1,0 +1,50 @@
+echo both
+
+atom_style      sph
+atom_modify     map array sort 0 0
+communicate     single vel yes
+boundary        f f p
+newton          off
+dimension       2
+units           si
+
+region          reg block -0.02 0.08 -0.02 0.08 -0.001 0.001 units box
+create_box      2 reg
+create_atoms    1 single 0.010 0.010 0.000
+create_atoms    2 single 0.040 0.040 0.000
+mass            * 0.086
+
+group           fluid type 1
+group           wallgrp type 2
+
+neighbor        0.003 bin
+
+fix             m1 all property/global speedOfSound peratomtype 20.0 20.0
+fix             m2 all property/global sl peratomtype 0.012 0.012
+fix             m3 all property/global artViscAlpha peratomtype 4.1666e-3 4.1666e-3
+fix             m4 all property/global artViscBeta peratomtype 0.0 0.0
+fix             m5 all property/global artViscEta scalar 1.44e-6
+fix             m6 all property/global tensCorrEpsilon scalar 0.2
+fix             m7 all property/global tensCorrDeltaP peratomtype 0.010 0.010
+
+pair_style      sph/artVisc/tensCorr cubicspline2d 0.012 artVisc tensCorr
+pair_coeff      * *
+
+fix             density all sph/density/continuity
+fix             corr all sph/density/corr shepard every 10
+set             group all meso_rho 1000.0
+fix             pressure all sph/pressure Tait 60000.0 1000.0 7.0
+fix             wallfix all wall/sph xplane 0.060 NULL 0.005 1.0
+
+timestep        1.0e-5
+fix             integr fluid nve/sph
+fix             integrWall wallgrp nve/sph/stationary
+fix             only2d all enforce2d
+set             group all sphkernel cubicspline2d
+
+run             1
+
+variable        natoms equal atoms
+variable        final_step equal step
+print           "TEST_METRIC natoms=${natoms}"
+print           "TEST_METRIC final_step=${final_step}"
