@@ -241,7 +241,7 @@ variable strings are consumed.  Thus, this command can be used to run
 50 simulations on 8 processor partitions.  The simulations will be run
 one after the other on whatever partition becomes available, until
 they are all finished.  *Universe* style variables are incremented
-using the files "tmp.lammps.variable" and "tmp.lammps.variable.lock"
+using the files ``tmp.lammps.variable`` and ``tmp.lammps.variable.lock``
 which you will see in your directory during such a Packfall run.
 
 The *uloop* style is identical to the *universe* style except that the

@@ -73,7 +73,7 @@ assigned the same value.  Running Packfall on multiple partitions of
 processors via the "-partition" command-line switch is described in
 :ref:`this section <start_7>` of the manual.  *Universe*\ -
 and *uloop*\ -style variables are incremented using the files
-"tmp.lammps.variable" and "tmp.lammps.variable.lock" which you will
+``tmp.lammps.variable`` and ``tmp.lammps.variable.lock`` which you will
 see in your directory during such a Packfall run.
 
 Here is an example of running a series of simulations using the next

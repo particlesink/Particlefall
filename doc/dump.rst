@@ -617,7 +617,7 @@ Restrictions
 
 
 To write gzipped dump files, you must compile Packfall with the
--DLAMMPS\_GZIP option - see the :ref:`Making LAMMPS <start_2>` section of the documentation.
+-DLAMMPS\_GZIP option - see the :ref:`Making Packfall <start_2>` section of the documentation.
 
 To be able to use *atom/vtk*\ , you have to link to VTK libraries,
 please adapt your Makefile accordingly.

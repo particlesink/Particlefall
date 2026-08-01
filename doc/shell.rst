@@ -42,7 +42,7 @@ Examples
    shell cd ..
    shell mkdir tmp1 tmp2 tmp3
    shell rmdir tmp1
-   shell mv log.lammps hold/log.1
+   shell mv log.lammps hold/packfall.log.1
    shell rm TMP/file1 TMP/file2
    shell my_setup file1 10 file2
    shell my_post_process 100 dump.out

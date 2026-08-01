@@ -311,17 +311,12 @@ Again, the :doc:`run <run>` command has options that allow it to be
 invoked with minimal overhead (no setup or clean-up) if you wish to do
 multiple short runs, driven by another program.
 
-Examples of driver codes that call Packfall as a library are included in
-the examples/COUPLE directory of the Packfall distribution; see
-examples/COUPLE/README for more details:
+Examples of wrapper-style integrations that call Packfall as a library
+are included in the Python tooling shipped with Packfall:
 
-* simple: simple driver programs in C++ and C which invoke Packfall as a
-  library
-* lammps\_quest: coupling of Packfall and `Quest <quest_>`_, to run classical
-  MD with quantum forces calculated by a density functional code
-* lammps\_spparks: coupling of Packfall and `SPPARKS <spparks_>`_, to couple
-  a kinetic Monte Carlo model for grain growth using MD to calculate
-  strain induced across grain boundaries
+* ``python/examples/demo.py``: a small direct wrapper example
+* ``python/examples/gui.py``: GUI-driven control of a Packfall run
+* ``python/examples/vizplotgui.py``: GUI plus live plotting example
 
 .. _quest: http://dft.sandia.gov/Quest
 
@@ -346,7 +341,7 @@ Packfall library interface.
 The files src/library.cpp and library.h contain the C-style interface
 to Packfall.
 
-Note that the lammps\_open() function that creates an instance of
+Note that the packfall\_open() function that creates an instance of
 Packfall takes an MPI communicator as an argument.  This means that
 instance of Packfall will run on the set of processors in the
 communicator.  Thus the calling code can run Packfall on all or a subset
@@ -1024,17 +1019,17 @@ Library.cpp contains these 4 functions:
 
 .. parsed-literal::
 
-   void lammps_open(int, char \*\*, MPI_Comm, void \*\*);
-   void lammps_close(void \*);
-   void lammps_file(void \*, char \*);
-   char \*lammps_command(void \*, char \*);
+   void packfall_open(int, char \*\*, MPI_Comm, void \*\*);
+   void packfall_close(void \*);
+   void packfall_file(void \*, const char \*);
+   char \*packfall_command(void \*, const char \*);
 
-The lammps\_open() function is used to initialize Packfall, passing in a
+The packfall\_open() function is used to initialize Packfall, passing in a
 list of strings as if they were :ref:`command-line arguments <start_7>` when Packfall is run in
 stand-alone mode from the command line, and a MPI communicator for
 Packfall to run under.  It returns a ptr to the Packfall object that is
 created, and which is used in subsequent library calls.  The
-lammps\_open() function can be called multiple times, to create
+packfall\_open() function can be called multiple times, to create
 multiple instances of Packfall.
 
 Packfall will run on the set of processors in the communicator.  This
@@ -1046,15 +1041,15 @@ half to the other code and run both codes simultaneously before
 syncing them up periodically.  Or it might instantiate multiple
 instances of Packfall to perform different calculations.
 
-The lammps\_close() function is used to shut down an instance of Packfall
+The packfall\_close() function is used to shut down an instance of Packfall
 and free all its memory.
 
-The lammps\_file() and lammps\_command() functions are used to pass a
+The packfall\_file() and packfall\_command() functions are used to pass a
 file or string to Packfall as if it were an input script or single
 command in an input script.  Thus the calling code can read or
 generate a series of Packfall commands one line at a time and pass it
 thru the library interface to setup a problem and then run it,
-interleaving the lammps\_command() calls with other calls to extract
+interleaving the packfall\_command() calls with other calls to extract
 information from Packfall, perform its own operations, or call another
 code's library.
 
@@ -1063,14 +1058,12 @@ Other useful functions are also included in library.cpp.  For example:
 
 .. parsed-literal::
 
-   void \*lammps_extract_global(void \*, char \*)
-   void \*lammps_extract_atom(void \*, char \*)
-   void \*lammps_extract_compute(void \*, char \*, int, int)
-   void \*lammps_extract_fix(void \*, char \*, int, int, int, int)
-   void \*lammps_extract_variable(void \*, char \*, char \*)
-   int lammps_get_natoms(void \*)
-   void lammps_get_coords(void \*, double \*)
-   void lammps_put_coords(void \*, double \*)
+   void \*packfall_extract_global(void \*, const char \*)
+   void \*packfall_extract_atom(void \*, const char \*)
+   void \*packfall_extract_compute(void \*, const char \*, int, int)
+   void \*packfall_extract_fix(void \*, const char \*, int, int, int, int)
+   void \*packfall_extract_variable(void \*, char \*, char \*)
+   int packfall_get_natoms(void \*)
 
 These can extract various global or per-atom quantities from Packfall as
 well as values calculated by a compute, fix, or variable.  The "get"
@@ -1081,8 +1074,8 @@ details.
 The key idea of the library interface is that you can write any
 functions you wish to define how your code talks to Packfall and add
 them to src/library.cpp and src/library.h, as well as to the :doc:`Python interface <Section_python>`.  The routines you add can access or
-change any Packfall data you wish.  The examples/COUPLE and python
-directories have example C++ and C and Python codes which show how a
+change any Packfall data you wish.  The Python wrapper and example
+scripts in the ``python`` directory show how a
 driver code can link to Packfall as a library, run Packfall on a subset of
 processors, grab data from Packfall, change it, and put it back into
 Packfall.

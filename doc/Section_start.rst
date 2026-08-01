@@ -197,11 +197,10 @@ When used from a C or Fortran program or a scripting language like
 Python, the library has a simple function-style interface, provided in
 src/library.cpp and src/library.h.
 
-See the sample codes in examples/COUPLE/simple for examples of C++ and
-C and Fortran codes that invoke Packfall thru its library interface.
-There are other examples as well in the COUPLE directory which are
-discussed in :ref:`Section\_howto 10 <howto_10>` of the
-manual.  See :doc:`Section\_python <Section_python>` of the manual for a
+See the Python wrapper examples in the ``python/examples`` directory and
+the library interface discussion in :ref:`Section\_howto 10 <howto_10>`
+for examples of invoking Packfall from other code. See
+:doc:`Section\_python <Section_python>` of the manual for a
 description of the Python wrapper provided with Packfall that operates
 through the Packfall library interface.
 
@@ -238,7 +237,7 @@ Linux box, using mpirun to launch a parallel job:
 
    cd src
    make
-   cd ../examples/Packfall/Tutorials_public/chute_wear
+   cd ../examples/chute_wear
    mpirun -np 4 packfall < in.chute_wear
 
 

@@ -57,7 +57,8 @@ top of each other!
 
 If you get an error message about an invalid command in your input
 script, you can determine what command is causing the problem by
-looking in the log.lammps file or using the :doc:`echo command <echo>`
+looking in the default Packfall log file (currently named
+``log.lammps``) or using the :doc:`echo command <echo>`
 to see it on the screen.  For a given command, the code expects certain
 arguments in a specified order.  If you mess this up, the code will
 often flag the error, but it may read a bogus argument and assign a
@@ -842,7 +843,8 @@ Errors:
    Self-explanatory.
 
 *Cannot open log.lammps*
-   The default Packfall log file cannot be opened.  Check that the
+   The default Packfall log file (currently named ``log.lammps``) cannot
+   be opened.  Check that the
    directory you are running in allows for files to be created.
 
 *Cannot open logfile*

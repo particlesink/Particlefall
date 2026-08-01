@@ -36,9 +36,10 @@ Packfall is distributed under the terms of the `GNU Public License
 History
 -------
 
-Packfall is a fork of LIGGGHTS. The project keeps the inherited
-simulation base where it is useful, while evolving the code and
-documentation in directions needed for Packfall.
+Packfall is derived from earlier LIGGGHTS-PUBLIC and LAMMPS code. The
+project keeps inherited simulation infrastructure where it is useful,
+while evolving the code and documentation in directions needed for
+Packfall.
 
 
 .. _intro\_2:
@@ -119,8 +120,8 @@ development.
 Acknowledgments and citations
 --------------------------------------------
 
-Packfall inherits substantial architecture from both LIGGGHTS and
-LAMMPS. The LAMMPS development effort was supported by the
+Packfall inherits substantial architecture from earlier LIGGGHTS-PUBLIC
+and LAMMPS code. The LAMMPS development effort was supported by the
 `US Department of Energy <doe_>`_ (DOE), including its CRADA, LDRD,
 ASCI, and Genomes-to-Life programs and its `OASCR <oascr_>`_ and
 `OBER <ober_>`_ offices. Additional support came from the DOE

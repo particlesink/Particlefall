@@ -37,9 +37,10 @@ Examples
 
    fix 3 hg heat/gran/conduction initial_temperature 273.15
 
-**Packfall vs. LAMMPS info:**
+**Packfall Availability:**
 
-This command is not available in LAMMPS.
+This command is specific to Packfall and is not available in upstream
+LAMMPS.
 
 Description
 """""""""""

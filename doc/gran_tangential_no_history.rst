@@ -22,11 +22,11 @@ Syntax
        use in :doc:`fix calculate/dissipated_energy <fix_calculate_dissipated_energy>`
        of = no values are saved
 
-**Packfall vs. LAMMPS Info:**
+**Packfall Availability:**
 
 This part of :doc:`pair gran <pair_gran>` and
-:doc:`fix wall/gran <fix_wall_gran>`
-is not availabe in LAMMPS.
+:doc:`fix wall/gran <fix_wall_gran>` is specific to Packfall and is not
+available in upstream LAMMPS.
 
 Description
 """""""""""

@@ -707,7 +707,7 @@ you and us.  See existing package files for examples.
   or style you are adding to Packfall.  This will be one file for a
   single-file feature.  For a package, it might be several files.  These
   are simple text files which we will convert to HTML.  They must be in
-  the same format as other \*.txt files in the lammps/doc directory for
+  the same format as other manual source files in the ``doc/`` directory for
   similar commands and styles.  The txt2html
   tool we use to do the conversion can be downloaded from `this site <http://www.sandia.gov/~sjplimp/download.html>`_, so you can perform
   the HTML conversion yourself to proofread your doc page.

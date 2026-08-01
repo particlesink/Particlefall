@@ -81,13 +81,16 @@ Typical workflow:
 * integrate motion with :doc:`fix nve/superquadric <fix_nve_superquadric>`
 * dump quaternion and shape data for post-processing if visualization of the real body geometry is desired
 
-See also the public example in
-``examples/Packfall/Tutorials_public/superquadric/in.particle_particle``.
+See also the example in
+``examples/superquadric/in.particle_particle``.
 
 Performance
 -----------
 
-The SUPERQUADRIC model uses the framework of LIGGGHT(R). Therefore, the parallel scalability is linear as Packfall itself. Compared to standard Packfall, the calculation of contact points is computational expensive for superquadric bodies, which leads to a lower maximum number of particles per processor.
+The SUPERQUADRIC model uses the same parallel simulation framework as
+Packfall itself. Compared to standard Packfall, the calculation of
+contact points is computationally expensive for superquadric bodies,
+which leads to a lower maximum number of particles per processor.
 
 
 ----------
