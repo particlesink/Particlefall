@@ -11,6 +11,10 @@ or on Linux:
 
 The canonical Python wrapper is:
 
+  from packfall import Packfall
+
+The lowercase alias remains available for compatibility with older scripts:
+
   from packfall import packfall
 
 The wrapper looks for in-repo shared libraries first:

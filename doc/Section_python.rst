@@ -9,7 +9,7 @@ interface.
 		:local:
 		:depth: 1
    
-The Packfall distribution includes the file python/Packfall.py which wraps
+The Packfall distribution includes the file python/packfall.py which wraps
 the library interface to Packfall.  This file makes it is possible to
 run Packfall, invoke Packfall commands or give it an input script, extract
 Packfall results, an modify internal Packfall variables, either from a
@@ -47,7 +47,7 @@ Packfall thru Python will be negligible.
 Before using Packfall from a Python script, you need to do two things.
 You need to build Packfall as a dynamic shared library, so it can be
 loaded by Python.  And you need to tell Python how to find the library
-and the Python wrapper file python/Packfall.py.  Both these steps are
+and the Python wrapper file python/packfall.py.  Both these steps are
 discussed below.  If you wish to run Packfall in parallel from Python,
 you also need to extend your Python with MPI.  This is also discussed
 below.
@@ -107,11 +107,11 @@ Installing the Python wrapper into Python
 
 For Python to invoke Packfall, there are 2 files it needs to know about:
 
-* python/Packfall.py
-* src/libpackfall.so
+* python/packfall.py
+* libpackfall shared library in ``build/linux`` or ``build/msys2``
 
-Lammps.py is the Python wrapper on the Packfall library interface.
-Libpackfall.so is the shared Packfall library that Python loads, as
+packfall.py is the Python wrapper on the Packfall library interface.
+libpackfall.so or libpackfall.dll is the shared Packfall library that Python loads, as
 described above.
 
 You can insure Python can find these files in one of two ways:
@@ -131,7 +131,7 @@ this to your ~/.cshrc file, one line for each of the two files:
 
 If you use the python/install.py script, you need to invoke it every
 time you rebuild Packfall (as a shared library) or make changes to the
-python/Packfall.py file.
+python/packfall.py file.
 
 You can invoke install.py from the python directory as
 
@@ -142,7 +142,7 @@ You can invoke install.py from the python directory as
 
 The optional libdir is where to copy the Packfall shared library to; the
 default is /usr/local/lib.  The optional pydir is where to copy the
-Packfall.py file to; the default is the site-packages directory of the
+packfall.py file to; the default is the site-packages directory of the
 version of Python that is running the install script.
 
 Note that libdir must be a location that is in your default
@@ -177,7 +177,7 @@ which Python is invoked by root.
 
 Note that if you want Python to be able to load different versions of
 the Packfall shared library (see :ref:`this section <py_5>` below), you will
-need to manually copy files like liblmp\_auto.so into the appropriate
+need to manually copy files like libpackfall\_auto.so into the appropriate
 system directory.  This is not needed if you set the LD\_LIBRARY\_PATH
 environment variable as described above.
 
@@ -312,7 +312,7 @@ and type:
 
 .. parsed-literal::
 
-   >>> from Packfall import Packfall
+   >>> from packfall import Packfall
    >>> lig = Packfall()
 
 If you get no errors, you're ready to use Packfall from Python.  If the
@@ -330,7 +330,7 @@ about the library is incompatible with your Python.  The error message
 should give you an indication of what went wrong.
 
 You can also test the load directly in Python as follows, without
-first importing from the Packfall.py file:
+first importing from the packfall.py file:
 
 
 .. parsed-literal::
@@ -351,7 +351,7 @@ interactively from the bench directory:
 
 .. parsed-literal::
 
-   >>> from Packfall import Packfall
+   >>> from packfall import Packfall
    >>> lig = Packfall()
    >>> lig.file("in.lj")
 
@@ -369,7 +369,7 @@ typed something like:
 
 .. parsed-literal::
 
-   lmp_auto < in.lj
+   packfall < in.lj
 
 **Test Packfall and Python in parallel:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -382,7 +382,7 @@ above, create a test.py file containing these lines:
 .. parsed-literal::
 
    import pypar
-   from Packfall import Packfall
+   from packfall import Packfall
    lig = Packfall()
    lig.file("in.lj")
    print "Proc %d out of %d procs has" % (pypar.rank(),pypar.size()),lig
@@ -400,7 +400,7 @@ and you should see the same output as if you had typed
 
 .. parsed-literal::
 
-   % mpirun -np 4 lmp_auto < in.lj
+   % mpirun -np 4 packfall < in.lj
 
 Note that if you leave out the 3 lines from test.py that specify Pypar
 commands you will instantiate and run Packfall independently on each of
@@ -461,18 +461,18 @@ Python on a single processor, not in parallel.
 Using Packfall from Python
 ------------------------------------
 
-The Python interface to Packfall consists of a Python "Packfall" module,
-the source code for which is in python/Packfall.py, which creates a
+The Python interface to Packfall consists of a Python ``packfall`` module,
+the source code for which is in python/packfall.py, which creates a
 "Packfall" object, with a set of methods that can be invoked on that
 object.  The sample Python code below assumes you have first imported
-the "Packfall" module in your Python script, as follows:
+the ``packfall`` module in your Python script, as follows:
 
 
 .. parsed-literal::
 
-   from Packfall import Packfall
+   from packfall import Packfall
 
-These are the methods defined by the Packfall module.  If you look
+These are the methods defined by the ``packfall`` module.  If you look
 at the file src/library.cpp you will see that they correspond
 one-to-one with calls you can make to the Packfall library from a C++ or
 C or Fortran program.
@@ -481,7 +481,7 @@ C or Fortran program.
 .. parsed-literal::
 
    lig = Packfall()           # create a Packfall object using the default libpackfall.so library
-   lig = Packfall("auto")     # create a Packfall object using the liblmp_auto.so library
+   lig = Packfall("auto")     # create a Packfall object using the libpackfall_auto.so library
    lig = Packfall("",list)    # ditto, with command-line args, e.g. list = ["-echo","screen"]
    lig = Packfall("auto",list)
 
@@ -534,7 +534,7 @@ C or Fortran program.
 .. warning::
 
    Currently, the creation of a Packfall object from within
-   Packfall.py does not take an MPI communicator as an argument.  There
+   packfall.py does not take an MPI communicator as an argument.  There
    should be a way to do this, so that the Packfall instance runs on a
    subset of processors if desired, but I don't know how to do it from
    Pypar.  So for now, it runs with MPI\_COMM\_WORLD, which is all the
@@ -548,7 +548,7 @@ script, and coordinate and run multiple simulations, e.g.
 
 .. parsed-literal::
 
-   from Packfall import Packfall
+   from packfall import Packfall
    lig1 = Packfall()
    lig2 = Packfall()
    lig1.file("in.file1")
@@ -666,7 +666,7 @@ following steps:
 * Add a new interface function to src/library.cpp and
   src/library.h.
 * Rebuild Packfall as a shared library.
-* Add a wrapper method to python/Packfall.py for this interface
+* Add a wrapper method to python/packfall.py for this interface
   function.
 * You should now be able to invoke the new interface function from a
   Python script.  Isn't ctypes amazing?

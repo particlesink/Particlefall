@@ -8,7 +8,7 @@ import sys
 from ctypes import CDLL, POINTER, RTLD_GLOBAL, byref, c_char_p, c_double, c_int, c_void_p
 
 
-class packfall:
+class Packfall:
     def __init__(self, name: str = "", cmdargs: list[str] | None = None):
         self.lmp = None
         self.lib = self._load_library(name)
@@ -211,3 +211,9 @@ class packfall:
 
     def scatter_atoms(self, name: str, value_type: int, count: int, data):
         self.lib.packfall_scatter_atoms(self.lmp, name.encode(), value_type, count, data)
+
+
+# Backward-compatible alias retained for the existing example scripts.
+packfall = Packfall
+
+__all__ = ["Packfall", "packfall"]
