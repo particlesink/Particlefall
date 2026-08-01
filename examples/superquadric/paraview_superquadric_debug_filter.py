@@ -1,5 +1,5 @@
 """
-ParaView programmable-filter helper for debugging Packfall/LIGGGHTS
+ParaView programmable-filter helper for debugging Packfall
 superquadric contact against the floor.
 
 Usage in ParaView:

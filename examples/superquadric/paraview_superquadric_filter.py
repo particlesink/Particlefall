@@ -1,5 +1,5 @@
 """
-ParaView programmable-filter helper for Packfall/LIGGGHTS superquadric dumps.
+ParaView programmable-filter helper for Packfall superquadric dumps.
 
 Usage in ParaView:
 1. Open `dump*.superq.vtk` or `dump*.superq.vtp`.
@@ -602,7 +602,7 @@ for i in range(npts):
     if n2 < 2.0:
         n2 = 2.0
 
-    # LIGGGHTS blockiness=2 maps to the ellipsoidal case. ParaView's
+    # Packfall blockiness=2 maps to the ellipsoidal case. ParaView's
     # vtkSuperquadricSource uses roundness=1 for the same geometry.
     theta_roundness = 2.0 / n1
     phi_roundness = 2.0 / n2

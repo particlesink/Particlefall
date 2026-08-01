@@ -1,7 +1,7 @@
 Superquadric tutorial examples
 ==============================
 
-This folder contains a small tutorial suite for Packfall/LIGGGHTS
+This folder contains a small tutorial suite for Packfall
 superquadric support. Each input focuses on a specific feature set so the
 examples stay readable.
 
@@ -39,4 +39,3 @@ Visualization
 The VTK/VTP dumps written by these cases contain quaternion, semi-axis,
 and blockiness data. Use `paraview_superquadric_filter.py` in this folder
 to reconstruct the actual superquadric geometry in ParaView.
-

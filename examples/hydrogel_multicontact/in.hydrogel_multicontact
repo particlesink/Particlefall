@@ -1,5 +1,5 @@
 #
-# Example for the multicontact model implemented in LIGGGHTS
+# Example for the multicontact model implemented in Packfall
 # The model is based on the paper by Brodu et al. 2015 and can be retrieved from
 # http://journals.aps.org/pre/abstract/10.1103/PhysRevE.91.032201
 # The input data was kindly provided by the researchers and the associated gnuplot script compares Figure 3 of this paper.
