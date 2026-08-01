@@ -1,3 +1,94 @@
 
 Release notes
 
+Packfall 1.0.0
+==============
+
+Packfall 1.0.0 is the first release built on LIGGGHTS-PUBLIC 3.8.0, 
+with a simplified build and updated documentation.
+
+Highlights
+----------
+
+- Simplified supported build flow for Linux and MSYS2
+- Shared-library and Python wrapper support for Packfall
+- In-tree VTK support and improved VTK compatibility
+- Executable regression/smoke test harness added
+- Improved periodic mesh handling and mesh-aware insertion workflows
+- Expanded superquadric support and documentation
+- Experimental SPH-DEM coupling scaffold added
+- Improved examples, docs, and tree layout
+
+Supported build and workflow
+----------------------------
+
+This release standardizes the supported build entry points around:
+
+- `make linux`
+- `make msys2`
+
+Major changes
+-------------
+
+Build and packaging
+-------------------
+
+- Added in-tree VTK support and updated internal VTK shim naming for
+  Packfall
+- Improved compatibility for VTK-based builds and dump support
+- Isolated platform-specific MPI stubs
+- Added shared-library build support for Packfall
+
+Python interface
+----------------
+
+- Added a Packfall shared-library demo and Python wrapper workflow
+- Cleaned up the Packfall library and Python interface
+- Standardized Python wrapper naming around `packfall.py`
+- Updated Python documentation to match the current Packfall naming and
+  library layout
+
+Examples and documentation
+--------------------------
+
+- Added a canonical RST documentation set
+- Updated examples, Python docs, and manual sections
+- Clarified supported build and package/library status in the docs
+
+Granular, mesh, and insertion workflows
+---------------------------------------
+
+- Added mesh-aware packed particle insertion
+- Added hopper refill control for packed insertion workflows
+- Added prototype time-based command cadence support
+- Added distributed sphere particle template radii
+- Added binary STL reading support
+- Improved periodic mesh handling
+- Improved thin-direction periodic boundary handling for mesh workflows
+- Improved periodic insert preload handling and mesh PBC diagnostics
+- Relaxed `fix_insert` remap checks for periodic-boundary insertion cases
+
+Superquadric support
+--------------------
+
+- Updated superquadric integration behavior
+- Improved superquadric output
+
+SPH and SPH-DEM
+---------------
+
+- Added additional SPH functionality
+- Added an experimental SPH-DEM coupling fix
+
+Runtime behavior
+---------------------------
+
+- Added support for automatic random-seed selection and `seed auto`
+  workflows
+
+Attribution
+-----------
+
+Packfall 1.0.0 is derived from the LIGGGHTS-PUBLIC 3.8.0 and
+retains required upstream attribution and copyright notices where
+applicable.
