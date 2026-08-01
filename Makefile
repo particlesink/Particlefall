@@ -1,4 +1,4 @@
-.PHONY: all help linux msys2 doc html clean clean-linux clean-msys2 clean-doc
+.PHONY: all help linux msys2 doc html clean distclean clean-linux clean-msys2 clean-doc clean-tests
 
 STD ?= -std=gnu++17
 export STD
@@ -22,7 +22,9 @@ help:
 	@echo "  make clean-linux      remove Linux build artifacts"
 	@echo "  make clean-msys2      remove MSYS2 build artifacts"
 	@echo "  make clean-doc        remove generated doc build artifacts"
-	@echo "  make clean            remove both build trees"
+	@echo "  make clean-tests      remove generated test artifacts"
+	@echo "  make clean            remove build, doc, and test artifacts"
+	@echo "  make distclean        also remove the top-level build directory"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make linux"
@@ -52,7 +54,14 @@ clean-msys2:
 clean-doc:
 	@$(MAKE) -C doc -f Makefile clean
 
-clean: clean-linux clean-msys2 clean-doc
+clean-tests:
+	@rm -rf tests/artifacts
+	@find tests/cases -type f -name 'log.*' -delete
+
+clean: clean-linux clean-msys2 clean-doc clean-tests
+
+distclean: clean
+	@rm -rf build
 
 %:
 	@:
