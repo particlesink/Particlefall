@@ -28,7 +28,7 @@ pair_coeff      * *
 timestep        ${dt}
 
 fix             grav all gravity 9.81 vector 0.0 0.0 -1.0
-fix             cyl_mesh all mesh/surface file ../../../examples/LIGGGHTS/Tutorials_public/mesh_inclusion_insert/meshes/cylinder_closed.stl type 1 scale 1.0
+fix             cyl_mesh all mesh/surface file ../../../examples/mesh_inclusion_insert/meshes/cylinder_closed.stl type 1 scale 1.0
 fix             cyl_wall all wall/gran model hertz tangential history rolling_friction epsd2 surface superquadric mesh n_meshes 1 meshes cyl_mesh
 
 fix             pts1 all particletemplate/superquadric 15485863 atom_type 1 density constant 2500 &

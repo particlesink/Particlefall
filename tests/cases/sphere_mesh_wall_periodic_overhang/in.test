@@ -22,7 +22,7 @@ pair_style      gran model hertz tangential history
 pair_coeff      * *
 timestep        1.0e-5
 
-fix             overhang_mesh all mesh/surface file ../../../examples/LIGGGHTS/Tutorials_public/mesh_inclusion_insert/meshes/cylinder_closed.stl type 1 scale 1.0 move 0.08 0.0 0.0
+fix             overhang_mesh all mesh/surface file ../../../examples/mesh_inclusion_insert/meshes/cylinder_closed.stl type 1 scale 1.0 move 0.08 0.0 0.0
 fix             overhang_wall all wall/gran model hertz tangential history mesh n_meshes 1 meshes overhang_mesh
 
 run             0
