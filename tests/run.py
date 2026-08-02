@@ -55,12 +55,75 @@ def parse_args():
         action="append",
         help="Run only cases in the named group. May be provided multiple times.",
     )
+    parser.add_argument("--clean", action="store_true", help="Clean generated test outputs and exit.")
     parser.add_argument("--list", action="store_true", help="List available cases and exit.")
     return parser.parse_args()
 
 
 def ensure_artifacts_dir():
     ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def clean_directory_contents(path):
+    for child in path.iterdir():
+        if child.name.startswith("."):
+            continue
+        remove_generated_path(child)
+
+
+def is_tracked(path):
+    relpath = path.resolve().relative_to(ROOT)
+    completed = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", str(relpath)],
+        cwd=str(ROOT),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return completed.returncode == 0
+
+
+def remove_generated_path(path):
+    tracked = is_tracked(path)
+    if tracked:
+        subprocess.run(
+            ["git", "restore", "--worktree", str(path.resolve().relative_to(ROOT))],
+            cwd=str(ROOT),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        return
+    if not path.exists():
+        return
+    if path.is_dir():
+        clean_directory_contents(path)
+    else:
+        path.unlink()
+
+
+def clean_case_outputs(case_dir, case):
+    for relpath in case.get("required_files", []):
+        path = case_dir / relpath
+        remove_generated_path(path)
+
+    for relpath in case.get("cleanup_paths", []):
+        path = case_dir / relpath
+        if not path.exists():
+            continue
+        remove_generated_path(path)
+
+    for pattern in case.get("cleanup_globs", []):
+        for path in case_dir.glob(pattern):
+            remove_generated_path(path)
+
+    for path in case_dir.glob("log.*"):
+        remove_generated_path(path)
+
+
+def clean_runner_artifacts():
+    if ARTIFACTS_DIR.exists():
+        shutil.rmtree(ARTIFACTS_DIR)
 
 
 def coerce_metric_value(text):
@@ -95,17 +158,6 @@ def compare_metric(expected, actual):
         return expected == actual
     return expected == actual
 
-
-def clean_required_files(case_dir, case):
-    for relpath in case.get("required_files", []):
-        path = case_dir / relpath
-        if path.exists():
-            if path.is_dir():
-                shutil.rmtree(path)
-            else:
-                path.unlink()
-
-
 def write_artifact_log(case_name, output):
     log_path = ARTIFACTS_DIR / f"{case_name}.log"
     last_error = None
@@ -139,7 +191,7 @@ def run_case(exe, case):
     input_name = case["input"]
     timeout_s = case.get("timeout_s", 20)
     ensure_artifacts_dir()
-    clean_required_files(case_dir, case)
+    clean_case_outputs(case_dir, case)
 
     command = [str(exe), "-in", input_name]
     env = build_runtime_env(exe)
@@ -202,11 +254,6 @@ def main():
             print(f"{case['name']} [{case.get('group', 'ungrouped')}]")
         return 0
 
-    exe = Path(args.exe).resolve() if args.exe else find_default_exe()
-    if exe is None or not exe.exists():
-        print("Could not find Packfall executable. Use --exe to specify one.", file=sys.stderr)
-        return 2
-
     selected_names = set(args.case or [])
     if selected_names:
         cases = [case for case in cases if case["name"] in selected_names]
@@ -223,6 +270,17 @@ def main():
             print("Unknown group(s): " + ", ".join(sorted(unknown_groups)), file=sys.stderr)
             return 2
         cases = [case for case in cases if case.get("group", "ungrouped") in selected_groups]
+
+    if args.clean:
+        for case in cases:
+            clean_case_outputs(ROOT / case["cwd"], case)
+        clean_runner_artifacts()
+        return 0
+
+    exe = Path(args.exe).resolve() if args.exe else find_default_exe()
+    if exe is None or not exe.exists():
+        print("Could not find Packfall executable. Use --exe to specify one.", file=sys.stderr)
+        return 2
 
     print(f"Using executable: {exe}")
     print(f"Running {len(cases)} test(s)")

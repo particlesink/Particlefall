@@ -1,4 +1,6 @@
-.PHONY: all help linux msys2 doc html clean distclean clean-linux clean-msys2 clean-doc clean-tests
+.PHONY: all help linux msys2 doc html clean distclean clean-linux clean-msys2 clean-doc clean-tests clean-examples
+
+PYTHON ?= python3
 
 STD ?= -std=gnu++17
 export STD
@@ -23,7 +25,8 @@ help:
 	@echo "  make clean-msys2      remove MSYS2 build artifacts"
 	@echo "  make clean-doc        remove generated doc build artifacts"
 	@echo "  make clean-tests      remove generated test artifacts"
-	@echo "  make clean            remove build, doc, and test artifacts"
+	@echo "  make clean-examples   remove generated example artifacts"
+	@echo "  make clean            remove build, doc, test, and example artifacts"
 	@echo "  make distclean        also remove the top-level build directory"
 	@echo ""
 	@echo "Examples:"
@@ -55,10 +58,14 @@ clean-doc:
 	@$(MAKE) -C doc -f Makefile clean
 
 clean-tests:
-	@rm -rf tests/artifacts
+	@$(PYTHON) tests/run.py --clean
 	@find tests/cases -type f -name 'log.*' -delete
 
-clean: clean-linux clean-msys2 clean-doc clean-tests
+clean-examples:
+	@$(PYTHON) examples/run.py --clean
+	@find examples -type f -name 'log.*' -delete
+
+clean: clean-linux clean-msys2 clean-doc clean-tests clean-examples
 
 distclean: clean
 	@rm -rf build
