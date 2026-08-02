@@ -14,6 +14,7 @@ either conceptually, or as printed out by the program.
 
 
 .. _err\_1:
+.. _start_2_3:
 
 Common problems
 ---------------

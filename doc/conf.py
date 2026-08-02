@@ -2,6 +2,7 @@
 #
 # RST sources in this directory are the canonical documentation inputs.
 
+import importlib.util
 import os
 
 
@@ -16,13 +17,17 @@ release = 'v1.X'
 
 exclude_patterns = ['_build']
 pygments_style = 'sphinx'
+suppress_warnings = ['toc.not_included']
 
 
 # -- Options for HTML output ----------------------------------------------
 
-html_theme = "sphinx_rtd_theme"
-if os.path.isdir('_themes'):
-    html_theme_path = ['_themes']
+if importlib.util.find_spec("sphinx_rtd_theme") is not None:
+    html_theme = "sphinx_rtd_theme"
+    if os.path.isdir('_themes'):
+        html_theme_path = ['_themes']
+else:
+    html_theme = "alabaster"
 
 if os.path.isdir('_static'):
     html_static_path = ['_static']

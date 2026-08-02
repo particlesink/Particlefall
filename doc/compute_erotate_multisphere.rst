@@ -58,7 +58,7 @@ Restrictions
 Related commands
 """"""""""""""""
 
-:doc:`compute ke/multisphere <compute_erotate_ke_multisphere>`
+:doc:`compute ke/multisphere <compute_ke_multisphere>`
 
 **Default:** none
 

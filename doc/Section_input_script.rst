@@ -78,6 +78,7 @@ command lists restrictions on how the command can be used.
 
 
 .. _inp\_2:
+.. _cmd_2:
 
 Parsing rules
 -------------

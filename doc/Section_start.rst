@@ -22,6 +22,7 @@ How to obtain Packfall
 
 
 .. _start\_2:
+.. _start_3:
 
 Building Packfall
 ----------------------------------------
@@ -41,6 +42,7 @@ Building Packfall
 
 
 .. _start\_2\_2:
+.. _start_2_4:
 
 **Steps to build a Packfall executable:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -119,6 +121,7 @@ automatically merged and only unique entries are kept in the merged file.
 
 
 .. _start\_5:
+.. _start_3_3:
 
 Building Packfall as a library
 -------------------------------------------------------
@@ -441,7 +444,7 @@ cores within each node are ranked in a desired order.  Or when using
 the :doc:`run\_style verlet/split <run_style>` command with 2 partitions
 to insure that a specific Kspace processor (in the 2nd partition) is
 matched up with a specific set of processors in the 1st partition.
-See the :doc:`Section\_accelerate <Section_accelerate>` doc pages for
+See the :doc:`Section\_packages <Section_packages>` doc pages for
 more details.
 
 If the keyword *nth* is used with a setting *N*\ , then it means every

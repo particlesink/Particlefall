@@ -511,7 +511,7 @@ box without explicit remapping of their coordinates.
 
    When non-equilibrium MD (NEMD) simulations are
    performed using this fix, the option "remap v" should normally be
-   used.  This is because :doc:`fix nvt/sllod <fix_nvt_sllod>` adjusts the
+   used.  This is because :doc:`fix nvt/sllod <fix_nh>` adjusts the
    atom positions and velocities to induce a velocity profile that
    matches the changing box size/shape.  Thus atom coordinates should NOT
    be remapped by fix deform, but velocities SHOULD be when atoms cross
@@ -525,13 +525,13 @@ box without explicit remapping of their coordinates.
    v" it is usually desirable that the fluid (or flowing material,
    e.g. granular particles) stream with a velocity profile consistent
    with the deforming box.  As mentioned above, using a thermostat such
-   as :doc:`fix nvt/sllod <fix_nvt_sllod>` or :doc:`fix lavgevin <doc/fix_langevin>` (with a bias provided by :doc:`compute temp/deform <compute_temp_deform>`), will typically accomplish
+   as :doc:`fix nvt/sllod <fix_nh>` or :doc:`fix langevin <fix_langevin>` (with a bias provided by :doc:`compute temp <compute_temp>`), will typically accomplish
    that.  If you do not use a thermostat, then there is no driving force
    pushing the atoms to flow in a manner consistent with the deforming
    box.  E.g. for a shearing system the box deformation velocity may vary
    from 0 at the bottom to 10 at the top of the box.  But the stream
    velocity profile of the atoms may vary from -5 at the bottom to +5 at
-   the top.  You can monitor these effects using the :doc:`fix ave/spatial <fix_ave_spatial>`, :doc:`compute temp/deform <compute_temp_deform>`, and :doc:`compute temp/profile <compute_temp_profile>` commands.  One way to induce
+   the top.  You can monitor these effects using the :doc:`fix ave/spatial <fix_ave_spatial>`, :doc:`compute temp <compute_temp>`, and :doc:`compute temp/profile <compute_temp>` commands.  One way to induce
    atoms to stream consistent with the box deformation is to give them an
    initial velocity profile, via the :doc:`velocity ramp <velocity>`
    command, that matches the box deformation rate.  This also typically
@@ -545,10 +545,10 @@ box without explicit remapping of their coordinates.
    of rigid bodies will be remapped to the changing simulation box.  This
    will be done regardless of whether atoms in the rigid bodies are in
    the fix deform group or not.  The velocity of the centers of mass are
-   not remapped even if *remap* is set to *v*\ , since :doc:`fix nvt/sllod <fix_nvt_sllod>` does not currently do anything special
+   not remapped even if *remap* is set to *v*\ , since :doc:`fix nvt/sllod <fix_nh>` does not currently do anything special
    for rigid particles.  If you wish to perform a NEMD simulation of
    rigid particles, you can either thermostat them independently or
-   include a background fluid and thermostat the fluid via :doc:`fix nvt/sllod <fix_nvt_sllod>`.
+   include a background fluid and thermostat the fluid via :doc:`fix nvt/sllod <fix_nh>`.
 
 The *flip* keyword allows the tilt factors for a triclinic box to
 exceed half the distance of the parallel box length, as discussed

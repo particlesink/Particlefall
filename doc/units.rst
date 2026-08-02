@@ -62,7 +62,7 @@ results from a unitless LJ simulation into physical quantities.
 Note that for LJ units, the default mode of thermodyamic output via
 the :doc:`thermo\_style <thermo_style>` command is to normalize energies
 by the number of atoms, i.e. energy/atom.  This can be changed via the
-:doc:`thermo\_modify norm <therm_modify>` command.
+:doc:`thermo\_modify norm <thermo_modify>` command.
 
 For style *real*\ , these are the units:
 

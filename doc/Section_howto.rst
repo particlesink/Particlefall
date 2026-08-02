@@ -381,6 +381,7 @@ VTK natively.
 
 
 .. _howto\_7:
+.. _howto_12:
 
 Triclinic (non-orthogonal) simulation boxes
 -------------------------------------------
@@ -579,6 +580,7 @@ MIN(0.0,xy,xz,xy+xz).
 
 
 .. _howto\_8:
+.. _4_15:
 
 Output from Packfall (thermo, dumps, computes, fixes, variables)
 --------------------------------------------------------------------------
@@ -996,6 +998,7 @@ rotate.
 
 
 .. _howto\_10:
+.. _howto_19:
 
 Library interface to Packfall
 ---------------------------------------
