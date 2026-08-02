@@ -30,7 +30,7 @@ SERIAL_CXX ?= /mingw64/bin/g++
 # Feature toggles:
 #   ENABLE_GZIP=1 enables reading/writing .gz files via the gzip executable.
 ENABLE_GZIP ?= 0
-ENABLE_SUPERQUADRICS ?= 0
+ENABLE_SUPERQUADRICS ?= 1
 
 FEATURE_DEFS := -DLAMMPS_VTK
 ifeq ($(ENABLE_GZIP),1)
@@ -138,6 +138,7 @@ $(SHARED_LIB): $(LIB_OBJ)
 	$(LINK) $(CXXFLAGS) $(SHLIBFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LDLIBS) $(SHLINKFLAGS) -o $@
 
 $(OBJ_DIR)/%.o: %.cpp $(HEADER_STAMP) $(STUB_TARGET) | $(OBJ_DIR) $(DEP_DIR) $(STUB_DIR)
+	@mkdir -p $(OBJ_DIR) $(DEP_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MMD -MF $(DEP_DIR)/$*.d -c $< -o $@
 
 clean:
