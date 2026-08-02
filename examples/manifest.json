@@ -1,0 +1,125 @@
+{
+  "cases": [
+    {
+      "name": "sph_dem_bridge",
+      "group": "manual-smoke",
+      "cwd": "examples/sph_dem_bridge",
+      "input": "in.sph_dem_bridge",
+      "timeout_s": 20,
+      "required_output_regex": [
+        "^\\s*50\\s+3\\s+"
+      ]
+    },
+    {
+      "name": "superquadric_orientation_modes",
+      "group": "manual-smoke",
+      "cwd": "examples/superquadric",
+      "input": "in.orientation_modes",
+      "timeout_s": 20,
+      "cleanup_paths": [
+        "post"
+      ],
+      "required_globs": [
+        {
+          "pattern": "post/orientation_modes_*.superq.vtp",
+          "min_count": 2,
+          "required_substrings": [
+            "Name=\"blockiness1\"",
+            "Name=\"shapex\"",
+            "Name=\"TENSOR\""
+          ],
+          "min_size_bytes": 200
+        }
+      ],
+      "required_files": [
+        "post/orientation_modes_1.superq.vtp"
+      ],
+      "required_file_substrings": {
+        "post/orientation_modes_1.superq.vtp": [
+          "NumberOfPoints=\"24\"",
+          "Name=\"shapex\"",
+          "Name=\"blockiness1\"",
+          "Name=\"TENSOR\""
+        ]
+      }
+    },
+    {
+      "name": "mesh_inclusion_insert",
+      "group": "manual-smoke",
+      "cwd": "examples/mesh_inclusion_insert",
+      "input": "in.mesh_inclusion_insert",
+      "timeout_s": 60,
+      "cleanup_paths": [
+        "post"
+      ],
+      "required_globs": [
+        {
+          "pattern": "post/mesh_inclusion_insert_*.vtk",
+          "min_count": 1,
+          "required_substrings": [
+            "POINTS",
+            "radius"
+          ],
+          "min_size_bytes": 200
+        }
+      ]
+    },
+    {
+      "name": "pbc_periodic_mesh_fpf",
+      "group": "manual-smoke",
+      "cwd": "examples/pbc_periodic_mesh",
+      "input": "in.fpf",
+      "timeout_s": 30,
+      "cleanup_globs": [
+        "fpf_particles_*.vtk",
+        "fpf_mesh_*.stl"
+      ],
+      "required_files": [
+        "fpf_particles_0.vtk",
+        "fpf_mesh_0.stl"
+      ],
+      "required_file_substrings": {
+        "fpf_particles_0.vtk": [
+          "POINTS",
+          "radius"
+        ],
+        "fpf_mesh_0.stl": [
+          "solid"
+        ]
+      }
+    },
+    {
+      "name": "chute_wear",
+      "group": "manual-integration",
+      "cwd": "examples/chute_wear",
+      "input": "in.chute_wear",
+      "timeout_s": 180,
+      "cleanup_paths": [
+        "post"
+      ],
+      "required_output_regex": [
+        "^\\s*2(?:\\.0+)?\\s+200000\\s+"
+      ],
+      "required_globs": [
+        {
+          "pattern": "post/chute_*.vtk",
+          "min_count": 2,
+          "required_substrings": [
+            "POINTS",
+            "radius"
+          ],
+          "min_size_bytes": 200
+        },
+        {
+          "pattern": "post/mesh_*.vtk",
+          "min_count": 2,
+          "required_substrings": [
+            "wear",
+            "stress"
+          ],
+          "min_size_bytes": 200
+        }
+      ]
+    }
+  ]
+}

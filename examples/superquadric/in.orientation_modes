@@ -56,11 +56,11 @@ fix             ins_template all insert/pack seed 49979687 distributiontemplate 
                 insert_every once overlapcheck yes all_in no maxattempt 100 &
                 vel constant 0.0 0.0 0.0 orientation template omega constant 0.0 0.0 0.0 &
                 region reg_left particles_in_region 8
-fix             ins_random all insert/pack seed 49979699 distributiontemplate pdd1 &
+fix             ins_random all insert/pack seed 49979693 distributiontemplate pdd1 &
                 insert_every once overlapcheck yes all_in no maxattempt 100 &
                 vel constant 0.0 0.0 0.0 orientation random omega constant 0.0 0.0 0.0 &
                 region reg_mid particles_in_region 8
-fix             ins_constant all insert/pack seed 49979711 distributiontemplate pdd1 &
+fix             ins_constant all insert/pack seed 67867967 distributiontemplate pdd1 &
                 insert_every once overlapcheck yes all_in no maxattempt 100 &
                 vel constant 0.0 0.0 0.0 orientation constant ${q0} ${qx} 0.0 0.0 omega constant 0.0 0.0 0.0 &
                 region reg_right particles_in_region 8
@@ -77,4 +77,3 @@ dump            dmp all custom/vtk 1 post/orientation_modes_*.superq.vtp type ma
                 blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
 
 run             1
-
