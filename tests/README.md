@@ -27,7 +27,6 @@ python tests/run.py --case superquadric_orientation_modes
 python tests/run.py --group smoke
 python tests/run.py --group regression
 python tests/run.py --group validation-failure
-python tests/run.py --group wip-superquadric
 ```
 
 The runner writes captured logs to `tests/artifacts/`.
@@ -38,11 +37,14 @@ The runner writes captured logs to `tests/artifacts/`.
 
 - `sphere_primitive_wall_smoke`
 - `sphere_insert_pack_once`
+- `superquadric_insert_pack_once`
 - `sph_continuity_smoke`
 - `sph_stationary_wall_smoke`
 - `sph_density_summation_smoke`
 - `sph_dem_bridge_smoke`
 - `sph_dem_buoyancy_smoke`
+- `superquadric_pair_contact_smoke`
+- `superquadric_ellipsoid_case`
 
 `sph_dem_bridge_smoke` is the first hybrid SPH-DEM bridge scaffold check:
 the fluid group is integrated with `nve/sph`, the solid group with
@@ -52,9 +54,17 @@ the carrier phase to the DEM particle.
 `regression` covers broader feature and bug-path behavior:
 
 - `sphere_mesh_inclusion_insert`
+- `superquadric_orientation_modes`
+- `superquadric_template_distributions`
+- `superquadric_set_direct`
+- `superquadric_mesh_wall`
+- `superquadric_dump_schema`
+- `superquadric_restart_roundtrip`
 - `sphere_restart_roundtrip`
 - `sphere_dump_schema`
 - `sphere_two_template_distribution`
+- `superquadric_two_template_distribution`
+- `superquadric_primitive_wall_multihit`
 - `run_seconds_vs_steps_equivalence`
 - `sph_dem_pressure_gradient_regression`
 - `sph_tutorial1_short_regression`
@@ -63,19 +73,4 @@ the carrier phase to the DEM particle.
 
 - `sphere_seed_collision_rejected`
 - `sphere_missing_material_rejected`
-
-`wip-superquadric` contains deferred cases that are not part of the default
-release gate yet:
-
-- `superquadric_insert_pack_once`
-- `superquadric_pair_contact_smoke`
-- `superquadric_ellipsoid_case`
-- `superquadric_orientation_modes`
-- `superquadric_template_distributions`
-- `superquadric_set_direct`
-- `superquadric_mesh_wall`
-- `superquadric_dump_schema`
-- `superquadric_restart_roundtrip`
-- `superquadric_two_template_distribution`
-- `superquadric_primitive_wall_multihit`
 - `superquadric_seed_collision_rejected`

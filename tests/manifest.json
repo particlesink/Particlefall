@@ -32,7 +32,7 @@
     },
     {
       "name": "superquadric_insert_pack_once",
-      "group": "wip-superquadric",
+      "group": "smoke",
       "cwd": "tests/cases/superquadric_insert_pack_once",
       "input": "in.test",
       "timeout_s": 20,
@@ -42,7 +42,7 @@
     },
     {
       "name": "superquadric_orientation_modes",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_orientation_modes",
       "input": "in.test",
       "timeout_s": 20,
@@ -52,7 +52,7 @@
     },
     {
       "name": "superquadric_template_distributions",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_template_distributions",
       "input": "in.test",
       "timeout_s": 20,
@@ -62,7 +62,7 @@
     },
     {
       "name": "superquadric_set_direct",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_set_direct",
       "input": "in.test",
       "timeout_s": 20,
@@ -72,7 +72,7 @@
     },
     {
       "name": "superquadric_mesh_wall",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_mesh_wall",
       "input": "in.test",
       "timeout_s": 30,
@@ -92,7 +92,7 @@
     },
     {
       "name": "superquadric_dump_schema",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_dump_schema",
       "input": "in.test",
       "timeout_s": 20,
@@ -112,7 +112,7 @@
     },
     {
       "name": "superquadric_restart_roundtrip",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_restart_roundtrip",
       "input": "in.test",
       "timeout_s": 20,
@@ -204,7 +204,7 @@
     },
     {
       "name": "superquadric_pair_contact_smoke",
-      "group": "wip-superquadric",
+      "group": "smoke",
       "cwd": "tests/cases/superquadric_pair_contact_smoke",
       "input": "in.test",
       "timeout_s": 20,
@@ -214,7 +214,7 @@
     },
     {
       "name": "superquadric_ellipsoid_case",
-      "group": "wip-superquadric",
+      "group": "smoke",
       "cwd": "tests/cases/superquadric_ellipsoid_case",
       "input": "in.test",
       "timeout_s": 20,
@@ -329,7 +329,7 @@
     },
     {
       "name": "superquadric_two_template_distribution",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_two_template_distribution",
       "input": "in.test",
       "timeout_s": 20,
@@ -339,7 +339,7 @@
     },
     {
       "name": "superquadric_primitive_wall_multihit",
-      "group": "wip-superquadric",
+      "group": "regression",
       "cwd": "tests/cases/superquadric_primitive_wall_multihit",
       "input": "in.test",
       "timeout_s": 20,
@@ -349,7 +349,7 @@
     },
     {
       "name": "superquadric_seed_collision_rejected",
-      "group": "wip-superquadric",
+      "group": "validation-failure",
       "cwd": "tests/cases/superquadric_seed_collision_rejected",
       "input": "in.test",
       "timeout_s": 20,
