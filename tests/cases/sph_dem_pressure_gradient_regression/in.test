@@ -30,27 +30,29 @@ velocity        fluid set 0.0 0.0 0.0 sum no units box
 velocity        solid set 0.0 0.0 0.0 sum no units box
 
 neighbor        0.003 bin
+neigh_modify    exclude type 1 2
+neigh_modify    exclude type 2 2
 
-fix             m1 all property/global speedOfSound peratomtype 20.0
-fix             m2 all property/global sl peratomtype 0.012
-fix             m3 all property/global artViscAlpha peratomtype 4.1666e-3
-fix             m4 all property/global artViscBeta peratomtype 0.0
+fix             m1 all property/global speedOfSound peratomtype 20.0 20.0
+fix             m2 all property/global sl peratomtype 0.012 0.012
+fix             m3 all property/global artViscAlpha peratomtype 4.1666e-3 4.1666e-3
+fix             m4 all property/global artViscBeta peratomtype 0.0 0.0
 fix             m5 all property/global artViscEta scalar 1.44e-6
 fix             m6 all property/global tensCorrEpsilon scalar 0.2
-fix             m7 all property/global tensCorrDeltaP peratomtype 0.010
+fix             m7 all property/global tensCorrDeltaP peratomtype 0.010 0.010
 
 pair_style      sph/artVisc/tensCorr cubicspline 0.012 artVisc tensCorr
 pair_coeff      * *
 
-fix             density all sph/density/continuity
-fix             corr all sph/density/corr shepard every 10
-fix             pressure all sph/pressure absolut 1.0
+fix             density fluid sph/density/continuity
+fix             corr fluid sph/density/corr shepard every 10
+fix             pressure fluid sph/pressure absolut 1.0
 
 timestep        1.0e-4
 fix             integrFluid fluid nve/sph
 fix             integrSolid solid nve/sphere
 fix             bridge all couple/sphdem fluid solid cubicspline 0.020 0.0
-set             group all sphkernel cubicspline
+set             group fluid sphkernel cubicspline
 
 variable        coupled_particles equal f_bridge[1]
 variable        pressure_force_x equal f_bridge[5]

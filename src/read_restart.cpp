@@ -45,6 +45,7 @@
 
 #include "lmptype.h"
 #include <mpi.h>
+#include <cctype>
 #include <string.h>
 #include <string>
 #include <stdlib.h>
@@ -509,25 +510,34 @@ void ReadRestart::header()
         if (screen) fprintf(screen,"   --> restart file = %s\n   --> LIGGGHTS = %s\n", 
                             version,universe->version);
       }
-        // parse version number
-        // version format is:
-        // Version LIGGGHTS-REPOSITORY-NAME MAJOR.MINOR.[....]
-        // MAJOR and MINOR are integers
+        // Parse the first MAJOR.MINOR version sequence we can find.
+        // This supports both inherited LIGGGHTS-style restart banners and
+        // the current Packfall runtime version string.
         std::string ver = std::string(version);
-        std::size_t space1 = ver.find(' ');
-        std::size_t space2 = ver.find(' ', space1+1);
-        std::size_t dot1 = ver.find('.', space2+1);
-        std::size_t dot2 = ver.find('.', dot1+1);
-        if (space1 != std::string::npos &&
-            space2 != std::string::npos &&
-            dot1 != std::string::npos &&
-            dot2 != std::string::npos)
-        {
-            std::string ver_major = ver.substr(space2+1, dot1-space2-1);
-            std::string ver_minor = ver.substr(dot1+1, dot2-dot1-1);
-            restart_major = atoi(ver_major.c_str());
-            restart_minor = atoi(ver_minor.c_str());
-            printf("version %d %d\n", restart_major, restart_minor);
+        for (std::size_t i = 0; i < ver.size(); ++i) {
+          if (!isdigit(static_cast<unsigned char>(ver[i]))) continue;
+
+          std::size_t major_end = i;
+          while (major_end < ver.size() &&
+                 isdigit(static_cast<unsigned char>(ver[major_end])))
+            ++major_end;
+          if (major_end >= ver.size() || ver[major_end] != '.') continue;
+
+          std::size_t minor_begin = major_end + 1;
+          if (minor_begin >= ver.size() ||
+              !isdigit(static_cast<unsigned char>(ver[minor_begin])))
+            continue;
+
+          std::size_t minor_end = minor_begin;
+          while (minor_end < ver.size() &&
+                 isdigit(static_cast<unsigned char>(ver[minor_end])))
+            ++minor_end;
+
+          std::string ver_major = ver.substr(i, major_end - i);
+          std::string ver_minor = ver.substr(minor_begin, minor_end - minor_begin);
+          restart_major = atoi(ver_major.c_str());
+          restart_minor = atoi(ver_minor.c_str());
+          break;
         }
       delete [] version;
 

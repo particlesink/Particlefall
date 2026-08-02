@@ -91,6 +91,8 @@ void PairGranProxy::write_restart_settings(FILE * fp)
 void PairGranProxy::read_restart_settings(FILE * fp, const int major, const int minor)
 {
   int me = comm->me;
+  (void) major;
+  (void) minor;
 
   int64_t selected = -1;
   if(me == 0){
@@ -101,30 +103,15 @@ void PairGranProxy::read_restart_settings(FILE * fp, const int major, const int 
   }
   MPI_Bcast(&selected,8,MPI_CHAR,0,world);
 
-  if (major < 3)
-      error->all(FLERR, "LIGGGHTS major version < 3 not supported");
-  else if (major == 3 && minor < 4)
-  {
-      // use old style hash table
-      const int M = (15) & selected;
-      const int T = (15) & selected >> 4;
-      const int C = (15) & selected >> 8;
-      const int R = (15) & selected >> 12;
-      const int S = (15) & selected >> 16;
-      error->warning(FLERR, "LIGGGHTS tries to use old-style hashcode to find the contact model. Update your restart file.");
-      if(screen) {
-          fprintf(screen,"         original hashcode = %zd \n",selected);
-          fprintf(screen,"         M = %d, T = %d, C = %d, R = %d, S = %d \n",M,T,C,R,S);
-      }
-      selected = ::LIGGGHTS::Utils::generate_gran_hashcode(M,T,C,R,S);
-  }
+  // Packfall 1.0.0 only supports restart files written with the current
+  // granular contact-model hash format.
 
   impl = LIGGGHTS::PairStyles::Factory::instance().create("gran", selected, lmp, this);
 
   if(impl) {
     impl->read_restart_settings(fp, selected);
   } else {
-    error->one(FLERR, "unknown contact model");
+    error->one(FLERR, "Unknown Packfall contact model in restart file");
   }
 }
 
